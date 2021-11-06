@@ -5,63 +5,40 @@ export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossOrigin="anonymous" />
+        <title>User Sign up</title>
+        <link rel="icon" href="/rpcLogo.ico" />
       </Head>
 
       <main>
         <h1 className="title">
-          Read{' '}
-          <Link href="/posts/first-post">
-            <a>this page!</a>
-          </Link>
+          <a href="https://redprogramacioncompetitiva.com/">RPC :: Red de Programación Competitiva</a>
         </h1>
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <br />
+        <form action="/loginauth" class="w-50 mx-auto p-2" method="POST">
+          <h1>Sign in</h1>
+          <div class="form-group">
+            <label for="email">Email:</label><br />
+            <input type="text" id="email" name="email" class="form-control" placeholder="Email" /><br />
+          </div>
+          <br />
+          <div class="form-group">
+            <label for="password">Password:</label><br />
+            <input type="password" id="password" class="form-control" name="password" placeholder="Password" /><br /><br />
+          </div>
+          <input type="submit" class="btn btn-primary" value="Login" />
+        </form>
+        <div class="w-50 mx-auto p-2">
+          <h2>Sign up</h2>
+          <Link href="/register">
+            <a class="btn btn-primary">Create new account</a>
+          </Link>
+          <br /><br />
         </div>
       </main>
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className="logo" />
-        </a>
-      </footer>
+
 
       <style jsx>{`
         .container {
@@ -120,7 +97,6 @@ export default function Home() {
         .title {
           margin: 0;
           line-height: 1.15;
-          font-size: 4rem;
         }
 
         .title,
