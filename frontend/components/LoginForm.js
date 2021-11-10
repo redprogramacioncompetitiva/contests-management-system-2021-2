@@ -1,6 +1,12 @@
 import React from 'react';
 import Link from 'next/link'
 import { loginAuth } from '../posts/loginAuth';
+import fetch from 'isomorphic-fetch'
+import users from '../util/users.json'
+
+
+
+
 
 class LoginForm extends React.Component {
 
@@ -14,12 +20,18 @@ class LoginForm extends React.Component {
     }
 
     handleSubmit = event => {
-        const { email, password } = this.state;
-        event.preventDefault();
-        loginAuth(email, password);
+        
+        LoginForm.getInitialProps = async (ctx) =>{
+            const res = await fetch('http://localhost:8080/saludo')
+            const data =  await res.json();
+            console.log(data);
+        }
+  
     }
 
-    render() {
+    
+
+    render(){
         return (
 
             <main>
@@ -36,7 +48,7 @@ class LoginForm extends React.Component {
 
                 <h1 className="py-1 text-center">Sign in</h1>
 
-                <form onSubmit={this.handleSubmit} className="w-50 mx-auto p-2" method="POST">
+                <form  onSubmit={this.handleSubmit} className="w-50 mx-auto p-2" method="POST">
 
                     <div className="form-group">
 

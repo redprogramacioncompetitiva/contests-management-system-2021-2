@@ -72,8 +72,10 @@ let addUsers = (email, password, nickname, firstName, lastName, country, verifie
 const app = express();
 
 app.post("/authenticate", (req, res) => {
-
-    res.send(authenticate(req.body.email.value, hash(req.body.password.value)));
+    console.log("funciona");
+    console.log(JSON.stringify(req))
+    
+    res.redirect("http://localhost:3000/register");
 })
 
 app.post("/register", (req, res) => {
@@ -94,7 +96,8 @@ function hash(text) {
 }
 
 app.get("/saludo",(req,res)=>{
-    res.send("hello Cali");
+
+    console.log(req.body);
 })
 
 app.listen(8080);
