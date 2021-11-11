@@ -1,5 +1,9 @@
 import Head from 'next/head'
+import HeadRPC from '../components/HeadRPC'
+import Link from 'next/Link'
+import Verifier  from '../model/Verifier'
 import LoginForm from '../components/LoginForm'
+
 
 export default function Home() {
 
@@ -19,11 +23,30 @@ export default function Home() {
 
         <title>RPC - Sign in</title>
 
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.ico" />
 
       </Head>
 
-      <LoginForm />
+      <HeadRPC/>
+
+     
+
+        <LoginForm/>
+
+                <br />
+
+                <h1 className="py-1 text-center">Sign up</h1>
+
+                <br />
+
+                <Link href="/register">
+
+                    <center><a className="btn btn-primary">Create new account</a></center>
+
+                </Link>
+
+                <br /><br />
+
 
       <style jsx global>{`
         html,

@@ -1,87 +1,65 @@
-import React from 'react';
-import Link from 'next/link'
-import { loginAuth } from '../posts/loginAuth';
-import fetch from 'isomorphic-fetch'
-import users from '../util/users.json'
-
-
+import React, { Component } from 'react'
+import Verifier from "../model/Verifier";
+import { useRouter } from 'next/router'
 
 
 
 class LoginForm extends React.Component {
 
+    
+
     state = {
         email: '',
         password: ''
-    };
+    }
+
+    
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value });
     }
 
     handleSubmit = event => {
+        const { email, password } = this.state;
         
-        LoginForm.getInitialProps = async (ctx) =>{
-            const res = await fetch('http://localhost:8080/saludo')
-            const data =  await res.json();
-            console.log(data);
-        }
-  
+        event.preventDefault();
+        
+        
     }
 
     
+   
 
-    render(){
+
+    render() {
+
+        
+
+        
         return (
-
-            <main>
-
-                <div className="py-1 text-center">
-
-                    <center><a href="https://redprogramacioncompetitiva.com/"><img src="https://pbs.twimg.com/profile_images/493847405670850561/qslkfHlq_400x400.jpeg" alt="RPC_Logo" width="100" height="100" /></a></center>
-
-                    <h1 className="display-2">RPC :: Red de Programación Competitiva</h1>
-
-                </div>
-
-                <br />
+            <div className = "card shadow w-50 m-auto p-3">
 
                 <h1 className="py-1 text-center">Sign in</h1>
-
-                <form  onSubmit={this.handleSubmit} className="w-50 mx-auto p-2" method="POST">
+                <form className="w-50 mx-auto p-2"  method = "POST"  action = "http://localhost:8080/authenticate">
 
                     <div className="form-group">
 
                         <label htmlFor="email">Email:</label><br />
 
-                        <input type="email" id="email" name="email" className="form-control" placeholder="Email" onChange={this.handleChange} /><br />
+                        <input onChange={this.handleChange} type="email" id="email" name="email" className="form-control" placeholder="Email" required /><br />
 
                         <label htmlFor="password">Password:</label><br />
 
-                        <input type="password" id="password" className="form-control" name="password" placeholder="Password" onChange={this.handleChange} /><br />
+                        <input onChange={this.handleChange} type="password" id="password" className="form-control" name="password" placeholder="Password" required /><br />
 
-                        <center><input type="submit" className="btn btn-primary" value="Login" /></center>
-
+                        <input  type="submit" className="btn btn-primary m-auto " value="Login" />
                     </div>
 
                 </form>
+                
 
-                <br />
-
-                <h1 className="py-1 text-center">Sign up</h1>
-
-                <br />
-
-                <Link href="/register">
-
-                    <center><a className="btn btn-primary">Create new account</a></center>
-
-                </Link>
-
-                <br /><br />
-
-            </main>
-        )
+            </div>
+        );
     }
 }
 

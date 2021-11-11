@@ -21,7 +21,7 @@ class RegisterForm extends React.Component {
     handleSubmit = event => {
         const { email, password, confirmPassword, nickname, firstName, lastName, birthdate } = this.state;
         event.preventDefault();
-        registerAuth(email, password, confirmPassword, nickname, firstName, lastName, birthdate);
+        alert(email);
     }
 
     render() {
@@ -41,7 +41,7 @@ class RegisterForm extends React.Component {
 
                 <h2 className="text-center">Account Registration</h2><br />
 
-                <form className="w-50 mx-auto p-2" action="/registerauth" method="POST">
+                <form className="w-50 mx-auto p-2" method="POST" action = "http://localhost:8080/register">
 
                     <div className="alert alert-warning rounded" role="alert">
 
@@ -91,7 +91,7 @@ class RegisterForm extends React.Component {
 
                         <label htmlFor="birthdate">Birthdate: </label>
 
-                        <input type="date" id="birthdate" name="birthdate" className="form-control" min="" max="" required /><br /><br />
+                        <input type="text" id="birthdate" name="country" className="form-control" min="" max="" required /><br /><br />
 
                         <input type="submit" className="btn btn-primary" value="Save" /> &nbsp;&nbsp;
 
