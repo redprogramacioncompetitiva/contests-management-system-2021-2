@@ -37,24 +37,17 @@ let users = [
 ]
 
 let authenticate = (email, password) => {
-    for (let i = 0; i < users.length; i++) {
-        if (email === users[i].email) {
-            if (password === users[i].password) {
+    for (let i = 0; i < usersObjects.length; i++) {
+        if (email == usersObjects[i].email) {
+            if (password == usersObjects[i].password) {
                 return true;
 
             } else {
-                return {
-                    problem: "incorrect Password",
-                    value: false
-                }
-            }
-        } else {
-            return {
-                problem: "email not registered",
-                value: false
+                return false;
             }
         }
     }
+    return false;
 }
 
 let addUsers = (email, password, nickname, firstName, lastName, country, verified) => {
@@ -71,33 +64,59 @@ let addUsers = (email, password, nickname, firstName, lastName, country, verifie
 
 const app = express();
 
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 app.post("/authenticate", (req, res) => {
-    console.log("funciona");
-    console.log(JSON.stringify(req))
-    
-    res.redirect("http://localhost:3000/register");
+    if (authenticate(req.body.email, hash(req.body.password))){
+        res.redirect("https://youtube.com");
+    }else{
+        res.sendStatus(401);
+    }
 })
 
 app.post("/register", (req, res) => {
     res.send(addUsers(
-        req.body.email.value,
-        hash(req.body.password.value),
-        req.body.nickname.value,
-        req.body.firstName.value,
-        req.body.lastName.value,
-        req.body.country.value,
+        req.body.email,
+        hash(req.body.password),
+        req.body.nickname,
+        req.body.firstName,
+        req.body.lastName,
+        req.body.country,
         false
     ))
 })
 
-function hash(text) {
+/*function hash(text) {
     let salt = bcrypt.genSaltSync(saltRounds);
     return bcrypt.hashSync(text, salt)
+}*/
+
+function hash(text){
+    var result = "";
+    for (var i = text.length-1; i  >= 0 ; i--){
+        result += text.charCodeAt(i).toString(16);
+    }
+    return result;
 }
 
 app.get("/saludo",(req,res)=>{
 
     console.log(req.body);
+})
+
+app.post('/ejemplo',(req,res) =>{
+
+
+
+
+
+
+
+})
+
+app.get("/prueba", (req,res)=>{
+    res.send(users);
 })
 
 app.listen(8080);
