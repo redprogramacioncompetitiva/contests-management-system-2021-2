@@ -12,19 +12,7 @@ export default function Home() {
 
       <LoginForm />
 
-      <br />
-
-      <h1 className="py-1 text-center">Sign up</h1>
-
-      <br />
-
-      <Link href="/register">
-
-        <center><a className="btn btn-primary">Create new account</a></center>
-
-      </Link>
-
-      <br /><br />
+     
 
 
       <style jsx global>{`
