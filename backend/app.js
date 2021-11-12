@@ -8,6 +8,8 @@ sgMail.setApiKey('SG.lNTbbOeiQwKVUaLA3T8pKQ.RSUDvhgXn2HgNl0DYxzGlmM4hdj8S7w9X8Jx
 
 const express = require('express');
 
+let messageIndex = 'hellou'
+
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
         this.email = email;
@@ -51,18 +53,6 @@ let usersObjects = [
     a = new User("seyerman@dejanosEnPaz.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "univalle", true)
 ]
 
-let users = [
-    {
-        email: "seyerman@dejanosEnPaz.com",
-        password: hash("contrasenia"),
-        nickname: "seyerman",
-        firstName: "Juan Manuel",
-        lastName: "Reyes Garcia",
-        country: "univalle",
-        verified: true
-    }
-]
-
 let searchUser = (emailHashed) => {
     for (let i = 0; i < usersObjects.length; i++) {
         if (emailHashed === hash(usersObjects[i].email))
@@ -103,7 +93,6 @@ let getUserByEmail = (email) => {
 let addUsers = (email, password, nickname, firstName, lastName, country, verified) => {
     let aux = new User(email, password, nickname, firstName, lastName, country, verified);
     usersObjects.push(aux);
-    users.push(JSON.stringify(aux));
     return true;
 }
 
@@ -121,13 +110,16 @@ app.post("/authenticate", (req, res) => {
 
 app.post("/register", async (req, res) => {
     if (req.body.password !== req.body.password2) {
-        res.send("Las contraseñas no coinciden!");
+        //res.send("Las contraseñas no coinciden!");
+        res.redirect('http://localhost:3000/register/msg1')
         return;
     } else if (getUserByEmail(req.body.email) !== null) {
-        res.send("El email especificado ya existe!");
+        //res.send("El email especificado ya existe!");
+        res.redirect('http://localhost:3000/register/msg2')
         return;
     } else if (getUserByNickname(req.body.nickname) !== null) {
-        res.send("El nickname especificado ya existe!");
+        //res.send("El nickname especificado ya existe!");
+        res.redirect('http://localhost:3000/register/msg3')
         return;
     } else {
         let temp = addUsers(
@@ -141,7 +133,8 @@ app.post("/register", async (req, res) => {
         );
         let link = 'http://localhost:' + localHostPort + '/activate/' + hash(req.body.email);
         await new Email(req.body.email, link, req.body.nickname).sendEmail();
-        res.send(temp);
+        //res.send(temp);
+        res.redirect('http://localhost:3000/register/msg4')
     }
 })
 
@@ -158,15 +151,20 @@ function hash(text) {
     return result;
 }
 
+app.get("/prueba", (req, res) => {
+    //res.send("jeje")
+})
+
 app.get("/activate/:id", (req, res) => {
     const emailId = req.params.id
     let index = searchUser(emailId)
     if (index !== -1) {
         usersObjects[index].verified = true
-        users[index].verified = true
-        res.send("Te autenticaste correctamente. Bienvenid@ a la RPC!")
+        //res.send("Te autenticaste correctamente. Bienvenid@ a la RPC!")
+        res.redirect('http://localhost:3000/activate/msg1')
     } else
-        res.send("URL de autenticación inválida.")
+        //res.send("URL de autenticación inválida.")
+        res.redirect('http://localhost:3000/activate/msg2')
 })
 
 app.listen(localHostPort);
