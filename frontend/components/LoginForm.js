@@ -1,19 +1,34 @@
 import React from 'react'
+import Fetch from 'isomorphic-fetch';
 
 class LoginForm extends React.Component {
 
-    state = {
-        email: '',
-        password: ''
-    }
+    email = React.createRef();
+    password = React.createRef();
+
+
+   
+
+    
+
 
     handleChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
+        
     }
 
+    
+
     handleSubmit = event => {
-        const { email, password } = this.state;
-        event.preventDefault();
+        fetch('http://localhost:8080/',)
+    .then(function(response) {
+        if (response.status >= 400) {
+            throw new Error("Bad response from server");
+        }
+        prompt(response);
+    })
+    .then(function(stories) {
+        console.log(stories);
+    });
     }
 
     render() {
@@ -22,14 +37,21 @@ class LoginForm extends React.Component {
 
                 <h1 className="py-1 text-center">Sign in</h1>
 
-                <form className="w-50 mx-auto p-2"  method = "POST"  action = "http://localhost:8080/authenticate">
+                
+                <span className = {this.props.style} >
+
+                    {this.props.message}
+                </span>
+                
+
+                <form className="w-50 mx-auto p-2"  method = "POST" action = "http://localhost:8080/authenticate" >
 
                     <div className="form-group">
 
                         <label htmlFor="email">Email:</label><br />
 
                         <input onChange={this.handleChange} type="email" id="email" name="email" className="form-control" placeholder="Email" required /><br />
-
+                    
                         <label htmlFor="password">Password:</label><br />
 
                         <input onChange={this.handleChange} type="password" id="password" className="form-control" name="password" placeholder="Password" required /><br />
@@ -42,6 +64,15 @@ class LoginForm extends React.Component {
             </div>
         );
     }
+
+    
+}
+
+LoginForm.getInitalProps = async (ctx) => {
+    const res = await fetch("http://localhost://list");
+    const data = await res.json();
+    console.log(data);
+    return {};
 }
 
 export default LoginForm;

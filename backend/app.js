@@ -116,7 +116,7 @@ app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
         res.redirect("https://youtube.com");
     else
-        res.sendStatus(401);
+        res.redirect("http://localhost:3000/Login");
 })
 
 app.post("/register", async (req, res) => {
@@ -164,9 +164,14 @@ app.get("/activate/:id", (req, res) => {
     if (index !== -1) {
         usersObjects[index].verified = true
         users[index].verified = true
-        res.send("Te autenticaste correctamente. Bienvenid@ a la RPC!")
+        res.send('Te autenticaste correctamente. Bienvenid@ a la RPC! <br/> <a href = "http://localhost:3000"> iniciar sesión </a> style')
+        
     } else
         res.send("URL de autenticación inválida.")
+})
+
+app.get("/list",(req,res)=>{
+    res.send(usersObjects);
 })
 
 app.listen(localHostPort);
