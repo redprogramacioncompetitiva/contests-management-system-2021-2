@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import HeadRPC from '../components/HeadRPC'
 import Link from 'next/Link'
 import LoginForm from '../components/LoginForm'

@@ -86,7 +86,7 @@ class RegisterForm extends React.Component {
 
                         <input type="text" id="lastName" name="lastName" className="form-control" placeholder="LastName" required /><br /><br />
 
-                        <label htmlFor="birthdate">Birthdate: </label>
+                        <label htmlFor="birthdate">Country: </label>
 
                         <input type="text" id="birthdate" name="country" className="form-control" min="" max="" required /><br /><br />
 

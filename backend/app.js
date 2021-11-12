@@ -50,7 +50,7 @@ class Email {
 };
 
 let usersObjects = [
-    a = new User("seyerman@dejanosEnPaz.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "univalle", true)
+    a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
 
 let searchUser = (emailHashed) => {
@@ -103,7 +103,7 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("https://youtube.com");
+        res.redirect("http://localhost:3000/home/"+getUserByEmail(req.body.email).nickname);
     else
         res.sendStatus(401);
 })
@@ -165,6 +165,10 @@ app.get("/activate/:id", (req, res) => {
     } else
         //res.send("URL de autenticación inválida.")
         res.redirect('http://localhost:3000/activate/msg2')
+})
+
+app.get("/users", (req, res) => {
+    res.send(usersObjects)
 })
 
 app.listen(localHostPort);
