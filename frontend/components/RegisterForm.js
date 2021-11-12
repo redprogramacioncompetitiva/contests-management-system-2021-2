@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link'
-import { registerAuth } from '../posts/registerAuth';
 
 class RegisterForm extends React.Component {
 
@@ -54,8 +53,6 @@ class RegisterForm extends React.Component {
                             <li>Passwords must contain a uppercase letter, lowercase letter, number, and special character.</li>
 
                             <li>Passwords must be greater than 5 characters but less than 60.</li>
-
-                            <li>No field should contain spaces.</li>
 
                         </ul>
 

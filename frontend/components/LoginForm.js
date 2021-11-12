@@ -1,19 +1,11 @@
-import React, { Component } from 'react'
-import Verifier from "../model/Verifier";
-import { useRouter } from 'next/router'
-
-
+import React from 'react'
 
 class LoginForm extends React.Component {
-
-    
 
     state = {
         email: '',
         password: ''
     }
-
-    
 
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value });
@@ -21,25 +13,15 @@ class LoginForm extends React.Component {
 
     handleSubmit = event => {
         const { email, password } = this.state;
-        
         event.preventDefault();
-        
-        
     }
 
-    
-   
-
-
     render() {
-
-        
-
-        
         return (
             <div className = "card shadow w-50 m-auto p-3">
 
                 <h1 className="py-1 text-center">Sign in</h1>
+
                 <form className="w-50 mx-auto p-2"  method = "POST"  action = "http://localhost:8080/authenticate">
 
                     <div className="form-group">
@@ -56,7 +38,6 @@ class LoginForm extends React.Component {
                     </div>
 
                 </form>
-                
 
             </div>
         );

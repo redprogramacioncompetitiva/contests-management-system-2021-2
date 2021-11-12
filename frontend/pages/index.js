@@ -1,9 +1,7 @@
 import Head from 'next/head'
 import HeadRPC from '../components/HeadRPC'
 import Link from 'next/Link'
-import Verifier  from '../model/Verifier'
 import LoginForm from '../components/LoginForm'
-
 
 export default function Home() {
 
@@ -15,9 +13,9 @@ export default function Home() {
 
         <meta charSet="UTF-8" />
 
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge"/>
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossOrigin="anonymous" />
 
@@ -27,25 +25,23 @@ export default function Home() {
 
       </Head>
 
-      <HeadRPC/>
+      <HeadRPC />
 
-     
+      <LoginForm />
 
-        <LoginForm/>
+      <br />
 
-                <br />
+      <h1 className="py-1 text-center">Sign up</h1>
 
-                <h1 className="py-1 text-center">Sign up</h1>
+      <br />
 
-                <br />
+      <Link href="/register">
 
-                <Link href="/register">
+        <center><a className="btn btn-primary">Create new account</a></center>
 
-                    <center><a className="btn btn-primary">Create new account</a></center>
+      </Link>
 
-                </Link>
-
-                <br /><br />
+      <br /><br />
 
 
       <style jsx global>{`
