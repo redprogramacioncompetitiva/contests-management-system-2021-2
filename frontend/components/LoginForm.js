@@ -1,5 +1,4 @@
 import React from 'react'
-import Fetch from 'isomorphic-fetch';
 import Link from 'next/link'
 
 class LoginForm extends React.Component {
@@ -7,84 +6,73 @@ class LoginForm extends React.Component {
     email = React.createRef();
     password = React.createRef();
 
-
-   
-
-    
-
-
     handleChange = event => {
-        
-    }
 
-    
+    }
 
     handleSubmit = event => {
         fetch('http://localhost:8080/',)
-    .then(function(response) {
-        if (response.status >= 400) {
-            throw new Error("Bad response from server");
-        }
-        prompt(response);
-    })
-    .then(function(stories) {
-        console.log(stories);
-    });
+            .then(function (response) {
+                if (response.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+                prompt(response);
+            })
+            .then(function (stories) {
+                console.log(stories);
+            });
     }
 
     render() {
         return (
             <div>
-                <div className = "card shadow w-50 m-auto p-3">
+                <div className="card shadow w-50 m-auto p-3">
 
-<h1 className="py-1 text-center">Sign in</h1>
+                    <h1 className="py-1 text-center">Sign in</h1>
 
+                    <span className={this.props.style} >
 
-<span className = {this.props.style} >
+                        {this.props.message}
 
-    {this.props.message}
-</span>
+                    </span>
 
+                    <form className="w-50 mx-auto p-2" method="POST" action="http://localhost:8080/authenticate" >
 
-<form className="w-50 mx-auto p-2"  method = "POST" action = "http://localhost:8080/authenticate" >
+                        <div className="form-group">
 
-    <div className="form-group">
+                            <label htmlFor="email">Email:</label><br />
 
-        <label htmlFor="email">Email:</label><br />
+                            <input onChange={this.handleChange} type="email" id="email" name="email" className="form-control" placeholder="Email" required /><br />
 
-        <input onChange={this.handleChange} type="email" id="email" name="email" className="form-control" placeholder="Email" required /><br />
-    
-        <label htmlFor="password">Password:</label><br />
+                            <label htmlFor="password">Password:</label><br />
 
-        <input onChange={this.handleChange} type="password" id="password" className="form-control" name="password" placeholder="Password" required /><br />
+                            <input onChange={this.handleChange} type="password" id="password" className="form-control" name="password" placeholder="Password" required /><br />
 
-        <input  type="submit" className="btn btn-primary m-auto " value="Login" />
-    </div>
+                            <input type="submit" className="btn btn-primary m-auto " value="Login" />
 
-</form>
+                        </div>
 
+                    </form>
 
+                </div>
 
-</div>
-<br />
+                <br />
 
-<h1 className="py-1 text-center">Sign up</h1>
+                <h1 className="py-1 text-center">Sign up</h1>
 
-<br />
+                <br />
 
-<Link href="/register">
+                <Link href="/register">
 
-  <center><a className="btn btn-primary">Create new account</a></center>
+                    <center><a className="btn btn-primary">Create new account</a></center>
 
-</Link>
+                </Link>
 
-<br /><br />
+                <br /><br />
 
             </div>
         );
     }
-
-    
 }
 
 LoginForm.getInitalProps = async (ctx) => {

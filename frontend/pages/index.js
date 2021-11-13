@@ -1,5 +1,4 @@
 import HeadRPC from '../components/HeadRPC'
-import Link from 'next/Link'
 import LoginForm from '../components/LoginForm'
 
 export default function Home() {
@@ -11,9 +10,6 @@ export default function Home() {
       <HeadRPC />
 
       <LoginForm />
-
-     
-
 
       <style jsx global>{`
         html,

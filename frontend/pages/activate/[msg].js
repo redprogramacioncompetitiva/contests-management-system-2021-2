@@ -1,13 +1,15 @@
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import HeadRPC from '../../components/HeadRPC'
 import Link from 'next/Link'
 import LoginForm from '../../components/LoginForm'
 
-export default function register(){
+export default function register() {
+
   const router = useRouter()
   let message = ''
-  switch(router.query.msg){
+
+  switch (router.query.msg) {
     case 'msg1':
       message = 'Te autenticaste correctamente. Bienvenid@ a la RPC!'
       break
@@ -15,8 +17,9 @@ export default function register(){
       message = 'URL de autenticación inválida.'
       break
   }
-  
+
   return (
+
     <div className="container">
 
       <Head>
@@ -51,12 +54,11 @@ export default function register(){
 
       </Link>
 
-      <br/>
+      <br />
 
       <p className="text-center">{message}</p>
 
       <br /><br />
-
 
       <style jsx global>{`
         html,

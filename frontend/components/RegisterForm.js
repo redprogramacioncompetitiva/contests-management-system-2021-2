@@ -14,13 +14,11 @@ class RegisterForm extends React.Component {
     };
 
     handleChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
+
     }
 
     handleSubmit = event => {
-        const { email, password, confirmPassword, nickname, firstName, lastName, birthdate } = this.state;
-        event.preventDefault();
-        alert(email);
+
     }
 
     render() {
@@ -88,7 +86,7 @@ class RegisterForm extends React.Component {
 
                         <label htmlFor="birthdate">Country: </label>
 
-                        <input type="text" id="birthdate" name="country" className="form-control" min="" max="" required /><br /><br />
+                        <input type="text" id="birthdate" name="country" className="form-control" placeholder="Country" required /><br /><br />
 
                         <input type="submit" className="btn btn-primary" value="Save" /> &nbsp;&nbsp;
 

@@ -8,8 +8,6 @@ sgMail.setApiKey('SG.lNTbbOeiQwKVUaLA3T8pKQ.RSUDvhgXn2HgNl0DYxzGlmM4hdj8S7w9X8Jx
 
 const express = require('express');
 
-let messageIndex = 'hellou'
-
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
         this.email = email;
@@ -103,22 +101,22 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/"+getUserByEmail(req.body.email).nickname);
+        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
     else
-        res.redirect("http://localhost:3000/Login");
+        res.redirect("http://localhost:3000/loginError");
 })
 
 app.post("/register", async (req, res) => {
     if (req.body.password !== req.body.password2) {
-        //res.send("Las contraseñas no coinciden!");
+        //Las contraseñas no coinciden!
         res.redirect('http://localhost:3000/register/msg1')
         return;
     } else if (getUserByEmail(req.body.email) !== null) {
-        //res.send("El email especificado ya existe!");
+        //El email especificado ya existe!
         res.redirect('http://localhost:3000/register/msg2')
         return;
     } else if (getUserByNickname(req.body.nickname) !== null) {
-        //res.send("El nickname especificado ya existe!");
+        //El nickname especificado ya existe!
         res.redirect('http://localhost:3000/register/msg3')
         return;
     } else {
@@ -145,25 +143,20 @@ app.post("/register", async (req, res) => {
 
 function hash(text) {
     var result = "";
-    for (var i = text.length - 1; i >= 0; i--) {
+    for (var i = text.length - 1; i >= 0; i--)
         result += text.charCodeAt(i).toString(16);
-    }
     return result;
 }
-
-app.get("/prueba", (req, res) => {
-    //res.send("jeje")
-})
 
 app.get("/activate/:id", (req, res) => {
     const emailId = req.params.id
     let index = searchUser(emailId)
     if (index !== -1) {
         usersObjects[index].verified = true
-        //res.send("Te autenticaste correctamente. Bienvenid@ a la RPC!")
+        //Te autenticaste correctamente. Bienvenid@ a la RPC!
         res.redirect('http://localhost:3000/activate/msg1')
     } else
-        //res.send("URL de autenticación inválida.")
+        //URL de autenticación inválida.
         res.redirect('http://localhost:3000/activate/msg2')
 })
 
@@ -171,7 +164,7 @@ app.get("/users", (req, res) => {
     res.send(usersObjects)
 })
 
-app.get("/list",(req,res)=>{
+app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
 
