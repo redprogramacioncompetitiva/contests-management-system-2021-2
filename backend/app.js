@@ -2,7 +2,7 @@
 //const saltRounds = 10;
 const sgMail = require('@sendgrid/mail');
 const localHostPort = 8080;
-sgMail.setApiKey('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');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //express imports
 
@@ -25,8 +25,8 @@ class Email {
         this.email = email;
         this.url = url;
         this.nickname = nickname
-        this.fromEmail = 'pepitoperezprueba3@gmail.com';
-        this.fromName = 'Pepito Perez';
+        this.fromEmail = 'peppapignea@gmail.com';
+        this.fromName = 'Peppa Pig';
     }
 
     async sendEmail() {
@@ -36,7 +36,7 @@ class Email {
                 email: this.fromEmail,
                 name: this.fromName,
             },
-            templateId: 'd-6c9dd6013f044334b55a94fb25f1db9d',
+            templateId: 'd-38484195aa134e15ad3d22d2311acc30',
             dynamic_template_data: {
                 url_act: this.url,
                 name: this.nickname,
