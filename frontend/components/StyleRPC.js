@@ -1,6 +1,11 @@
+import React, {Component} from 'react';
+import {Style,Html} from 'next'
 
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+class StyleRPC extends Component{
+    render(){
+        return(
+            <style jsx global>{
+                `@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
         
                 .body{
                     font-family: 'Roboto', sans-serif;
@@ -53,4 +58,12 @@
                 
                 #loginBtn{
                     width: 250px;
-                }
+                }`
+              }</style>
+
+              
+
+        );
+    }
+}
+export default StyleRPC;

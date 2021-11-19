@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
+
 class LoginForm extends React.Component {
 
     email = React.createRef();
@@ -26,50 +27,36 @@ class LoginForm extends React.Component {
     render() {
         return (
             <div>
-                <div className="card shadow w-50 m-auto p-3">
-
-                    <h1 className="py-1 text-center">Sign in</h1>
-
-                    <span className={this.props.style} >
-
-                        {this.props.message}
-
-                    </span>
-
-                    <form className="w-50 mx-auto p-2" method="POST" action="http://localhost:8080/authenticate" >
-
-                        <div className="form-group">
-
-                            <label htmlFor="email">Email:</label><br />
-
-                            <input onChange={this.handleChange} type="email" id="email" name="email" className="form-control" placeholder="Email" required /><br />
-
-                            <label htmlFor="password">Password:</label><br />
-
-                            <input onChange={this.handleChange} type="password" id="password" className="form-control" name="password" placeholder="Password" required /><br />
-
-                            <input type="submit" className="btn btn-primary m-auto " value="Login" />
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-                <br />
-
-                <h1 className="py-1 text-center">Sign up</h1>
-
-                <br />
-
-                <Link href="/register">
-
-                    <center><a className="btn btn-primary">Create new account</a></center>
-
-                </Link>
-
-                <br /><br />
-
+                <div  id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content modalStyle">
+            <div className="modal-header">
+              <img src="img/logo.png" width={50} height={50} />
+              <h5 className="modal-title" id="exampleModalLabel">Login</h5>
+              <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
+            </div>
+            <div className="modal-body">
+              <div className="m-3">
+                Email<br />
+                <input type="text" placeholder="E-mail" className="form-control" id="email_register" />
+              </div>
+              <div className="m-3">
+                Password<br />
+                <input type="password" placeholder="Password" className="form-control" id="password_register" />
+              </div>
+            </div>
+            <div className="modal-footer flex-column">
+              {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
+              <div><button type="button" className="btn btn-style2" id="loginBtn">Login</button></div>
+              <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"><u>Sign
+                    up</u></a></div>
+              <div><a><u>Forgot password</u></a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+                
             </div>
         );
     }
