@@ -27,7 +27,7 @@ class LoginForm extends React.Component {
     render() {
         return (
             <div>
-                <div  id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div  className="modal fade" id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content modalStyle">
             <div className="modal-header">

@@ -1,7 +1,8 @@
 import HeadRPC from '../components/HeadRPC'
 import LoginForm from '../components/LoginForm'
 import StyleRPC from '../components/StyleRPC'
-import DocJS from '../components/'
+import I from '../components/Imports'
+import RegisterForm from '../components/RegisterForm'
 
 export default function Home() {
 
@@ -62,8 +63,9 @@ export default function Home() {
         </div>
 
         <LoginForm/>
+        <RegisterForm/>
         <StyleRPC/>
-        
+        <I/>
         
     </div>
   )
