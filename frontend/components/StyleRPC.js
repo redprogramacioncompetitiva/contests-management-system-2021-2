@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Style,Html} from 'next'
+
 
 class StyleRPC extends Component{
     render(){

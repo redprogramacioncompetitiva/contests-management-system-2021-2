@@ -1,5 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
+import FormInput from './FormInput'
+import NormalButton from './NormalButton';
 
 
 class LoginForm extends React.Component {
@@ -38,16 +40,20 @@ class LoginForm extends React.Component {
             <div className="modal-body">
               <div className="m-3">
                 Email<br />
-                <input type="text" placeholder="E-mail" className="form-control" id="email_register" />
+              <FormInput type = "text" hint = "E-mail"  name = "email"/>
+               
               </div>
               <div className="m-3">
                 Password<br />
-                <input type="password" placeholder="Password" className="form-control" id="password_register" />
+                <FormInput type = "password" hint = "Password"  name = "password"/> 
+               
               </div>
             </div>
             <div className="modal-footer flex-column">
               {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
-              <div><button type="button" className="btn btn-style2" id="loginBtn">Login</button></div>
+              <div>
+                <NormalButton layout = "style2" id ="loginBtn" >Login</NormalButton>
+                </div>
               <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"><u>Sign
                     up</u></a></div>
               <div><a><u>Forgot password</u></a></div>

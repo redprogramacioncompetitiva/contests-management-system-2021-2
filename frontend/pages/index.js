@@ -8,20 +8,20 @@ export default function Home() {
 
   return (
 
-    <div className="container">
+    <div className="container m-auto">
 
     <HeadRPC/>
 
       
      
-        <div className="d-flex flex-row" style={{margin: '30px'}}>
-          <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
+        <div className="row mt-3">
+          <div id="carouselExampleCaptions" className="carousel slide col-sm-12 col-lg-8 " data-bs-ride="carousel">
             <div className="carousel-indicators">
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={0} className="active" aria-current="true" aria-label="Slide 1" />
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={1} aria-label="Slide 2" />
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={2} aria-label="Slide 3" />
             </div>
-            <div className="carousel-inner">
+            <div className="carousel-inner ">
               <div className="carousel-item active">
                 <img src="img/slider1.png" className="d-block w-100" alt="..." />
                 <div className="carousel-caption d-none d-md-block">
@@ -53,7 +53,7 @@ export default function Home() {
               <span className="visually-hidden">Next</span>
             </button>
           </div>
-          <div className="col-4" style={{marginLeft: '20px'}}>
+          <div className="col-sm-12 col-lg-4" style={{marginLeft: '20px'}}>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusamus incidunt aperiam facilis, rerum suscipit
             deleniti labore nulla porro, quam qui saepe magni tempora recusandae accusantium autem minus et, officiis rem!
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus quas voluptas ducimus odio aliquam eaque quod

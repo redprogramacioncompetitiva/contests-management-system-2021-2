@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link'
+import FormInput from './FormInput';
+import Dropdown from './DropDown';
 
 class RegisterForm extends React.Component {
 
@@ -24,7 +26,7 @@ class RegisterForm extends React.Component {
     render() {
         return (
 
-            <div className="modal fade" id="modalSingUp" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal fade " id="modalSingUp" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
@@ -34,57 +36,41 @@ class RegisterForm extends React.Component {
                 <div className="modal-body">
                   <form action>
                     <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="name">Name:</label>
-                      <div className="col-md-10"><input type="text" name id="name" placeholder="Name" className="form-control" /></div>
+                      <label className="col-md-2 col-form-label" htmlFor="firstname">First Name:</label>
+                      <div className="col-md-10">
+                        <FormInput type = "text" name = "fisrtname" id = "firstname" hint = "First Name" />
+                        
+                        </div>
+                    </div>
+                    <div className="form-group row">
+                    <label className="col-md-2 col-form-label" htmlFor="lastname">Last Name:</label>
+                      <div className="col-md-10">
+                        <FormInput type = "text" name = "lastname" id = "lastname" hint = "Last Name" />
+                        
+                        </div>
                     </div>
                     <div className="form-group row">
                       <label className="col-md-2 col-form-label" htmlFor="email">Email:</label>
-                      <div className="col-md-10"><input type="text" name id="email" placeholder="Email" className="form-control" /></div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="country">Country:</label>
                       <div className="col-md-10">
-                        <select name="select" className="form-select" id="country_register">
-                          <option value="Colombia">Colombia</option>
-                        </select>
+                        <FormInput type = "text" name = "emailR" id ="emailR" hint = "Email" />
                       </div>
                     </div>
                     <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="age">Age:</label>
-                      <div className="col-md-10"><input type="text" name id="age" placeholder="Age" className="form-control" /></div>
-                      <label className htmlFor="gender">Gender:</label>
+                      <label className="col-md-2 col-form-label" htmlFor="password">Password:</label>
                       <div className="col-md-10">
-                        <label>
-                          <input className="form-check-input" type="radio" name="opcionGender" defaultValue="Male" /> Male
-                        </label>
-                        <label>
-                          <input className="form-check-input" type="radio" name="opcionGender" defaultValue="Female" /> Female
-                        </label>
-                        <label>
-                          <input className="form-check-input" type="radio" name="opcionGender" defaultValue="Other" /> Other
-                        </label>
+                        <FormInput type = "password" name = "passwordR" id = "passwordR" hint = "Password" />
                       </div>
                     </div>
                     <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="username">Username:</label>
+                      <label className="col-md-2 col-form-label" htmlFor="CPassword">confirm Password:</label>
+                      <div className="col-md-10">
+                        <FormInput type = "password" name = "cPasswordR" id = "cPasswordR" hint = "Confirm password" />
+                        </div>
+                    </div>
+                    <Dropdown/>
+                    <div className="form-group row">
+                      <label className="col-md-2 col-form-label" htmlFor="username">Nickname:</label>
                       <div className="col-md-10"><input type="text" name id="username" placeholder="Username" className="form-control" /></div>
-                    </div>
-                    <div className="form-group row">
-                      <label className htmlFor="teacher?">Are you a teacher?:</label>
-                      <div className="col-md-10 m-2">
-                        <label>
-                          <input className="form-check-input" type="radio" name="opcionTeacher" defaultValue="Yes" /> Yes
-                        </label>
-                        <label>
-                          <input className="form-check-input" type="radio" name="opcionTeacher" defaultValue="No" /> No
-                        </label>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="name">Description:</label>
-                      <div className="col-md-10">
-                        <textarea className="form-control m-1" name id cols={30} rows={10} defaultValue={""} />
-                      </div>
                     </div>
                   </form>
                 </div>
