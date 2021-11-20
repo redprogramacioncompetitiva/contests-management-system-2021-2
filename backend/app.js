@@ -47,6 +47,24 @@ class Email {
     }
 };
 
+class Contest{
+    constructor(name, startDate,endDate,registerEndDate){
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.registerEndDate = registerEndDate;
+    }
+}
+
+let pastContestObjects = [
+    p = new Contest("Summer Marathon 2015","18/05/2015","19/05/2015","16/05/2015")
+]
+
+let upcomingContestObjects = [
+
+    u = new Contest("Winter Marathon 2021","20/12/2021","21/12/2021","18/12/2021")
+]
+
 let usersObjects = [
     a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
@@ -166,6 +184,14 @@ app.get("/users", (req, res) => {
 
 app.get("/list", (req, res) => {
     res.send(usersObjects);
+})
+
+app.get("/pc",(req,res)=>{
+    res.send(pastContestObjects)
+})
+
+app.get("/uc",(req,res)=>{
+    res.send(upcomingContestObjects)
 })
 
 app.listen(localHostPort);
