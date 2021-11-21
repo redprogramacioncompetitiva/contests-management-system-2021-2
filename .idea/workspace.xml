@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fb00a12a-4e1a-4f96-ae79-46b8a0c52981" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/pages/contests/PastContests.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/contests/UpcomingContests.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/contests/contests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/contests/PastContests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/contests/PastContests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/contests/UpcomingContests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/contests/UpcomingContests.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +50,7 @@
       <recent name="C:\Users\aleja\Desktop\ICESI\SEMESTRE_7\PROYECTO_INTEGRADOR_I\Proyecto final\contests-management-system\frontend\pages\contests" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="npm.dev (1)">
     <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -62,6 +62,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="dev (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/frontend/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/backend/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev (1)" />
+        <item itemvalue="npm.dev" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -71,7 +97,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1637444409582</updated>
-      <workItem from="1637444412895" duration="7096000" />
+      <workItem from="1637444412895" duration="9497000" />
     </task>
     <servers />
   </component>

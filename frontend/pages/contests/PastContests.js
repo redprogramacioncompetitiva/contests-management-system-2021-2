@@ -85,7 +85,7 @@ export default function PastContests({pastContestObjects}) {
 }
 
 PastContests.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/pc')
+    const response = await fetch('http://localhost:8081/pc')
     const pastContestObjects = await response.json()
     return { pastContestObjects: pastContestObjects }
 }

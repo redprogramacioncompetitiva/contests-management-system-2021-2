@@ -1,7 +1,7 @@
 import HeadRPC from '../../components/HeadRPC'
 import Link from "next/link";
 
-export default function UpcomingContests() {
+export default function UpcomingContests({upcomingContestObjects}) {
 
     return(
 
@@ -12,7 +12,7 @@ export default function UpcomingContests() {
 
             <div className="py-1 text-center">
 
-                <Link href="../../..">
+                <Link href="/">
 
                     <a className="btn btn-primary" role="button">Logout</a>
 
@@ -20,18 +20,72 @@ export default function UpcomingContests() {
                 <br></br>
                 <br></br>
                 <div>
+
+                    <Link href="/contests/PastContests">
+
+
+                        <a>See past contests</a>
+
+                    </Link>
                     <input type="text" id="searchField" name="searchField" className="form-control" placeholder="Search..."  />
                     <a className="btn btn-primary" role="button">Search</a>
 
 
                 </div>
 
+
             </div>
 
 
 
+            <table className="table table-hover table-striped text-center">
+
+                <thead>
+
+                <tr>
+                    <th>
+                        Contest name
+                    </th>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        Registration end date
+                    </th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {upcomingContestObjects.map(e => (
+                    <tr>
+                        <td>
+                            {e.name}
+                        </td>
+                        <td>
+                            {e.startDate}
+                        </td>
+                        <td>
+                            {e.registerEndDate}
+                        </td>
+                    </tr>
+                ))}
+
+                </tbody>
+
+            </table>
+
         </div>
+
+
 
     )
 
+}
+
+UpcomingContests.getInitialProps = async () => {
+    const response = await fetch('http://localhost:8081/uc')
+    const upcomingContestObjects = await response.json()
+    return { upcomingContestObjects: upcomingContestObjects }
 }

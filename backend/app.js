@@ -1,7 +1,7 @@
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
 const sgMail = require('@sendgrid/mail');
-const localHostPort = 8080;
+const localHostPort = 8081;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //express imports
