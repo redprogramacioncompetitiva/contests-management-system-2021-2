@@ -63,6 +63,8 @@ class Team_User {
     }
 }
 
+let teamUser = []
+
 let teamObjects = [
     t = new Team(1, 'Real Madrazo', 3)
 ]
@@ -126,6 +128,21 @@ let getLastTeamId = () => {
     return (teamObjects[teamObjects.length - 1].id + 1);
 }
 
+let getTeamIntegrant = (teamId, email) => {
+    for(c = 0; c < teamUser.length; c++) {
+        if(teamUser[c].idTeam == teamId) {
+            if(teamUser[c].userEmail == email) {
+                for(i = 0; i < usersObjects.length; i++) {
+                    if(usersObjects[i].email ==  email) {
+                        return usersObjects[i];
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
 const app = express();
 
 app.use(express.json()) // for parsing application/json
@@ -134,7 +151,47 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.post("/createTeam", (req, res) => {
     if(getTeamByName(req.body.name) == null) {
         teamObjects.push(new Team(getLastTeamId(), req.body.name, req.body.integrants))
+        res.redirect("http://localhost:3000/teams/teams");
     }
+})
+
+app.post("/deleteTeam", (req, res) => {
+    let teamObjectsTemp = []
+    for (let i = 0; i < teamObjects.length; i++) {
+        if (teamObjects[i].id != req.body.teamId)
+            teamObjectsTemp.push(teamObjects[i])
+    }
+    teamObjects = teamObjectsTemp;
+    res.redirect("http://localhost:3000/teams/teams");
+})
+
+app.post("/editTeam", (req, res) => {
+    res.redirect("http://localhost:3000/teams/"+req.body.teamId);
+})
+
+app.post("/addIntegrant", (req, res) => {
+    let email = req.body.email;
+    let idTeam = req.body.teamId;
+    console.log(teamUser);
+    if(getTeamIntegrant(idTeam, email) == null) {
+        teamUser.push(new Team_User(idTeam, email));
+        let path = "http://localhost:3000/teams/" + idTeam;
+        res.redirect(path);
+    }
+})
+
+app.post("/deleteIntegrant", (req, res) => {
+    let email = req.body.email;
+    let idTeam = req.body.teamId;
+    let tempTeamUser = []
+    for(c = 0; c < teamUser.length; c++) {
+        if(teamUser[c].userEmail != email && teamUser[c].idTeam != idTeam) {
+            tempTeamUser.push(teamUser[c]);
+        }
+    }
+    teamUser = tempTeamUser;
+    let path = "http://localhost:3000/teams/" + idTeam;
+    res.redirect(path);
 })
 
 app.post("/authenticate", (req, res) => {
@@ -196,6 +253,22 @@ app.get("/activate/:id", (req, res) => {
     } else
         //URL de autenticación inválida.
         res.redirect('http://localhost:3000/activate/msg2')
+})
+
+app.get("/integrants/:id", (req, res) => {
+    const id = req.params.id;
+    let tempIntegrants = [];
+    for (c = 0; c < teamUser.length; c++) {
+        if(teamUser[c].idTeam == id) {
+            for (i = 0; i < usersObjects.length; i++) {
+                if(usersObjects[i].email == teamUser[c].userEmail) {
+                    tempIntegrants.push(usersObjects[i])
+                }
+            }
+        }
+    }
+    //console.log(id);
+    res.send(tempIntegrants);
 })
 
 app.get("/teams", (req, res) => {

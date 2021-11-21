@@ -51,10 +51,16 @@ export default function home({ teams }) {
                                 {e.integrants}
                             </td>
                             <td>
-                                Editar
+                                <form method="POST" action="http://localhost:8080/editTeam">
+                                <input type="hidden" id="teamId" name="teamId" value={e.id} />
+                                    <input type="submit" className="btn btn-primary m-auto" value="Editar"/>
+                                </form>
                             </td>
                             <td>
-                                Eliminar
+                            <form method="POST" action="http://localhost:8080/deleteTeam">
+                                <input type="hidden" id="teamId" name="teamId" value={e.id} />
+                                    <input type="submit" className="btn btn-danger m-auto" value="Eliminar"/>
+                                </form>
                             </td>
                         </tr>
                     ))}
