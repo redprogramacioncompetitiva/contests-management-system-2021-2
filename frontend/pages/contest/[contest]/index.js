@@ -1,4 +1,4 @@
-import HeadRPC from '../../components/HeadRPC'
+import HeadRPC from '../../../components/HeadRPC'
 import { useRouter } from 'next/router'
 import Link from 'next/Link'
 
@@ -52,7 +52,7 @@ export default function home({ teamObjects, contestName}) {
                 <tbody>
 
                 {teamObjects.map(e => (
-                    <tr onClick={()=>router.push(e.name)}>
+                    <tr onClick={()=>router.push("/contest/"+contestName+"/team/"+e.name)}>
                         <td>
                             {e.name}
                         </td>

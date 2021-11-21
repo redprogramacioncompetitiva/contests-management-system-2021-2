@@ -1,4 +1,4 @@
-import HeadRPC from '../../components/HeadRPC'
+import HeadRPC from '../components/HeadRPC'
 import Link from "next/link";
 import {useRouter} from "next/router";
 
@@ -32,7 +32,7 @@ export default function UpcomingContests({upcomingContestObjects}) {
                         <a className="btn btn-primary" role="button">Search</a>
 
                         <div className="m-20">
-                            <Link href="/contests/PastContests">
+                            <Link href="/PastContests">
 
 
                                 <a>See past contests</a>
@@ -73,7 +73,7 @@ export default function UpcomingContests({upcomingContestObjects}) {
                 <tbody>
 
                 {upcomingContestObjects.map(e => (
-                    <tr onClick={()=>router.push(e.name)}>
+                    <tr onClick={()=>router.push("/contest/"+e.name)}>
                         <td>
                             {e.name}
                         </td>

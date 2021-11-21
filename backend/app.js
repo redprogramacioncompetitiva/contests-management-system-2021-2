@@ -210,8 +210,10 @@ app.get("/list", (req, res) => {
 app.get("/pc/:year/:search?",(req,res)=>{
     const year = req.params.year
     const search = req.params.search
-    res.send(pastContestObjects)
-})
+
+    console.log(year + search)
+
+    res.send(pastContestObjects)})
 
 app.get("/uc",(req,res)=>{
     res.send(upcomingContestObjects)
@@ -219,12 +221,12 @@ app.get("/uc",(req,res)=>{
 
 app.get("/contestTeams/:name",(req,res)=>{
     const contestName = req.params.name
-    res.json(teamObjects)
+    res.send(teamObjects)
 })
 
 app.get("/teamMembers/:name",(req,res)=>{
     const teamName = req.params.name
-    res.json(testUsers1)
+    res.send(testUsers1)
 })
 
 app.listen(localHostPort);

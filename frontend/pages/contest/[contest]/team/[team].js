@@ -1,8 +1,8 @@
-import HeadRPC from '../../../components/HeadRPC'
+import HeadRPC from '../../../../components/HeadRPC'
 import { useRouter } from 'next/router'
 import Link from 'next/Link'
 
-export default function home({ testUsers1, teamName}) {
+export default function home({ testUsers1, teamName,contestName}) {
 
     console.log(testUsers1)
 
@@ -15,7 +15,7 @@ export default function home({ testUsers1, teamName}) {
 
             <div style={{display:"flex"}}>
 
-                    <img src="/goBackArrow.svg" width="30" height="30" onClick={()=>router.push("/contests/"+teamName)} />
+                    <img src="/goBackArrow.svg" width="30" height="30" onClick={()=>router.push("/contest/"+contestName)} />
 
 
                 <h1>{teamName}</h1>
@@ -43,8 +43,6 @@ export default function home({ testUsers1, teamName}) {
                 </tbody>
             </table>
 
-        }
-
         </div>
     )
 }
@@ -52,5 +50,5 @@ export default function home({ testUsers1, teamName}) {
 export async function getServerSideProps(ctx){
     const response = await fetch('http://localhost:8081/teamMembers/'+ctx.params.team)
     const testUsers1 = await response.json()
-    return {props: { testUsers1: testUsers1 , teamName: ctx.params.team}}
+    return {props: { testUsers1: testUsers1 , teamName: ctx.params.team, contestName: ctx.params.contest}}
 }
