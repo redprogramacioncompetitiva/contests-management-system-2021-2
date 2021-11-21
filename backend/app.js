@@ -65,11 +65,10 @@ class Team{
 }
 
 let teamObjects = [
-    c = new Team("T1",
-        JSON.stringify({x:new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
-        y:new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)})
+    c = new Team("T1",[new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
+        new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)]
     ),
-    d = new Team("T2")
+    d = new Team("T2",[new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true)])
 ]
 
 let pastContestObjects = [
@@ -213,7 +212,7 @@ app.get("/uc",(req,res)=>{
 })
 
 app.get("/contestTeams",(req,res)=>{
-    res.send(teamObjects) //Diego lo cambia luego
+    res.json(teamObjects) //Diego lo cambia luego
 })
 
 app.listen(localHostPort);

@@ -55,10 +55,10 @@ export default function home({ teamObjects }) {
                             {e.name}
                         </td>
                         <td>
-                            {e.members.json().map(m=>(
+                            {e.members.map(m=>(
                                 m.nickname
                             ))}
-                            {/*{console.log(e.members)}*/}
+                            {console.log(e.members)}
                         </td>
                         <td>
                             152

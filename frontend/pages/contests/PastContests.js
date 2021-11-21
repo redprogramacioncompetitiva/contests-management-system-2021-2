@@ -1,10 +1,13 @@
 import HeadRPC from '../../components/HeadRPC'
 import Link from "next/link";
 import home from "../home/[user]";
+import { useRouter } from 'next/router';
 
 export default function PastContests({pastContestObjects}) {
 
     console.log(pastContestObjects)
+
+    const router = useRouter()
 
     return(
 
@@ -59,7 +62,7 @@ export default function PastContests({pastContestObjects}) {
                 <tbody>
 
                 {pastContestObjects.map(e => (
-                    <tr>
+                    <tr onClick={()=>router.push(e.name)}>
                         <td>
                             {e.name}
                         </td>
