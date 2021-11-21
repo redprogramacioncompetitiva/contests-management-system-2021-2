@@ -23,14 +23,23 @@ export default function UpcomingContests({upcomingContestObjects}) {
                 <br></br>
                 <div>
 
-                    <Link href="/contests/PastContests">
+
+                    <div style={{display:"flex"}}>
+                        <input type="text" id="searchField" name="searchField" placeholder="Search..."  />
+                        <a className="btn btn-primary" role="button">Search</a>
+
+                        <div className="m-20">
+                            <Link href="/contests/PastContests">
 
 
-                        <a>See past contests</a>
+                                <a>See past contests</a>
 
-                    </Link>
-                    <input type="text" id="searchField" name="searchField" className="form-control" placeholder="Search..."  />
-                    <a className="btn btn-primary" role="button">Search</a>
+                            </Link>
+                        </div>
+                    </div>
+
+
+
 
 
                 </div>

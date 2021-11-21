@@ -56,8 +56,20 @@ class Contest{
     }
 }
 
+class Team{
+    constructor(name){
+        this.name = name;
+    }
+}
+
+let teamObjects = [
+    c = new Team("T1"),
+    d = new Team("T2")
+]
+
 let pastContestObjects = [
-    p = new Contest("Summer Marathon 2015","18/05/2015","19/05/2015","16/05/2015")
+    p = new Contest("Summer Marathon 2015","18/05/2015","19/05/2015","16/05/2015"),
+
 ]
 
 let upcomingContestObjects = [
@@ -68,6 +80,7 @@ let upcomingContestObjects = [
 let usersObjects = [
     a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
+
 
 let searchUser = (emailHashed) => {
     for (let i = 0; i < usersObjects.length; i++) {

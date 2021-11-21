@@ -15,26 +15,23 @@ export default function PastContests({pastContestObjects}) {
 
             <div className="py-1 text-center">
 
-                <Link href="../../..">
-
-                    <a className="btn btn-primary" role="button">Logout</a>
-
-                </Link>
-                <br></br>
-                <br></br>
-                <div>
-
-                    <Link href="/contests/UpcomingContests">
-
-
-                        <a>See upcoming contests</a>
-
-                    </Link>
-                    <input type="text" id="searchField" name="searchField" className="form-control" placeholder="Search..."  />
+                <div style={{display:"flex"}}>
+                    <input type="text" id="searchField" name="searchField" placeholder="Search..."  />
                     <a className="btn btn-primary" role="button">Search</a>
+                    <label className="m-3">Year: </label>
+                    <input type="text" id="year" name="year" placeholder="Year..."  />
+
+                    <div className="m-20">
+                        <Link href="/contests/UpcomingContests">
 
 
+                            <a>See upcoming contests</a>
+
+                        </Link>
+                    </div>
                 </div>
+                <br></br>
+                <br></br>
 
 
             </div>
@@ -68,6 +65,9 @@ export default function PastContests({pastContestObjects}) {
                         </td>
                         <td>
                             {e.endDate}
+                        </td>
+                        <td>
+                            2
                         </td>
                     </tr>
                 ))}
