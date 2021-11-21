@@ -20,6 +20,28 @@ class User {
     }
 }
 
+class Venue {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+class Contest {
+    constructor(name, InscStartDate, InscStartTime, InscEndDate, InscEndTime, ContStartDate, ContStartTime, ContEndDate, ContEndTime, venues) {
+        this.name = name;
+        this.InscStartDate = InscStartDate;
+        this.InscStartTime = InscStartTime;
+        this.InscEndDate = InscEndDate;
+        this.InscEndTime = InscEndTime;
+        this.ContStartDate = ContStartDate;
+        this.ContStartTime = ContStartTime;
+        this.ContEndDate = ContEndDate;
+        this.ContEndTime = ContEndTime;
+        this.venues = venues;
+    }
+}
+
 class Email {
     constructor(email, url, nickname) {
         this.email = email;
@@ -49,6 +71,14 @@ class Email {
 
 let usersObjects = [
     a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
+]
+
+let contests = []
+
+let venues = [
+    new Venue(1, "Icesi"),
+    new Venue(2, "Sanbue"),
+    new Venue(3, "Jave")
 ]
 
 let searchUser = (emailHashed) => {
@@ -164,8 +194,41 @@ app.get("/users", (req, res) => {
     res.send(usersObjects)
 })
 
+app.get("/venues", (req, res) => {
+    res.send(venues)
+})
+
 app.get("/list", (req, res) => {
     res.send(usersObjects);
+})
+//name, InscStartDate, InscStartTime, InscEndDate, InscEndTime, ContStartDate, ContStartTime, ContEndDate, ContEndTime, venues
+app.post("/createContest", (req, res) => {
+    let venStr = req.body.selectedVenuesList;
+    venStr = venStr.slice(0, -2);
+    let ven = venStr.split(', ');
+    let newContest = new Contest(req.body.competitionName, req.body.InscStartDate, req.body.InscStartTime, req.body.InscEndDate, req.body.InscEndTime, req.body.ContStartDate, req.body.ContStartTime, req.body.ContEndDate, req.body.ContEndTime, ven)
+    let exists = false;
+    contests.forEach(contest => {
+        if (contest.name == newContest.name &&
+            contest.InscStartDate == newContest.InscStartDate &&
+            contest.InscStartTime == newContest.InscStartTime &&
+            contest.InscEndDate == newContest.InscEndDate &&
+            contest.InscEndTime == newContest.InscEndTime &&
+            contest.ContStartDate == newContest.ContStartDate &&
+            contest.ContStartTime == newContest.ContStartTime &&
+            contest.ContEndDate == newContest.ContEndDate &&
+            contest.ContEndTime == newContest.ContEndTime &&
+            contest.venues == newContest.venues && !exists
+        ) {
+            exists = true;
+            res.redirect('http://localhost:3000/createContest/msg1')
+        }
+    });
+    if (!exists) {
+        contests.push(newContest);
+        res.redirect('http://localhost:3000/createContest/msg2')
+    }
+
 })
 
 app.listen(localHostPort);

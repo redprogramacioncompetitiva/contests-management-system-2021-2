@@ -1,9 +1,7 @@
 import Head from 'next/head'
 import CreateContestForm from '../components/CreateContestForm'
 
-
-
-export default function Register() {
+export default function createContest({ venues }) {
 
     return (
 
@@ -20,13 +18,14 @@ export default function Register() {
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
                     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossOrigin="anonymous" />
 
+                <link href="./styles/global.css" rel="stylesheet" />
                 <title>Create contest</title>
 
                 <link rel="icon" href="/logo.ico" />
 
             </Head>
 
-            <CreateContestForm />
+            <CreateContestForm venues={venues} />
 
             <style>{`
         .form-title{
@@ -37,9 +36,16 @@ export default function Register() {
             margin: 20px;
         }
         .btn{
-            margin: 30px;
+            margin-top: 30px;
         }
+        
       `}</style>
         </div>
     )
+}
+
+createContest.getInitialProps = async () => {
+    const response = await fetch('http://localhost:8080/venues')
+    const venues = await response.json()
+    return { venues: venues }
 }
