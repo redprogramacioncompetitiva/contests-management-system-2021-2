@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fb00a12a-4e1a-4f96-ae79-46b8a0c52981" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/pages/contests/team/[team].js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/goBackArrow.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/contests/[contest].js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/contests/[contest].js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/contests/team/[team].js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/contests/team/[team].js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +46,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\aleja\Desktop\ICESI\SEMESTRE_7\PROYECTO_INTEGRADOR_I\Proyecto final\contests-management-system\frontend\public" />
       <recent name="C:\Users\aleja\Desktop\ICESI\SEMESTRE_7\PROYECTO_INTEGRADOR_I\Proyecto final\contests-management-system\frontend\pages\contests" />
     </key>
   </component>

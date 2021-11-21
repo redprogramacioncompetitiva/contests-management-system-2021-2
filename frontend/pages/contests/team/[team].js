@@ -6,12 +6,21 @@ export default function home({ testUsers1, teamName}) {
 
     console.log(testUsers1)
 
+    const router = useRouter()
+
     return (
 
         <div className="container">
             <HeadRPC/>
 
-            <h1>{teamName}</h1><br/><br/>
+            <div style={{display:"flex"}}>
+
+                    <img src="/goBackArrow.svg" width="30" height="30" onClick={()=>router.push("/contests/"+teamName)} />
+
+
+                <h1>{teamName}</h1>
+            </div>
+            <br/><br/>
 
             <table className="table table-hover table-striped text-center">
                 <tbody>
