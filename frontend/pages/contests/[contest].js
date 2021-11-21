@@ -2,7 +2,7 @@ import HeadRPC from '../../components/HeadRPC'
 import { useRouter } from 'next/router'
 import Link from 'next/Link'
 
-export default function home({ teamObjects }) {
+export default function home({ teamObjects, contestName}) {
 
      console.log(teamObjects)
 
@@ -21,8 +21,8 @@ export default function home({ teamObjects }) {
 
 
                 </div>
-                <br></br>
-                <br></br>
+                <br/>
+                <br/>
 
 
             </div>
@@ -58,7 +58,6 @@ export default function home({ teamObjects }) {
                             {e.members.map(m=>(
                                 m.nickname
                             ))}
-                            {console.log(e.members)}
                         </td>
                         <td>
                             152
@@ -77,9 +76,8 @@ export default function home({ teamObjects }) {
     )
 
 }
-
-export async function getServerSideProps(){
-    const response = await fetch('http://localhost:8081/contestTeams')
+export async function getServerSideProps(ctx){
+    const response = await fetch('http://localhost:8081/contestTeams/'+ctx.params.contest)
     const teamObjects = await response.json()
-    return {props: { teamObjects: teamObjects }}
+    return {props: { teamObjects: teamObjects , contestName: ctx.params.contest}}
 }

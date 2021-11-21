@@ -1,7 +1,10 @@
 import HeadRPC from '../../components/HeadRPC'
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 export default function UpcomingContests({upcomingContestObjects}) {
+
+    const router = useRouter()
 
     return(
 
@@ -19,8 +22,8 @@ export default function UpcomingContests({upcomingContestObjects}) {
                     <a className="btn btn-primary" role="button">Logout</a>
 
                 </Link>
-                <br></br>
-                <br></br>
+                <br/>
+                <br/>
                 <div>
 
 
@@ -70,7 +73,7 @@ export default function UpcomingContests({upcomingContestObjects}) {
                 <tbody>
 
                 {upcomingContestObjects.map(e => (
-                    <tr>
+                    <tr onClick={()=>router.push(e.name)}>
                         <td>
                             {e.name}
                         </td>

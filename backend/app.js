@@ -203,7 +203,9 @@ app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
 
-app.get("/pc",(req,res)=>{
+app.get("/pc/:year/:search?",(req,res)=>{
+    const year = req.params.year
+    const search = req.params.search
     res.send(pastContestObjects)
 })
 
@@ -211,8 +213,9 @@ app.get("/uc",(req,res)=>{
     res.send(upcomingContestObjects)
 })
 
-app.get("/contestTeams",(req,res)=>{
-    res.json(teamObjects) //Diego lo cambia luego
+app.get("/contestTeams/:name",(req,res)=>{
+    const contestName = req.params.name
+    res.json(teamObjects)
 })
 
 app.listen(localHostPort);
