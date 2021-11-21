@@ -64,11 +64,15 @@ class Team{
     }
 }
 
+let testUsers1 = [
+    u1 = new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
+    u2 = new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)
+
+]
+
 let teamObjects = [
-    c = new Team("T1",[new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
-        new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)]
-    ),
-    d = new Team("T2",[new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true)])
+    c = new Team("T1", testUsers1),
+    d = new Team("T2",[new User("xx@gmail.com",hash("12345"),"xx","Xena",'Xeph',"Peru",true)])
 ]
 
 let pastContestObjects = [
@@ -216,6 +220,11 @@ app.get("/uc",(req,res)=>{
 app.get("/contestTeams/:name",(req,res)=>{
     const contestName = req.params.name
     res.json(teamObjects)
+})
+
+app.get("/teamMembers/:name",(req,res)=>{
+    const teamName = req.params.name
+    res.json(testUsers1)
 })
 
 app.listen(localHostPort);

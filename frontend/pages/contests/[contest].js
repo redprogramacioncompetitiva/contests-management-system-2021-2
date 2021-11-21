@@ -6,12 +6,15 @@ export default function home({ teamObjects, contestName}) {
 
      console.log(teamObjects)
 
+    const router = useRouter()
+
     return(
 
         <div className="container">
 
             <HeadRPC/>
 
+            <h1>{contestName}</h1><br/><br/>
 
             <div className="py-1 text-center">
 
@@ -21,7 +24,6 @@ export default function home({ teamObjects, contestName}) {
 
 
                 </div>
-                <br/>
                 <br/>
 
 
@@ -50,13 +52,13 @@ export default function home({ teamObjects, contestName}) {
                 <tbody>
 
                 {teamObjects.map(e => (
-                    <tr>
+                    <tr onClick={()=>router.push(e.name)}>
                         <td>
                             {e.name}
                         </td>
                         <td>
                             {e.members.map(m=>(
-                                m.nickname
+                                m.nickname + "   "
                             ))}
                         </td>
                         <td>
