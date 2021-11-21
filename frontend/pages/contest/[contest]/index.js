@@ -8,6 +8,12 @@ export default function home({ teamObjects, contestName}) {
 
     const router = useRouter()
 
+    const handle = async ()=>{
+         await fetch("/api/download").then((res)=>{
+             alert("Tu archivo ha sido descargado (en la carpeta public)")
+         })
+    }
+
     return(
 
         <div className="container">
@@ -21,6 +27,10 @@ export default function home({ teamObjects, contestName}) {
                 <div style={{display:"flex"}}>
                     <input type="text" id="searchField" name="searchField" placeholder="Search..."  />
                     <a className="btn btn-primary" role="button">Search</a>
+
+
+                    <p onClick={handle}><u>Download as text file</u></p>
+
 
 
                 </div>
