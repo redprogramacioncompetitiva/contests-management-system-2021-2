@@ -105,6 +105,10 @@ app.post("/authenticate", (req, res) => {
     else
         res.redirect("http://localhost:3000/loginError");
 })
+app.post("/contests", (req, res) => {
+
+    res.redirect("http://localhost:3000/contests");
+})
 
 app.post("/register", async (req, res) => {
     if (req.body.password !== req.body.password2) {
