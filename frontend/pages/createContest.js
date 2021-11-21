@@ -1,5 +1,7 @@
 import Head from 'next/head'
-import RegisterForm from '../components/RegisterForm'
+import CreateContestForm from '../components/CreateContestForm'
+
+
 
 export default function Register() {
 
@@ -18,14 +20,26 @@ export default function Register() {
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
                     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossOrigin="anonymous" />
 
-                <title>RPC - Sign up</title>
+                <title>Create contest</title>
 
                 <link rel="icon" href="/logo.ico" />
 
             </Head>
 
-            <RegisterForm />
+            <CreateContestForm />
 
+            <style>{`
+        .form-title{
+            font-weight: bold;
+            margin: 20px 0px;
+        }
+        .add-venue-btn{
+            margin: 20px;
+        }
+        .btn{
+            margin: 30px;
+        }
+      `}</style>
         </div>
     )
 }
