@@ -57,13 +57,18 @@ class Contest{
 }
 
 class Team{
-    constructor(name){
+
+    constructor(name,members){
         this.name = name;
+        this.members = members;
     }
 }
 
 let teamObjects = [
-    c = new Team("T1"),
+    c = new Team("T1",
+        JSON.stringify({x:new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
+        y:new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)})
+    ),
     d = new Team("T2")
 ]
 
@@ -205,6 +210,10 @@ app.get("/pc",(req,res)=>{
 
 app.get("/uc",(req,res)=>{
     res.send(upcomingContestObjects)
+})
+
+app.get("/contestTeams",(req,res)=>{
+    res.send(teamObjects) //Diego lo cambia luego
 })
 
 app.listen(localHostPort);
