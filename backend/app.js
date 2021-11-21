@@ -47,6 +47,26 @@ class Email {
     }
 };
 
+class Team {
+    constructor(id, name, integrants, userEmail) {
+        this.id = id;
+        this.name = name;
+        this.integrants = integrants;
+        this.userEmail = userEmail;
+    }
+};
+
+class Team_User {
+    constructor(idTeam, userEmail) {
+        this.idTeam = idTeam;
+        this.userEmail = userEmail;
+    }
+}
+
+let teamObjects = [
+    t = new Team(1, 'Real Madrazo', 3)
+]
+
 let usersObjects = [
     a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
@@ -94,10 +114,28 @@ let addUsers = (email, password, nickname, firstName, lastName, country, verifie
     return true;
 }
 
+let getTeamByName = (name) => {
+    for (let i = 0; i < teamObjects.length; i++) {
+        if (teamObjects[i].name === name)
+            return teamObjects[i];
+    }
+    return null
+}
+
+let getLastTeamId = () => {
+    return (teamObjects[teamObjects.length - 1].id + 1);
+}
+
 const app = express();
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+app.post("/createTeam", (req, res) => {
+    if(getTeamByName(req.body.name) == null) {
+        teamObjects.push(new Team(getLastTeamId(), req.body.name, req.body.integrants))
+    }
+})
 
 app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
@@ -158,6 +196,10 @@ app.get("/activate/:id", (req, res) => {
     } else
         //URL de autenticación inválida.
         res.redirect('http://localhost:3000/activate/msg2')
+})
+
+app.get("/teams", (req, res) => {
+    res.send(teamObjects);
 })
 
 app.get("/users", (req, res) => {
