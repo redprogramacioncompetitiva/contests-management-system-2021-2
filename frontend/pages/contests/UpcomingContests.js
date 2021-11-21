@@ -5,6 +5,8 @@ export default function UpcomingContests({upcomingContestObjects}) {
 
     return(
 
+
+
         <div className="container">
 
             <HeadRPC/>
@@ -84,8 +86,14 @@ export default function UpcomingContests({upcomingContestObjects}) {
 
 }
 
-UpcomingContests.getInitialProps = async () => {
+// UpcomingContests.getServerSideProps = async () => {
+//     const response = await fetch('http://localhost:8081/uc')
+//     const upcomingContestObjects = await response.json()
+//     return { upcomingContestObjects: upcomingContestObjects }
+// }
+
+export async function getServerSideProps(){
     const response = await fetch('http://localhost:8081/uc')
     const upcomingContestObjects = await response.json()
-    return { upcomingContestObjects: upcomingContestObjects }
+    return {props: { upcomingContestObjects: upcomingContestObjects }}
 }

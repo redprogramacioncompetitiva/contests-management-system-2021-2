@@ -24,7 +24,7 @@ export default function PastContests({pastContestObjects}) {
                 <br></br>
                 <div>
 
-                    <Link href="/UpcomingContests">
+                    <Link href="/contests/UpcomingContests">
 
 
                         <a>See upcoming contests</a>
@@ -83,9 +83,15 @@ export default function PastContests({pastContestObjects}) {
     )
 
 }
+//
+// PastContests.getInitialProps = async () => {
+//     const response = await fetch('http://localhost:8081/pc')
+//     const pastContestObjects = await response.json()
+//     return { pastContestObjects: pastContestObjects }
+// }
 
-PastContests.getInitialProps = async () => {
+export async function getServerSideProps(){
     const response = await fetch('http://localhost:8081/pc')
     const pastContestObjects = await response.json()
-    return { pastContestObjects: pastContestObjects }
+    return {props: { pastContestObjects: pastContestObjects }}
 }
