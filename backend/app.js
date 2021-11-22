@@ -213,9 +213,13 @@ app.get("/pc/:year/:search?",(req,res)=>{
 
     console.log(year + search)
 
-    res.send(pastContestObjects)})
+    res.json(pastContestObjects)
+})
 
-app.get("/uc",(req,res)=>{
+app.get("/uc/:search?",(req,res)=>{
+    const search = req.params.search
+
+    console.log(search)
     res.send(upcomingContestObjects)
 })
 

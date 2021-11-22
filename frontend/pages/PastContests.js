@@ -1,14 +1,15 @@
 import HeadRPC from '../components/HeadRPC'
 import Link from "next/link";
 import {useRouter} from 'next/router';
-import React, {useState} from "react";
+import {useState} from "react";
 import useSWR from "swr"
 
 export default function PastContests() {
 
     const today = new Date()
 
-    const [refresh, setRefresh] = useState(false)
+    const [test1, setTest1] = useState("")
+    const [test2, setTest2] = useState(today.getFullYear())
     const [searchField, setSearchField] = useState("")
     const [yearField, setYearField] = useState(today.getFullYear())
 
@@ -21,17 +22,20 @@ export default function PastContests() {
         console.log(searchField)
     }
 
+    const handleRefresh = (e) =>{
+        setTest1(searchField)
+        setTest2(yearField)
+    }
 
     return (
         <div className="container">
             <HeadRPC/>
 
-
             <div className="py-1 text-center">
 
                 <div style={{display: "flex"}}>
                     <input onChange={handleSearchChange} type="text" id="searchField" name="searchField" placeholder="Search..."/>
-                    <a onClick={() => setRefresh(true)} className="btn btn-primary" role="button">Search</a>
+                    <a onClick={handleRefresh} className="btn btn-primary" role="button">Search</a>
 
                     <label className="m-3">Year: </label>
                     <input onChange={handleYearChange} type="number" id="year" name="year" placeholder="Year..."/>
@@ -44,11 +48,8 @@ export default function PastContests() {
                 <br/>
                 <br/>
 
-
             </div>
-
-            {refresh && (getContent(yearField, searchField))}
-            {!refresh && (getContent(yearField))}
+            {getContent(test2, test1)}
 
         </div>
 
@@ -58,7 +59,7 @@ export default function PastContests() {
 }
 
 const fetcher = async (url) => {
-    const response = await fetch("/api/contest/"+url)
+    const response = await fetch("/api/pc/"+url)
     console.log(response)
     return response.json()
 }
@@ -66,11 +67,11 @@ const fetcher = async (url) => {
 export function getContent(year, search) {
     const router = useRouter()
 
-    const url = (search) ? year + "/" + search: year + "/"
+    const url = year + "/" + search
+
+    console.log(url)
 
     const {data, error} = useSWR(url, fetcher)
-
-    console.log(error)
 
     if (error) return <div>Error loading the data</div>
     if (!data) return <div>Loading...</div>
