@@ -43,12 +43,13 @@ class Email {
                 subject: 'Activa tu cuenta',
             },
         };
-        await sgMail.send(mailOptions).then(() => { }, console.error);
+        await sgMail.send(mailOptions).then(() => {
+        }, console.error);
     }
 };
 
-class Contest{
-    constructor(name, startDate,endDate,registerEndDate){
+class Contest {
+    constructor(name, startDate, endDate, registerEndDate) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -56,33 +57,33 @@ class Contest{
     }
 }
 
-class Team{
+class Team {
 
-    constructor(name,members){
+    constructor(name, members) {
         this.name = name;
         this.members = members;
     }
 }
 
 let testUsers1 = [
-    u1 = new User("pp@gmail.com",hash("12345"),"pp","Pepe",'Paso',"Bolivia",true),
-    u2 = new User("aa@gmail.com",hash("fapjof"),"aa","Ania","Abc","Checoslovaquia",true)
+    u1 = new User("pp@gmail.com", hash("12345"), "pp", "Pepe", 'Paso', "Bolivia", true),
+    u2 = new User("aa@gmail.com", hash("fapjof"), "aa", "Ania", "Abc", "Checoslovaquia", true)
 
 ]
 
 let teamObjects = [
     c = new Team("T1", testUsers1),
-    d = new Team("T2",[new User("xx@gmail.com",hash("12345"),"xx","Xena",'Xeph',"Peru",true)])
+    d = new Team("T2", [new User("xx@gmail.com", hash("12345"), "xx", "Xena", 'Xeph', "Peru", true)])
 ]
 
 let pastContestObjects = [
-    p = new Contest("Summer Marathon 2015","18/05/2015","19/05/2015","16/05/2015"),
+    p = new Contest("Summer Marathon 2015", "18/05/2015", "19/05/2015", "16/05/2015"),
 
 ]
 
 let upcomingContestObjects = [
 
-    u = new Contest("Winter Marathon 2021","20/12/2021","21/12/2021","18/12/2021")
+    u = new Contest("Winter Marathon 2021", "20/12/2021", "21/12/2021", "18/12/2021")
 ]
 
 let usersObjects = [
@@ -136,7 +137,7 @@ let addUsers = (email, password, nickname, firstName, lastName, country, verifie
 const app = express();
 
 app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 
 app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
@@ -207,13 +208,13 @@ app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
 
-app.get("/pc/:year/:search?",(req,res)=>{
+app.get("/pc/:year/:search?", (req, res) => {
     const year = req.params.year
     const search = req.params.search
 
     console.log(year + search)
 
-    res.json(pastContestObjects)
+    res.send(pastContestObjects)
 })
 
 app.get("/uc/:search?",(req,res)=>{
@@ -223,14 +224,32 @@ app.get("/uc/:search?",(req,res)=>{
     res.send(upcomingContestObjects)
 })
 
-app.get("/contestTeams/:name",(req,res)=>{
+app.get("/contestTeams/:name", (req, res) => {
     const contestName = req.params.name
     res.send(teamObjects)
 })
 
-app.get("/teamMembers/:name",(req,res)=>{
+app.get("/teamMembers/:name", (req, res) => {
     const teamName = req.params.name
     res.send(testUsers1)
 })
+
+app.get("/download", (req, res) => {
+
+        //To save a file
+        const fs = require('fs');
+
+        let data = JSON.stringify(testUsers1); //Change this for the info of the database
+        console.log(data);
+
+        fs.writeFile("../frontend/public/test", data, function (err) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+        res.sendStatus(200)
+    }
+)
 
 app.listen(localHostPort);
