@@ -1,0 +1,99 @@
+import HeadRPC from '../../components/HeadRPC'
+import Link from 'next/Link'
+
+
+
+export default function lastsUsersRecords() {
+
+    return (
+
+        <div className="container">
+            <HeadRPC />
+
+            <style jsx global>{`
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
+            <div>
+            <table className="table table-hover table-striped text-center">
+
+<thead>
+
+    <tr>
+        <th>
+        <Link href="../../">
+                    <a className="btn btn-primary" role="button">Reportes Generales</a>
+                </Link>
+        </th>
+        <th>
+        <input type="search" placeholder="Buscar">
+        </input>
+        </th>
+        
+    </tr>
+
+</thead>
+
+</table>
+    
+
+
+            </div>
+
+            <table className="table table-hover table-striped text-center">
+
+                <thead>
+
+                    <tr>
+                        <th>
+                            #
+                        </th>
+                        <th>
+                            Usuario
+                        </th>
+                        <th>
+                            Tipo
+                        </th>
+                        <th>
+                            Corrreo
+                        </th>
+                        <th>
+                            Info
+                        </th>
+                        <th>
+                            Reportes
+                        </th>
+                        <th>
+                            Fecha Acceso
+                        </th>
+                    </tr>
+
+                </thead>
+
+            </table>
+            <div>
+                <Link href="../../">
+
+                    <a className="btn btn-primary" role="button">Atras</a>
+
+                </Link>
+            </div>
+        </div>
+
+
+
+
+    );
+}
+
+
