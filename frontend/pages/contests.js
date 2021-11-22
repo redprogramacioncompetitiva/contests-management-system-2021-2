@@ -80,13 +80,6 @@ export default function Contests() {
                 data={tableData}
                 icons={tableIcons}
                 title="Contest List"
-                actions={[
-                  {
-                    icon:tableIcons.Delete,
-                    tooltip:'Remove Contest',
-                    onClick:(event,rowData)=>alert('You click edit contest: ' + rowData.name)
-                  }
-                ]}
                 options={{
                   grouping: true,
                   filtering: true,

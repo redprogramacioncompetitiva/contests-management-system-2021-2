@@ -22,6 +22,18 @@ export default function home({ users }) {
 
                 </Link>
 
+                
+
+            </div>
+
+            <div className="py-1 text-center">
+
+            <Link href="../../contests">
+
+                <a className="btn btn-secondary" role="button">Contest List</a>
+
+            </Link>
+
                 <p className="p-2">{nickname}</p>
 
             </div>
