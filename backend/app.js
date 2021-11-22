@@ -67,7 +67,8 @@ class Team {
 
 let testUsers1 = [
     u1 = new User("pp@gmail.com", hash("12345"), "pp", "Pepe", 'Paso', "Bolivia", true),
-    u2 = new User("aa@gmail.com", hash("fapjof"), "aa", "Ania", "Abc", "Checoslovaquia", true)
+    u2 = new User("aa@gmail.com", hash("fapjof"), "aa", "Ania", "Abc", "Checoslovaquia", true),
+    u3 = new User("dd@gmail.com", hash("password"), "dd", "Dian", "Alguv", "Holland", true),
 
 ]
 
@@ -212,8 +213,6 @@ app.get("/pc/:year/:search?", (req, res) => {
     const year = req.params.year
     const search = req.params.search
 
-    console.log(year + search)
-
     res.send(pastContestObjects)
 })
 
@@ -240,7 +239,6 @@ app.get("/download", (req, res) => {
         const fs = require('fs');
 
         let data = JSON.stringify(testUsers1); //Change this for the info of the database
-        console.log(data);
 
         fs.writeFile("../frontend/public/test", data, function (err) {
             if (err) {

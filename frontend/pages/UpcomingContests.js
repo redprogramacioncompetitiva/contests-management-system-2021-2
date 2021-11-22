@@ -11,34 +11,36 @@ export default function UpcomingContests({upcomingContestObjects}) {
 
 	const handleSearchChange = (e) => {
 		setSearchField(e.target.value.trim())
-		console.log(searchField)
 	}
 
 	const handleRefresh = (e) => {
-		setTest1("uc/"+searchField)
+		setTest1("uc/" + searchField)
 	}
 
 	return (
 
-		<div className="container" onLoad={()=>setTest1("uc")}>
+		<div className="container" onLoad={() => setTest1("uc")}>
 
 			<HeadRPC/>
 
 			<div className="py-1 text-center">
 
-				<Link href="/">
-
-					<a className="btn btn-primary" role="button">Logout</a>
-
-				</Link>
+				<div style={{textAlign:"end"}}>
+					<Link href="/">
+						<a className="btn btn-primary" role="button">Logout</a>
+					</Link>
+				</div>
 				<br/>
 				<br/>
 				<div>
 
-					<div style={{display: "flex"}}>
-						<input onChange={handleSearchChange} type="text" id="searchField" name="searchField" placeholder="Search..."/>
-						<a onClick={handleRefresh} className="btn btn-primary" role="button">Search</a>
-
+					<div style={{display: "flex", justifyContent: "space-between"}}>
+						<div>
+							<input onChange={handleSearchChange} type="text" id="searchField" name="searchField"
+								   placeholder="Search..."/>
+							<a style={{marginLeft: "20px"}} onClick={handleRefresh} className="btn btn-primary"
+							   role="button">Search</a>
+						</div>
 						<div className="m-20">
 							<Link href="/PastContests">
 								<a>See past contests</a>
@@ -46,11 +48,7 @@ export default function UpcomingContests({upcomingContestObjects}) {
 							</Link>
 						</div>
 					</div>
-
-
 				</div>
-
-
 			</div>
 
 			{getContent(test1)}
@@ -63,15 +61,12 @@ export default function UpcomingContests({upcomingContestObjects}) {
 }
 
 const fetcher = async (url) => {
-	const response = await fetch("/api/uc/"+url)
-	console.log(response)
+	const response = await fetch("/api/uc/" + url)
 	return response.json()
 }
 
 export function getContent(url) {
 	const router = useRouter()
-
-	console.log(url)
 
 	const {data, error} = useSWR(url, fetcher)
 
