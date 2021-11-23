@@ -7,8 +7,14 @@ class StyleRPC extends Component{
             <style jsx global>{
                 `@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
         
+
+                *{
+                    margin: 0%;
+                    padding: 0%;
+                }
                 .body{
                     font-family: 'Roboto', sans-serif;
+
                 }
                 
                 .bg-navbar{

@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import FormInput from './FormInput'
 import NormalButton from './NormalButton';
+import SubmitButton from './SubmitButton';
 
 
 class LoginForm extends React.Component {
@@ -9,27 +10,16 @@ class LoginForm extends React.Component {
     email = React.createRef();
     password = React.createRef();
 
-    handleChange = event => {
-
+    complete(){
+      console.log("funciona");
     }
 
-    handleSubmit = event => {
-        fetch('http://localhost:8080/',)
-            .then(function (response) {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                prompt(response);
-            })
-            .then(function (stories) {
-                console.log(stories);
-            });
-    }
+    
 
     render() {
         return (
             <div>
-            <div  className="modal fade" id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div  className="modal fade" id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content modalStyle">
             <div className="modal-header">
@@ -37,6 +27,7 @@ class LoginForm extends React.Component {
               <h5 className="modal-title" id="exampleModalLabel">Login</h5>
               <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
             </div>
+            <form action = "http://localhost:8080/authenticate" method = "POST" >
             <div className="modal-body">
               <div className="m-3">
                 Email<br />
@@ -52,17 +43,18 @@ class LoginForm extends React.Component {
             <div className="modal-footer flex-column">
               {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
               <div>
-                <NormalButton layout = "style2" id ="loginBtn" >Login</NormalButton>
+                <SubmitButton  layout = "style2" > Login</SubmitButton>
+                
                 </div>
-              <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"><u>Sign
+              <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"  data-dismiss = "modal"><u>Sign
                     up</u></a></div>
               <div><a><u>Forgot password</u></a></div>
             </div>
+            </form>
+            
           </div>
         </div>
-      </div>
-      
-                
+      </div>     
             </div>
         );
     }
