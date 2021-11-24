@@ -16,6 +16,8 @@ class LoginForm extends React.Component {
 
     
 
+    
+
     render() {
         return (
             <div>
@@ -42,7 +44,9 @@ class LoginForm extends React.Component {
             </div>
             <div className="modal-footer flex-column">
               {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
+              <span class = "text-danger text-center"> <b>{this.props.errorMessage}</b> </span>
               <div>
+              
                 <SubmitButton  layout = "style2" > Login</SubmitButton>
                 
                 </div>

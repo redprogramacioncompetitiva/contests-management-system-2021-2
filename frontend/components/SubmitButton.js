@@ -7,9 +7,10 @@ class SubmitButton extends Component {
         if (a == "style") return "btn btn-style";
         else return "btn btn-style2";
     }
+    
     render(){
         return(
-            <button className={this.chioce(this.props.layout)} type="submit" >{this.props.children}</button>
+            <button className={this.chioce(this.props.layout)} type="submit"  >{this.props.children}</button>
         );
     }
 }
