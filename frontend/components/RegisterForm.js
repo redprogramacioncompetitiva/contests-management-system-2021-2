@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link'
 import FormInput from './FormInput';
 import Dropdown from './DropDown';
+import NormalButton from './NormalButton';
+import SubmitButton from './SubmitButton';
 
 class RegisterForm extends React.Component {
 
@@ -25,7 +27,7 @@ class RegisterForm extends React.Component {
 
     render() {
         return (
-
+          <form action = "http://localhost:8080/register" method = "POST">
             <div className="modal fade " id="modalSingUp" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
               <div className="modal-content">
@@ -34,8 +36,7 @@ class RegisterForm extends React.Component {
                   <button type="button" className="btn-close" data-dismiss="modal" aria-label="Close" />
                 </div>
                 <div className="modal-body">
-                  <form action>
-                    <div className="form-group row">
+                <div className="form-group row">
                       <label className="col-md-2 col-form-label" htmlFor="firstname">First Name:</label>
                       <div className="col-md-10">
                         <FormInput type = "text" name = "fisrtname" id = "firstname" hint = "First Name" />
@@ -70,17 +71,18 @@ class RegisterForm extends React.Component {
                     <Dropdown/>
                     <div className="form-group row">
                       <label className="col-md-2 col-form-label" htmlFor="username">Nickname:</label>
-                      <div className="col-md-10"><input type="text" name id="username" placeholder="Username" className="form-control" /></div>
+                      <div className="col-md-10"><input type="text" name = "nicknameR" id="username" placeholder="Username" className="form-control" /></div>
                     </div>
-                  </form>
                 </div>
                 <div className="modal-footer">
-                  <button type="button" className="btn btn-style3" data-dismiss="modal">Cancel</button>
-                  <button type="button" className="btn btn-style2">Submit</button>
+                  <NormalButton layout = "3">Cancel</NormalButton>
+                  <SubmitButton layout = "2">Submit</SubmitButton>
+                  
                 </div>
               </div>
             </div>
           </div>
+          </form>
         )
     }
 }

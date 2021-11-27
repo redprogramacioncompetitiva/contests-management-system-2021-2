@@ -5,8 +5,11 @@ import React, {Component} from 'react';
 class NormalButton extends Component {
 
     chioce(a){
-        if (a == "style") return "btn btn-style";
-        else return "btn btn-style2";
+        switch(a){
+            case "1": return "btn btn-style";
+            case "2": return "btn btn-style2";
+            case "3": return "btn btn-style3"
+        }
     }
     
     

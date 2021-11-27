@@ -4,9 +4,25 @@ const sgMail = require('@sendgrid/mail');
 const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+
+
 //express imports
 
 const express = require('express');
+
+
+const {Pool} = require('pg');
+
+const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "Ejemplo2",
+    port: "5432"
+});
+
+
+
 
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
@@ -59,9 +75,13 @@ let searchUser = (emailHashed) => {
     return -1;
 }
 
-let authenticate = (email, password) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (email === usersObjects[i].email) {
+
+let authenticate = async(email, password) => {
+    
+    const response = await pool.query('SELECT * FROM userRPC');
+
+    for (let i = 0; i < users.length; i++) {
+        if (email === users[i].email) {
             if (password === usersObjects[i].password) {
                 if (usersObjects[i].verified)
                     return true;
@@ -88,22 +108,35 @@ let getUserByEmail = (email) => {
     return null
 }
 
-let addUsers = (email, password, nickname, firstName, lastName, country, verified) => {
+let addUsers = async(email, password, nickname, firstName, lastName, country, verified) => {
+    const response = await pool.query("INSERT INTO userRPC (name,email,password) VALUES ($1,$2,$3)" , [firstName,email, password]);
     let aux = new User(email, password, nickname, firstName, lastName, country, verified);
     usersObjects.push(aux);
-    return true;
+    console.log(response);
 }
 
 const app = express();
 
+
+const cors = require('cors')
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
+
+
+
+
+
 
 app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    else
-        res.redirect("http://localhost:3000/loginError");
+    
+    const data = {
+        message : 'it works'
+    }
+    console.log(req.body)
+    res.send(req.body)
 })
 
 app.post("/register", async (req, res) => {
@@ -121,10 +154,10 @@ app.post("/register", async (req, res) => {
         return;
     } else {
         let temp = addUsers(
-            req.body.email,
-            hash(req.body.password),
-            req.body.nickname,
-            req.body.firstName,
+            req.body.emailR,
+            hash(req.body.passwordR),
+            req.body.nicknameR,
+            req.body.firstNameR,
             req.body.lastName,
             req.body.country,
             false
@@ -167,5 +200,20 @@ app.get("/users", (req, res) => {
 app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
+
+
+
+
+
+
+    
+
+
+app.get("/ejemplo", async (req,res)=>{
+    const response = await pool.query('SELECT * FROM userRPC');
+    console.log(response.rows);
+    res.send(response.rows);
+} )
+
 
 app.listen(localHostPort);

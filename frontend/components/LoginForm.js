@@ -7,6 +7,47 @@ import SubmitButton from './SubmitButton';
 
 class LoginForm extends React.Component {
 
+  constructor(props){
+    super(props);
+    
+  }
+
+  state = {
+    form: {
+      email: '',
+      password: '',
+    }
+  }
+
+  handleChange = e =>{
+    this.setState({
+      form: {
+        ...this.state.form,
+        [e.target.name] : e.target.value
+      }
+    })
+  }
+
+  handleSubmit = async e =>{
+    e.preventDefault();
+    try {
+      let config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.state.form)
+      }
+
+      let response = await fetch('http://localhost:8080/authenticate', config)
+      let json = await response.json();
+      console.log(json);
+    } catch (error) {
+      
+    }
+  }
+
     email = React.createRef();
     password = React.createRef();
 
@@ -29,16 +70,16 @@ class LoginForm extends React.Component {
               <h5 className="modal-title" id="exampleModalLabel">Login</h5>
               <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
             </div>
-            <form action = "http://localhost:8080/authenticate" method = "POST" >
+            <form onSubmit = {this.handleSubmit} onChange = {this.handleChange} >
             <div className="modal-body">
               <div className="m-3">
                 Email<br />
-              <FormInput type = "text" hint = "E-mail"  name = "email"/>
+              <FormInput type = "text" hint = "E-mail"  name = "email" value = {this.state.email} onChange = {this.handleChange}   />
                
               </div>
               <div className="m-3">
                 Password<br />
-                <FormInput type = "password" hint = "Password"  name = "password"/> 
+                <FormInput type = "password" hint = "Password"  name = "password" value = {this.state.password} onChange = {this.handleChange} /> 
                
               </div>
             </div>
@@ -47,7 +88,7 @@ class LoginForm extends React.Component {
               <span class = "text-danger text-center"> <b>{this.props.errorMessage}</b> </span>
               <div>
               
-                <SubmitButton  layout = "style2" > Login</SubmitButton>
+                <SubmitButton  layout = "2" id = "loginBtn"> Login</SubmitButton>
                 
                 </div>
               <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"  data-dismiss = "modal"><u>Sign
