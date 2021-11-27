@@ -17,7 +17,7 @@ const pool = new Pool({
     host: "localhost",
     user: "postgres",
     password: "password",
-    database: "Ejemplo2",
+    database: "Temporal",
     port: "5432"
 });
 
@@ -109,9 +109,9 @@ let getUserByEmail = (email) => {
 }
 
 let addUsers = async(email, password, nickname, firstName, lastName, country, verified) => {
-    const response = await pool.query("INSERT INTO userRPC (name,email,password) VALUES ($1,$2,$3)" , [firstName,email, password]);
-    let aux = new User(email, password, nickname, firstName, lastName, country, verified);
-    usersObjects.push(aux);
+
+    const response = await pool.query("INSERT INTO userRPC (email,password, nickname, firstname, lastname, country, verified ) VALUES ($1,$2,$3,$4,$5,$6,$7)" , [email, password, nickname, firstName, lastName, country, verified]);
+    
     console.log(response);
 }
 
@@ -130,13 +130,21 @@ app.use(cors({
 
 
 
-app.post("/authenticate", (req, res) => {
+app.post("/authenticate", async(req, res) => {
     
-    const data = {
-        message : 'it works'
-    }
-    console.log(req.body)
-    res.send(req.body)
+  let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
+  try {
+    console.log(response.rows[0].nickname);
+    res.json({
+        flag : true,
+        nickname: response.rows[0].nickname
+    });
+  } catch (error) {
+      res.json({
+          flag : false
+          
+      });
+  }
 })
 
 app.post("/register", async (req, res) => {
@@ -210,7 +218,7 @@ app.get("/list", (req, res) => {
 
 
 app.get("/ejemplo", async (req,res)=>{
-    const response = await pool.query('SELECT * FROM userRPC');
+    const response = await pool.query('SELECT * FROM usuario');
     console.log(response.rows);
     res.send(response.rows);
 } )

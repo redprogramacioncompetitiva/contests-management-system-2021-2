@@ -12,6 +12,8 @@ class LoginForm extends React.Component {
     
   }
 
+  message = ""
+
   state = {
     form: {
       email: '',
@@ -42,7 +44,16 @@ class LoginForm extends React.Component {
 
       let response = await fetch('http://localhost:8080/authenticate', config)
       let json = await response.json();
+      if (json.flag == true){
+        //redirigir a la otra pantalla
+      }else{
+        this.message = "Please verify your credentials";
+        alert("credenciales incorrectas")
+        let a = document.getElementById("errorMessage")
+        a.innerHTML = this.message;
+      }
       console.log(json);
+      console.log(this.message);
     } catch (error) {
       
     }
@@ -85,7 +96,7 @@ class LoginForm extends React.Component {
             </div>
             <div className="modal-footer flex-column">
               {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
-              <span class = "text-danger text-center"> <b>{this.props.errorMessage}</b> </span>
+              <span class = "text-danger text-center" id = "errorMessage"> <b>{this.message}</b> </span>
               <div>
               
                 <SubmitButton  layout = "2" id = "loginBtn"> Login</SubmitButton>
