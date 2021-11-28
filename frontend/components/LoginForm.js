@@ -1,8 +1,9 @@
 import React from 'react'
-import Link from 'next/link'
+
 import FormInput from './FormInput'
 import NormalButton from './NormalButton';
 import SubmitButton from './SubmitButton';
+
 
 
 class LoginForm extends React.Component {
@@ -13,6 +14,8 @@ class LoginForm extends React.Component {
   }
 
   message = ""
+  
+
 
   state = {
     form: {
@@ -42,13 +45,19 @@ class LoginForm extends React.Component {
         body: JSON.stringify(this.state.form)
       }
 
+      
+
       let response = await fetch('http://localhost:8080/authenticate', config)
       let json = await response.json();
       if (json.flag == true){
-        //redirigir a la otra pantalla
+        this.message = "";
+        let a = document.getElementById("errorMessage")
+        a.innerHTML = this.message;
+        
+        location.href = "/home/"+ json.nickname;
       }else{
         this.message = "Please verify your credentials";
-        alert("credenciales incorrectas")
+        
         let a = document.getElementById("errorMessage")
         a.innerHTML = this.message;
       }
@@ -110,17 +119,13 @@ class LoginForm extends React.Component {
             
           </div>
         </div>
-      </div>     
+      </div>  
+    
             </div>
         );
     }
 }
 
-LoginForm.getInitalProps = async (ctx) => {
-    const res = await fetch("http://localhost://list");
-    const data = await res.json();
-    console.log(data);
-    return {};
-}
+
 
 export default LoginForm;

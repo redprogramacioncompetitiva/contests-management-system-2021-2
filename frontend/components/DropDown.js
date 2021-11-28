@@ -8,9 +8,9 @@ class DropDown extends Component {
         return(
 
             <div className="form-group row">
-                      <label className="col-md-2 col-form-label" htmlFor="country">Country:</label>
+                      <label className="col-md-2 col-form-label" htmlFor="country" value = {this.props.value}>Country:</label>
                       <div className="col-md-10">
-                        <select name="select" className="form-select" id="country_register">
+                        <select name="country" className="form-select" id="country_register">
                             <option value="Colombia">Colombia</option>
                             <option value="Afghanistan">Afghanistan</option>
                             <option value="Åland Islands">Åland Islands</option>

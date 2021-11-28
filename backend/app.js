@@ -138,6 +138,7 @@ app.post("/authenticate", async(req, res) => {
     res.json({
         flag : true,
         nickname: response.rows[0].nickname
+        
     });
   } catch (error) {
       res.json({
@@ -147,33 +148,43 @@ app.post("/authenticate", async(req, res) => {
   }
 })
 
+
+/**
+ * 
+ */
 app.post("/register", async (req, res) => {
-    if (req.body.password !== req.body.password2) {
-        //Las contraseñas no coinciden!
-        res.redirect('http://localhost:3000/register/msg1')
-        return;
-    } else if (getUserByEmail(req.body.email) !== null) {
-        //El email especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg2')
-        return;
-    } else if (getUserByNickname(req.body.nickname) !== null) {
-        //El nickname especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg3')
-        return;
-    } else {
-        let temp = addUsers(
-            req.body.emailR,
-            hash(req.body.passwordR),
-            req.body.nicknameR,
-            req.body.firstNameR,
-            req.body.lastName,
-            req.body.country,
-            false
-        );
-        let link = 'http://localhost:' + localHostPort + '/activate/' + hash(req.body.email);
-        await new Email(req.body.email, link, req.body.nickname).sendEmail();
-        //res.send(temp);
-        res.redirect('http://localhost:3000/register/msg4')
+    console.log(req.body);
+    if (req.body.password != req.body.confirmpassword){
+        res.json({
+            flag: false,
+            msg: 3
+        })
+    }else{
+        try {
+            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
+            if ((await response).rows.length > 0){
+                res.json({
+                    flag: false,
+                    msg: 1
+                })
+            }else{
+                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
+                if ((await r).rows.length > 0){
+                    res.json({
+                        flag: false,
+                        msg: 2
+                    })
+                }else{
+                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                    res.json({
+                        flag: true
+                    })
+                }
+            }
+        } catch (error) {
+            
+        }
     }
 })
 
@@ -201,8 +212,9 @@ app.get("/activate/:id", (req, res) => {
         res.redirect('http://localhost:3000/activate/msg2')
 })
 
-app.get("/users", (req, res) => {
-    res.send(usersObjects)
+app.get("/users", async (req, res) => {
+    let users = await pool.query('SELECT * usuarios');
+    res.json(users.rows)
 })
 
 app.get("/list", (req, res) => {
@@ -218,9 +230,9 @@ app.get("/list", (req, res) => {
 
 
 app.get("/ejemplo", async (req,res)=>{
-    const response = await pool.query('SELECT * FROM usuario');
+    let response = await pool.query('SELECT * FROM usuario');
     console.log(response.rows);
-    res.send(response.rows);
+    res.json(response.rows);
 } )
 
 
