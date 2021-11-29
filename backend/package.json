@@ -10,11 +10,13 @@
   "author": "PI1 2021-2",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/icons": "^4.11.2",
     "@sendgrid/mail": "^7.6.0",
     "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "jspdf": "^2.4.0"
+    "pg": "^8.7.1",
+    "jspdf": "^2.4.0",
+    "@material-ui/icons": "^4.11.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
