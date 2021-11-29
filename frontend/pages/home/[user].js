@@ -73,10 +73,10 @@ export default function home({ users }) {
                                 {e.nickname}
                             </td>
                             <td>
-                                {e.firstname}
+                                {e.firstName}
                             </td>
                             <td>
-                                {e.lastname}
+                                {e.lastName}
                             </td>
                             <td>
                                 {e.country}
@@ -93,7 +93,7 @@ export default function home({ users }) {
 }
 
 home.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/ejemplo')
+    const response = await fetch('http://localhost:8080/users')
     const users = await response.json()
     return { users: users }
 }
