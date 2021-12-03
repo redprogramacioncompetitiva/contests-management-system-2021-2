@@ -1,15 +1,24 @@
-import HeadRPC from '../../../../components/HeadRPC'
 import {useRouter} from 'next/router'
 import Link from 'next/Link'
+import StyleRPC from '../../../../components/StyleRPC';
+import HeadRPC from '../../../../components/HeadRPC';
+import I from '../../../../components/Imports';
 
-export default function home({testUsers1, teamName, contestName}) {
+export default function home({data, teamName, contestName}) {
 
 	const router = useRouter()
 
 	return (
 
-		<div className="container">
-			<HeadRPC/>
+		<div className="m-auto">
+			<nav className="navbar navbar-expand-sm bg-navbar">
+				<div className="container-fluid">
+					<img src="../../../img/logo.png" width="50" height="50"/>
+					<form className="d-flex ">
+						<button onClick={() => console.log("Saliendo de la sesión")} className="btn btn-style" type="button">Logout</button>
+					</form>
+				</div>
+			</nav>
 
 			<div style={{display: "flex", alignItems: "center"}}>
 
@@ -22,10 +31,9 @@ export default function home({testUsers1, teamName, contestName}) {
 			<table className="table table-hover table-striped text-center">
 				<tbody>
 				<tr>
-					{testUsers1.map(t => (
+					{data.map(t => (
 						<td style={{textAlign:"-moz-center"}}>
 							<div className="card" style={{width: "18rem", borderRadius: "10px"}}>
-								<img className="card-img-top" src="..." alt="Inserte foto del miembro"/>
 								<div className="card-body">
 									<p className="card-text"><b>Username:</b> {t.nickname}</p>
 									<p className="card-text"><b>Name:</b> {t.firstName} {t.lastName}</p>
@@ -38,13 +46,18 @@ export default function home({testUsers1, teamName, contestName}) {
 				</tr>
 				</tbody>
 			</table>
-
+			<HeadRPC/>
+			<StyleRPC/>
+			<I/>
 		</div>
 	)
 }
 
 export async function getServerSideProps(ctx) {
-	const response = await fetch('http://localhost:8081/teamMembers/' + ctx.params.team)
-	const testUsers1 = await response.json()
-	return {props: {testUsers1: testUsers1, teamName: ctx.params.team, contestName: ctx.params.contest}}
+	const data = [
+		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"},
+		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"},
+		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"}
+	]
+	return {props: {data, teamName: ctx.params.team, contestName: ctx.params.contest}}
 }
