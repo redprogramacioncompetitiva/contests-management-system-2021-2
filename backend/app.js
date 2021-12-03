@@ -1,12 +1,28 @@
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
 const sgMail = require('@sendgrid/mail');
-const localHostPort = 8081;
+const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
 
 //express imports
 
 const express = require('express');
+
+
+const {Pool} = require('pg');
+
+const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "Temporal",
+    port: "5432"
+});
+
+
+
 
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
@@ -43,54 +59,13 @@ class Email {
                 subject: 'Activa tu cuenta',
             },
         };
-        await sgMail.send(mailOptions).then(() => {
-        }, console.error);
+        await sgMail.send(mailOptions).then(() => { }, console.error);
     }
 };
-
-class Contest {
-    constructor(name, startDate, endDate, registerEndDate) {
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.registerEndDate = registerEndDate;
-    }
-}
-
-class Team {
-
-    constructor(name, members) {
-        this.name = name;
-        this.members = members;
-    }
-}
-
-let testUsers1 = [
-    u1 = new User("pp@gmail.com", hash("12345"), "pp", "Pepe", 'Paso', "Bolivia", true),
-    u2 = new User("aa@gmail.com", hash("fapjof"), "aa", "Ania", "Abc", "Checoslovaquia", true),
-    u3 = new User("dd@gmail.com", hash("password"), "dd", "Dian", "Alguv", "Holland", true),
-
-]
-
-let teamObjects = [
-    c = new Team("T1", testUsers1),
-    d = new Team("T2", [new User("xx@gmail.com", hash("12345"), "xx", "Xena", 'Xeph', "Peru", true)])
-]
-
-let pastContestObjects = [
-    p = new Contest("Summer Marathon 2015", "18/05/2015", "19/05/2015", "16/05/2015"),
-
-]
-
-let upcomingContestObjects = [
-
-    u = new Contest("Winter Marathon 2021", "20/12/2021", "21/12/2021", "18/12/2021")
-]
 
 let usersObjects = [
     a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
-
 
 let searchUser = (emailHashed) => {
     for (let i = 0; i < usersObjects.length; i++) {
@@ -100,80 +75,84 @@ let searchUser = (emailHashed) => {
     return -1;
 }
 
-let authenticate = (email, password) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (email === usersObjects[i].email) {
-            if (password === usersObjects[i].password) {
-                if (usersObjects[i].verified)
-                    return true;
-            } else
-                return false;
-        }
-    }
-    return false;
-}
 
-let getUserByNickname = (nickname) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (usersObjects[i].nickname === nickname)
-            return usersObjects[i];
-    }
-    return null
-}
 
-let getUserByEmail = (email) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (usersObjects[i].email === email)
-            return usersObjects[i];
-    }
-    return null
-}
 
-let addUsers = (email, password, nickname, firstName, lastName, country, verified) => {
-    let aux = new User(email, password, nickname, firstName, lastName, country, verified);
-    usersObjects.push(aux);
-    return true;
-}
+
+
+
+
 
 const app = express();
 
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 
-app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    else
-        res.redirect("http://localhost:3000/loginError");
+const cors = require('cors')
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
+
+
+
+
+
+
+app.post("/authenticate", async(req, res) => {
+    
+  let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
+  try {
+    console.log(response.rows[0].nickname);
+    res.json({
+        flag : true,
+        nickname: response.rows[0].nickname
+        
+    });
+  } catch (error) {
+      res.json({
+          flag : false
+          
+      });
+  }
 })
 
+
+/**
+ * 
+ */
 app.post("/register", async (req, res) => {
-    if (req.body.password !== req.body.password2) {
-        //Las contraseñas no coinciden!
-        res.redirect('http://localhost:3000/register/msg1')
-        return;
-    } else if (getUserByEmail(req.body.email) !== null) {
-        //El email especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg2')
-        return;
-    } else if (getUserByNickname(req.body.nickname) !== null) {
-        //El nickname especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg3')
-        return;
-    } else {
-        let temp = addUsers(
-            req.body.email,
-            hash(req.body.password),
-            req.body.nickname,
-            req.body.firstName,
-            req.body.lastName,
-            req.body.country,
-            false
-        );
-        let link = 'http://localhost:' + localHostPort + '/activate/' + hash(req.body.email);
-        await new Email(req.body.email, link, req.body.nickname).sendEmail();
-        //res.send(temp);
-        res.redirect('http://localhost:3000/register/msg4')
+    console.log(req.body);
+    if (req.body.password != req.body.confirmpassword){
+        res.json({
+            flag: false,
+            msg: 3
+        })
+    }else{
+        try {
+            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
+            if ((await response).rows.length > 0){
+                res.json({
+                    flag: false,
+                    msg: 1
+                })
+            }else{
+                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
+                if ((await r).rows.length > 0){
+                    res.json({
+                        flag: false,
+                        msg: 2
+                    })
+                }else{
+                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                    res.json({
+                        flag: true
+                    })
+                }
+            }
+        } catch (error) {
+            
+        }
     }
 })
 
@@ -201,53 +180,53 @@ app.get("/activate/:id", (req, res) => {
         res.redirect('http://localhost:3000/activate/msg2')
 })
 
-app.get("/users", (req, res) => {
-    res.send(usersObjects)
+app.get("/users", async (req, res) => {
+    let users = await pool.query('SELECT * usuarios');
+    res.json(users.rows)
+})
+
+
+let codeGenerator = (n)=>{
+    let code = ""
+    for (let i = 0; i < n; i++) {
+        let num = parseInt(Math.random()*(10-0)+0);
+        code += num.toString()
+    }
+
+    return code;
+    
+}
+
+
+app.post("/recuperation/password/email", (req,res)=>{
+    //enviar correo electrónico
+    res.json({
+        msg: req.body.email,
+        code: codeGenerator(6)
+    })
+})
+
+app.post("/recuperation/password/code", (req,res)=> {
+    
 })
 
 app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
 
-app.get("/pc/:year/:search?", (req, res) => {
-    const year = req.params.year
-    const search = req.params.search
 
-    res.send(pastContestObjects)
-})
 
-app.get("/uc/:search?",(req,res)=>{
-    const search = req.params.search
 
-    console.log(search)
-    res.send(upcomingContestObjects)
-})
 
-app.get("/contestTeams/:name", (req, res) => {
-    const contestName = req.params.name
-    res.send(teamObjects)
-})
 
-app.get("/teamMembers/:name", (req, res) => {
-    const teamName = req.params.name
-    res.send(testUsers1)
-})
+    
 
-app.get("/download", (req, res) => {
 
-        //To save a file
-        const fs = require('fs');
+app.get("/ejemplo", async (req,res)=>{
+    let response = await pool.query('SELECT * FROM usuario');
+    console.log(response.rows);
+    res.json(response.rows);
+} )
 
-        let data = JSON.stringify(testUsers1); //Change this for the info of the database
-
-        fs.writeFile("../frontend/public/test", data, function (err) {
-            if (err) {
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-        res.sendStatus(200)
-    }
-)
 
 app.listen(localHostPort);
