@@ -68,7 +68,7 @@ export default function Contests({tableData, contestName, contestId}) {
 				<div className="container-fluid">
 					<img src="../../img/logo.png" width="50" height="50"/>
 					<form className="d-flex ">
-						<button onClick={() => console.log("Saliendo de la sesión")} className="btn btn-style" type="button">Logout</button>
+						<button onClick={() => router.push("/")} className="btn btn-style" type="button">Logout</button>
 					</form>
 				</div>
 			</nav>
