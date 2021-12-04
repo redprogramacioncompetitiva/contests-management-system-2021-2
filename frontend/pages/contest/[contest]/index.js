@@ -86,20 +86,21 @@ export default function Contests({tableData, contestName, contestId}) {
 						   title="Teams"
 						   options={{
 							   draggable: false,
+							   exportButton: true,
 						   }}
 						   onRowClick = {(e,rowData)=>{
 							   router.push("/contest/"+contestId+"/team/"+rowData.id_team)
 						   }}
-						   actions={[
-							   {
-								   icon: tableIcons.Export,
-								   tooltip: 'Export',
-								   isFreeAction: true,
-								   onClick: (event) => {
-									   alert("You want to export")
-								   }
-							   }
-						   ]}
+						   // actions={[
+							//    {
+							// 	   icon: tableIcons.Export,
+							// 	   tooltip: 'Export',
+							// 	   isFreeAction: true,
+							// 	   onClick: (event) => {
+							// 		   alert("You want to export")
+							// 	   }
+							//    }
+						   // ]}
 			/>
 			<HeadRPC/>
 			<StyleRPC/>
