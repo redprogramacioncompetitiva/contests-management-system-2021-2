@@ -36,7 +36,7 @@ export default function home({data, teamName, contestName}) {
 							<div className="card" style={{width: "18rem", borderRadius: "10px"}}>
 								<div className="card-body">
 									<p className="card-text"><b>Username:</b> {t.nickname}</p>
-									<p className="card-text"><b>Name:</b> {t.firstName} {t.lastName}</p>
+									<p className="card-text"><b>Name:</b> {t.firstname} {t.lastname}</p>
 									<p className="card-text"><b>Email:</b> {t.email}</p>
 									<p className="card-text"><b>Country:</b> {t.country}</p>
 								</div>
@@ -54,10 +54,16 @@ export default function home({data, teamName, contestName}) {
 }
 
 export async function getServerSideProps(ctx) {
+
+	const id = ctx.params.team
+
+	const response = await fetch('http://localhost:8080/team/'+id)
+	const tableData = await response.json()
+
 	const data = [
 		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"},
 		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"},
 		{nickname:"nick", firstName:"firstName", lastName:"lastName", email:"email", country:"country"}
 	]
-	return {props: {data, teamName: ctx.params.team, contestName: ctx.params.contest}}
+	return {props: {data:tableData, teamName: id, contestName: ctx.params.contest}}
 }

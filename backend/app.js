@@ -238,7 +238,7 @@ app.get("/contest/:id", async (req, res) => {
 app.get("/team/:id", async (req, res) => {
 	const teamID = req.params.id
 
-	const query = "SELECT u.username, u.nombre, u.apellido, u.correouser, p.nombre_pais\n" +
+	const query = "SELECT u.username AS nickname, u.nombre AS firstname, u.apellido AS lastname, u.correouser AS email, p.nombre_pais AS country\n" +
 		"FROM usuario u, pais p, usuario_equipo ut\n" +
 		"WHERE (\n" +
 		"ut.codigo_equipo = '" + teamID + "'\n"+
