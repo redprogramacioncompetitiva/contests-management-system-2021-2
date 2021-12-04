@@ -15,8 +15,8 @@ const {Pool} = require('pg');
 const pool = new Pool({
 	host: "localhost",
 	user: "postgres",
-	password: "pachon12",
-	database: "rpcdb",
+	password: "password",
+	database: "temporal",
 	port: "5432"
 });
 
@@ -246,13 +246,9 @@ app.get("/team/:id", async (req, res) => {
 		"AND u.codigo_pais = p.codigo_pais\n"+
 		")\n"
 
-	console.log(query)
-
 	let response = await pool.query(query)
 
 	const data = await response.rows;
-
-	console.log(data)
 
 	res.json(data);
 })
