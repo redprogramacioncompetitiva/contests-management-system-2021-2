@@ -206,9 +206,9 @@ app.get("/list", (req, res) => {
 app.get("/contest/:id", async (req, res) => {
 	const contestID = req.params.id
 
-	const query = "SELECT t.codigo_equipo,\n" +
-		"t.nombre,\n" +
-		"(SELECT json_agg(u.username)\n" +
+	const query = "SELECT t.codigo_equipo AS id_team,\n" +
+		"t.nombre AS name,\n" +
+		"(SELECT string_agg(u.username,', ')\n" +
 		"FROM usuario u,\n" +
 		"usuario_equipo ut\n" +
 		"WHERE (\n" +
@@ -230,8 +230,6 @@ app.get("/contest/:id", async (req, res) => {
 	let response = await pool.query(query)
 
 	const data = await response.rows;
-
-	console.log(data)
 
 	res.json(data);
 })

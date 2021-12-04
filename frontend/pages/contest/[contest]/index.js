@@ -114,11 +114,10 @@ export async function getServerSideProps(ctx) {
 
 	const id = ctx.query.contest//TODO use it to send a request to get the data, and change the var send to render to contest name
 
-	const tableData = [
-		{id_team: "T001", name: "Skt t1", members: ["Faker", "Peanut", "Bang"].join(","), score: "5000"},
-		{id_team: "T002", name: "SSG", members: ["nn1", "nn2"].join(","), score: "1000"},
-		{id_team: "T003", name: "Mad Lions", members: ["asd", "fgh", "jkl"].join(","), score: "100"}
-	]
+	const response = await fetch('http://localhost:8080/contest/'+id)
+	const tableData = await response.json()
+
+	console.log(tableData)
 
 	return {
 		props: {tableData, contestName:id, contestId:id},
