@@ -4,9 +4,25 @@ const sgMail = require('@sendgrid/mail');
 const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+
+
 //express imports
 
 const express = require('express');
+
+
+const {Pool} = require('pg');
+
+const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "Temporal",
+    port: "5432"
+});
+
+
+
 
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
@@ -81,40 +97,13 @@ let searchUser = (emailHashed) => {
     return -1;
 }
 
-let authenticate = (email, password) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (email === usersObjects[i].email) {
-            if (password === usersObjects[i].password) {
-                if (usersObjects[i].verified)
-                    return true;
-            } else
-                return false;
-        }
-    }
-    return false;
-}
 
-let getUserByNickname = (nickname) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (usersObjects[i].nickname === nickname)
-            return usersObjects[i];
-    }
-    return null
-}
 
-let getUserByEmail = (email) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (usersObjects[i].email === email)
-            return usersObjects[i];
-    }
-    return null
-}
 
-let addUsers = (email, password, nickname, firstName, lastName, country, verified) => {
-    let aux = new User(email, password, nickname, firstName, lastName, country, verified);
-    usersObjects.push(aux);
-    return true;
-}
+
+
+
+
 
 let getTeamByName = (name) => {
     for (let i = 0; i < teamObjects.length; i++) {
@@ -145,8 +134,15 @@ let getTeamIntegrant = (teamId, email) => {
 
 const app = express();
 
+
+const cors = require('cors')
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
+
+
 
 app.post("/createTeam", (req, res) => {
     if(getTeamByName(req.body.name) == null) {
@@ -194,40 +190,63 @@ app.post("/deleteIntegrant", (req, res) => {
     res.redirect(path);
 })
 
-app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    else
-        res.redirect("http://localhost:3000/loginError");
+
+
+app.post("/authenticate", async(req, res) => {
+    
+  let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
+  try {
+    console.log(response.rows[0].nickname);
+    res.json({
+        flag : true,
+        nickname: response.rows[0].nickname
+        
+    });
+  } catch (error) {
+      res.json({
+          flag : false
+          
+      });
+  }
 })
 
+
+/**
+ * 
+ */
 app.post("/register", async (req, res) => {
-    if (req.body.password !== req.body.password2) {
-        //Las contraseñas no coinciden!
-        res.redirect('http://localhost:3000/register/msg1')
-        return;
-    } else if (getUserByEmail(req.body.email) !== null) {
-        //El email especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg2')
-        return;
-    } else if (getUserByNickname(req.body.nickname) !== null) {
-        //El nickname especificado ya existe!
-        res.redirect('http://localhost:3000/register/msg3')
-        return;
-    } else {
-        let temp = addUsers(
-            req.body.email,
-            hash(req.body.password),
-            req.body.nickname,
-            req.body.firstName,
-            req.body.lastName,
-            req.body.country,
-            false
-        );
-        let link = 'http://localhost:' + localHostPort + '/activate/' + hash(req.body.email);
-        await new Email(req.body.email, link, req.body.nickname).sendEmail();
-        //res.send(temp);
-        res.redirect('http://localhost:3000/register/msg4')
+    console.log(req.body);
+    if (req.body.password != req.body.confirmpassword){
+        res.json({
+            flag: false,
+            msg: 3
+        })
+    }else{
+        try {
+            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
+            if ((await response).rows.length > 0){
+                res.json({
+                    flag: false,
+                    msg: 1
+                })
+            }else{
+                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
+                if ((await r).rows.length > 0){
+                    res.json({
+                        flag: false,
+                        msg: 2
+                    })
+                }else{
+                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                    res.json({
+                        flag: true
+                    })
+                }
+            }
+        } catch (error) {
+            
+        }
     }
 })
 
@@ -255,6 +274,7 @@ app.get("/activate/:id", (req, res) => {
         res.redirect('http://localhost:3000/activate/msg2')
 })
 
+
 app.get("/integrants/:id", (req, res) => {
     const id = req.params.id;
     let tempIntegrants = [];
@@ -275,12 +295,54 @@ app.get("/teams", (req, res) => {
     res.send(teamObjects);
 })
 
-app.get("/users", (req, res) => {
-    res.send(usersObjects)
+app.get("/users", async (req, res) => {
+    let users = await pool.query('SELECT * usuarios');
+    res.json(users.rows)
+})
+
+
+let codeGenerator = (n)=>{
+    let code = ""
+    for (let i = 0; i < n; i++) {
+        let num = parseInt(Math.random()*(10-0)+0);
+        code += num.toString()
+    }
+
+    return code;
+    
+}
+
+
+app.post("/recuperation/password/email", (req,res)=>{
+    //enviar correo electrónico
+    res.json({
+        msg: req.body.email,
+        code: codeGenerator(6)
+    })
+})
+
+app.post("/recuperation/password/code", (req,res)=> {
+    
+
 })
 
 app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
+
+
+
+
+
+
+    
+
+
+app.get("/ejemplo", async (req,res)=>{
+    let response = await pool.query('SELECT * FROM usuario');
+    console.log(response.rows);
+    res.json(response.rows);
+} )
+
 
 app.listen(localHostPort);
