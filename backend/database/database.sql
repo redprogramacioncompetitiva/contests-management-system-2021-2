@@ -74,9 +74,11 @@ PRIMARY KEY(codigo_competencia)
 );
 
 Create table equipo(
-codigo_equipo VARCHAR(20),
+codigo_equipo SERIAL,
 nombre VARCHAR(50) NOT NULL,
-PRIMARY KEY(codigo_equipo)
+ownerEmail VARCHAR(100),
+PRIMARY KEY(codigo_equipo),
+FOREIGN KEY (correoUser) REFERENCES usuario(correoUser)
 );
 
 Create table credencial(

@@ -9,6 +9,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //express imports
 
 const express = require('express');
+const session = require('express-session');
+
+
 
 
 const {Pool} = require('pg');
@@ -16,7 +19,7 @@ const {Pool} = require('pg');
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "password",
+    password: "root",
     database: "Temporal",
     port: "5432"
 });
@@ -132,6 +135,8 @@ let getTeamIntegrant = (teamId, email) => {
     return null;
 }
 
+var emailLogged = "";
+
 const app = express();
 
 
@@ -141,13 +146,26 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.use(cors({
     origin:'http://localhost:3000'
 }))
+app.use(session({
+    secret:'123456',
+    resave: true,
+    saveUninitialized: true
+}))
 
 
-
-app.post("/createTeam", (req, res) => {
-    if(getTeamByName(req.body.name) == null) {
-        teamObjects.push(new Team(getLastTeamId(), req.body.name, req.body.integrants))
-        res.redirect("http://localhost:3000/teams/teams");
+app.post("/createTeam", async (req, res) => {
+    let response =  await pool.query("SELECT * FROM equipo WHERE nombre = $1", [req.body.name])
+    if ((await response).rows.length > 0){
+        console.log('Already exists')
+        let path = "http://localhost:3000/teams/teams";
+        res.redirect(path);
+    } else {
+        let r1 = await pool.query("INSERT INTO equipo (nombre, ownerEmail) VALUES ($1,$2);", [req.body.name, emailLogged])
+        let id = await pool.query("SELECT * FROM equipo ORDER BY codigo_equipo DESC LIMIT 1")
+        let r = await pool.query('INSERT INTO usuario_equipo VALUES($1,$2)', [id.rows[0].codigo_equipo, emailLogged]);
+        console.log('It can be created')
+        let path = "http://localhost:3000/teams/" + id.rows[0].codigo_equipo;
+        res.redirect(path);
     }
 })
 
@@ -165,15 +183,18 @@ app.post("/editTeam", (req, res) => {
     res.redirect("http://localhost:3000/teams/"+req.body.teamId);
 })
 
-app.post("/addIntegrant", (req, res) => {
+app.post("/addIntegrant", async (req, res) => {
     let email = req.body.email;
     let idTeam = req.body.teamId;
-    console.log(teamUser);
-    if(getTeamIntegrant(idTeam, email) == null) {
-        teamUser.push(new Team_User(idTeam, email));
-        let path = "http://localhost:3000/teams/" + idTeam;
-        res.redirect(path);
+    let r = await pool.query('SELECT * FROM usuario_equipo WHERE codigo_equipo = $1 AND correouser = $2', [idTeam, email]);
+    if((await r).rows.length < 1) {
+        let r = await pool.query('INSERT INTO usuario_equipo VALUES($1,$2)', [idTeam, email]);
+
+    } else {
+        // Ya existe y no puede ser añadido de nuevo
     }
+    let path = "http://localhost:3000/teams/" + idTeam;
+    res.redirect(path);
 })
 
 app.post("/deleteIntegrant", (req, res) => {
@@ -195,6 +216,8 @@ app.post("/deleteIntegrant", (req, res) => {
 app.post("/authenticate", async(req, res) => {
     
   let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
+  emailLogged = response.rows[0].email;
+  console.log(emailLogged)
   try {
     console.log(response.rows[0].nickname);
     res.json({
@@ -275,24 +298,16 @@ app.get("/activate/:id", (req, res) => {
 })
 
 
-app.get("/integrants/:id", (req, res) => {
+app.get("/integrants/:id", async (req, res) => {
     const id = req.params.id;
-    let tempIntegrants = [];
-    for (c = 0; c < teamUser.length; c++) {
-        if(teamUser[c].idTeam == id) {
-            for (i = 0; i < usersObjects.length; i++) {
-                if(usersObjects[i].email == teamUser[c].userEmail) {
-                    tempIntegrants.push(usersObjects[i])
-                }
-            }
-        }
-    }
-    //console.log(id);
-    res.send(tempIntegrants);
+    let integrants = await pool.query('SELECT a.firstname, a.lastname, a.email, a.country, a.nickname FROM usuario_equipo AS ab INNER JOIN usuario AS a ON a.email = ab.correouser WHERE ab.codigo_equipo = $1', [id]);
+    console.log(integrants.rows)
+    res.json(integrants.rows);
 })
 
-app.get("/teams", (req, res) => {
-    res.send(teamObjects);
+app.get("/teams", async (req, res) => {
+    let teams = await pool.query("SELECT a.codigo_equipo, a.nombre FROM usuario_equipo AS ab INNER JOIN equipo AS a ON a.codigo_equipo = ab.codigo_equipo WHERE correouser = $1;",[emailLogged]);
+    res.json(teams.rows);
 })
 
 app.get("/users", async (req, res) => {

@@ -4,7 +4,6 @@ import Link from 'next/link'
 class GroupForm extends React.Component {
 
     name = React.createRef();
-    integrants = React.createRef();
 
     handleChange = event => {
 
@@ -30,10 +29,6 @@ class GroupForm extends React.Component {
                         <label htmlFor="name">Name:</label>
 
                         <input onChange={this.handleChange} type="text" className="form-control" id="name" name="name" placeholder="Team name" required /><br /><br />
-
-                        <label htmlFor="integrants">Cantidad de Integrantes:</label>
-
-                        <input onChange={this.handleChange} type="text" id="integrants" name="integrants" className="form-control" placeholder="Number" required /><br /><br />
 
                         <input type="submit" className="btn btn-primary" value="Save" /> &nbsp;&nbsp;
 

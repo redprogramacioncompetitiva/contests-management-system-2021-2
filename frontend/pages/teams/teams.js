@@ -13,6 +13,10 @@ export default function home({ teams }) {
 
             <HeadRPC />
 
+            <span className="center">
+            Equipos a los que perteneces y/o eres el creador
+            </span>
+
             <table className="table table-hover table-striped text-center">
 
                 <thead>
@@ -23,9 +27,6 @@ export default function home({ teams }) {
                         </th>
                         <th>
                             Name
-                        </th>
-                        <th>
-                            Integrants
                         </th>
                         <th>
                             Action 1
@@ -42,23 +43,20 @@ export default function home({ teams }) {
                     {teams.map(e => (
                         <tr>
                             <td>
-                                {e.id}
+                                {e.codigo_equipo}
                             </td>
                             <td>
-                                {e.name}
-                            </td>
-                            <td>
-                                {e.integrants}
+                                {e.nombre}
                             </td>
                             <td>
                                 <form method="POST" action="http://localhost:8080/editTeam">
-                                <input type="hidden" id="teamId" name="teamId" value={e.id} />
+                                <input type="hidden" id="teamId" name="teamId" value={e.codigo_equipo} />
                                     <input type="submit" className="btn btn-primary m-auto" value="Editar"/>
                                 </form>
                             </td>
                             <td>
                             <form method="POST" action="http://localhost:8080/deleteTeam">
-                                <input type="hidden" id="teamId" name="teamId" value={e.id} />
+                                <input type="hidden" id="teamId" name="teamId" value={e.codigo_equipo} />
                                     <input type="submit" className="btn btn-danger m-auto" value="Eliminar"/>
                                 </form>
                             </td>

@@ -65,10 +65,10 @@ export default function home({ integrants }) {
                                 {e.nickname}
                             </td>
                             <td>
-                                {e.firstName}
+                                {e.firstname}
                             </td>
                             <td>
-                                {e.lastName}
+                                {e.lastname}
                             </td>
                             <td>
                                 {e.country}
