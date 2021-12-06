@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useState,forwardRef  } from 'react';
+import { useState,forwardRef,useEffect  } from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import ContestsForm from '../components/ContestsForm'
 import MaterialTable from 'material-table'
@@ -18,6 +18,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import axios from 'axios';
 
 
 export default function Contests() {
@@ -40,39 +41,52 @@ export default function Contests() {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-    const [tableData, setTableData] = useState([
-      {id_contest:'C001',name:'20º RPC Contest Colombia 2021: Century Edition',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C002',name:'Final World Cup RPC 2020',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C003',name:'7° Regional Final Nooby Edition',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C004',name:'April loops 2021',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C005',name:'End of year 2021',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C006',name:'RCP Classification',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C007',name:'10° Bogota Edition Rpc',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
-      {id_contest:'C008',name:'Latam Code Contest',is:'2021-02-12 00:00:00',ie:'2021-02-13 00:00:00',cs:'2021-03-01 00:00:00',ce:'2021-03-01 12:00:00'},
 
-      ])
+  const baseUrl="http://localhost:8080/contests"
+
+      /*
+      console.log("HOLAAAAAAAAAAAA")
+      tableData.forEach(function(entry) {
+        console.log(entry);
+      });*/
     const columns=[
         { title: "Id", 
-        field: "id_contest", 
+        field: "codigo_competencia", 
+        align: "center",
         },
         { title: "Name", 
-        field: "name", 
+        field: "nombre", 
         align: "center",
         },
         { title: "Inscription Start", 
-        field: "is", 
+        field: "fecha_inicio_ins", 
+        align: "center",
         },
         { title: "Inscription End", 
-        field: "ie", 
+        field: "fecha_fin_ins", 
+        align: "center",
         },
         { title: "Contest Start", 
-        field: "cs", 
+        field: "fecha_inicio", 
+        align: "center",
         },
         { title: "Contest End", 
-        field: "ce", 
+        field: "fecha_finalizacion", 
+        align: "center",
         },
 
     ]
+    const [tableData, setTableData] = useState([
+    ])
+    const peticionGet=async()=>{
+      await axios.get(baseUrl)
+      .then(response=>{
+       setTableData(response.data);
+      })
+    }
+    useEffect(()=>{
+      peticionGet();
+    }, [])
     return (
             <div>
               <ContestsForm/>
