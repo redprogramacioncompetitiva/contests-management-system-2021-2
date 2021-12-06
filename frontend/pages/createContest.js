@@ -37,10 +37,17 @@ export default function createContest({ venues }) {
         }
         .btn{
             margin-top: 30px;
+            margin-right: 30px;
         }
         .btn-style2:disabled {
             cursor: not-allowed;
             pointer-events: all !important;
+        }
+        .error{
+            background-color: #FFA901;
+        }
+        .success{
+            background-color: #001A33;
         }
       `}</style>
         </div>

@@ -5,8 +5,15 @@ const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //express imports
-
 const express = require('express');
+
+/* const cors = require('cors')
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cors({
+    origin:'http://localhost:3000'
+}))
+ */
 
 const { Pool } = require('pg');
 
@@ -220,11 +227,20 @@ app.post("/createContest", async (req, res) => {
     console.log(req.body)
     let venuesStr = req.body.selectedVenuesList;
     let venues = venuesStr.split(',');
-    let response1 = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1 AND fecha_finalizacion = $2 AND fecha_inicio = $3, AND fecha_fin_ins = $4 AND fecha_incio_ins = $5 AND nombre = $6 AND cantidadmaxporequipo = $7 AND cantidadminporequipo = $8', ['COMP11', req.body.ContEndDate + ' ' + req.body.ContEndTime, req.body.ContStartDate + ' ' + req.body.ContStartTime, req.body.InscEndDate + ' ' + req.body.InscEndTime, req.body.InscStartDate + ' ' + req.body.InscStartTime, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
+    let fecha_finalizacion = req.body.ContEndDate + " " + req.body.ContEndTime
+    let fecha_inicio = req.body.ContStartDate + " " + req.body.ContStartTime
+    let fecha_fin_ins = req.body.InscEndDate + " " + req.body.InscEndTime
+    let fecha_incio_ins = req.body.InscStartDate + " " + req.body.InscStartTime
+    let response1 = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1 AND fecha_finalizacion = $2 AND fecha_inicio = $3, AND fecha_fin_ins = $4 AND fecha_incio_ins = $5 AND nombre = $6 AND cantidadmaxporequipo = $7 AND cantidadminporequipo = $8', ['COMP11', fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_incio_ins, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
+    console.log(response1)
     if (response1.rows.length > 0) {
         let response2 = await pool.query("SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = '" + response1.rows.codigo_competencia + "'")
         if (response2.rows.length > 0) {
             res.redirect('http://localhost:3000/createContest/msg1')
+            /* res.json({
+                msg: 'contest already created!',
+                class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
+            }); */
             return
         }
     }
@@ -234,6 +250,10 @@ app.post("/createContest", async (req, res) => {
         await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, 'COMP11'])
     }
     res.redirect('http://localhost:3000/createContest/msg2')
+    /* res.json({
+        msg: 'contest created successfully!',
+        class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 success'
+    }); */
 })
 
 app.listen(localHostPort);

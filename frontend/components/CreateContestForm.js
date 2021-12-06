@@ -10,6 +10,58 @@ class CreateContestForm extends React.Component {
         }
     }
 
+    /* handleSubmit = async e => {
+        console.log("hola :)")
+        e.preventDefault();
+        let contestName1 = document.getElementById('contestName');
+        let minMembers1 = document.getElementById('minCompetitors');
+        let maxMembers1 = document.getElementById('maxCompetitors')
+        let InscStartDate1 = document.getElementById('InscStartDate');
+        let InscStartTime1 = document.getElementById('InscStartTime');
+        let InscEndDate1 = document.getElementById('InscEndDate');
+        let InscEndTime1 = document.getElementById('InscEndTime');
+        let ContStartDate1 = document.getElementById('ContStartDate');
+        let ContStartTime1 = document.getElementById('ContStartTime');
+        let ContEndDate1 = document.getElementById('ContEndDate');
+        let ContEndTime1 = document.getElementById('ContEndTime');
+
+        let tempData = {
+            contestName: contestName1.value,
+            minMembers: minMembers1.value,
+            maxMembers: maxMembers1.value,
+            InscStartDate: InscStartDate1.value,
+            InscStartTime: InscStartTime1.value,
+            InscEndDate: InscEndDate1.value,
+            InscEndTime: InscEndTime1.value,
+            ContStartDate: ContStartDate1.value,
+            ContStartTime: ContStartTime1.value,
+            ContEndDate: ContEndDate1.value,
+            ContEndTime: ContEndTime1.value,
+            venues: this.state.rows
+        }
+
+        console.log(tempData)
+
+        try {
+            let config = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(tempData)
+            }
+            let response = await fetch('http://localhost:8080/createContest', config)
+            let json = await response.json();
+            let msg = document.getElementById("message")
+            msg.innerHTML = json.msg;
+            msg.className = json.class;
+            console.log(json);
+        } catch (error) {
+            console.log(error)
+        }
+    } */
+
     handleChange = () => {
         let contestName = document.getElementById('contestName');
         let InscStartDate = document.getElementById('InscStartDate');
@@ -22,7 +74,8 @@ class CreateContestForm extends React.Component {
         let ContEndTime = document.getElementById('ContEndTime');
         let button = document.getElementById('create-contest-btn');
         InscEndDate.setAttribute('min', InscStartDate.value);
-        InscEndTime.setAttribute('min', InscStartTime.value);
+        if (InscEndDate.value == InscStartDate.value)
+            InscEndTime.setAttribute('min', InscStartTime.value);
         if (InscStartDate.value > InscEndDate.value)
             InscEndDate.value = null;
         if (InscStartTime.value >= InscEndTime.value && InscEndDate.value == InscStartDate.value) {
@@ -35,11 +88,13 @@ class CreateContestForm extends React.Component {
             ContStartTime.value = null;
         }
         ContEndDate.setAttribute('min', ContStartDate.value);
+        if (ContEndDate.value == ContStartDate.value)
+            ContEndTime.setAttribute('min', ContStartTime.value);
         if (ContStartDate.value > ContEndDate.value)
             ContEndDate.value = null;
         if (ContStartTime.value >= ContEndTime.value && ContEndDate.value == ContStartDate.value)
             ContEndTime.value = null;
-        if (this.state.rows.length > 0 && contestName.value != "" && InscStartDate.value != "" && InscStartTime.value != "" && InscEndDate.value != "" && InscEndTime.value != "" && ContStartDate.value != "" && ContStartTime.value != "" && ContEndDate.value != "" && ContEndTime.value != "")
+        if (this.state.rows.length > 0 && contestName.value !== "" && InscStartDate.value !== "" && InscStartTime.value !== "" && InscEndDate.value !== "" && InscEndTime.value !== "" && ContStartDate.value !== "" && ContStartTime.value !== "" && ContEndDate.value !== "" && ContEndTime.value !== "")
             button.disabled = false
     }
 
@@ -96,6 +151,7 @@ class CreateContestForm extends React.Component {
         option.value = tempValue;
         option.id = tempValue;
         option.name = tempValue;
+        option.key = tempValue;
         venuesList.appendChild(option);
     }
 
@@ -103,7 +159,7 @@ class CreateContestForm extends React.Component {
         return (
             <main>
                 <h1 className="display-2" style={{ fontWeight: "bold", textAlign: "center" }}>Contest creation</h1>
-                <span id="message" className={this.props.className}>{this.props.message}</span>
+                <span id="message"></span>
                 <Form method="POST" action="http://localhost:8080/createContest">
                     <Form.Group className="form-group">
                         <Form.Label className="form-title" htmlFor="contestName">Contest name</Form.Label>
@@ -200,7 +256,7 @@ class CreateContestForm extends React.Component {
                             <Form.Control list="venuesList" id="venuesTF" />
                             <datalist id="venuesList">
                                 {this.props.venues.map(e => (
-                                    <option value={e.name} id={e.name}>{e.name}</option>
+                                    <option key={e.name} value={e.name} id={e.name}>{e.name}</option>
                                 ))}
                             </datalist>
                             <Button className="btn-style2" id="add-venue-btn" onClick={this.addVenue}>Add to List</Button>
