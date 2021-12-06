@@ -8,6 +8,16 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const express = require('express');
 
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "Temporal",
+    port: "5432"
+});
+
 class User {
     constructor(email, password, nickname, firstName, lastName, country, verified) {
         this.email = email;
@@ -201,34 +211,29 @@ app.get("/venues", (req, res) => {
 app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
-//name, InscStartDate, InscStartTime, InscEndDate, InscEndTime, ContStartDate, ContStartTime, ContEndDate, ContEndTime, venues
-app.post("/createContest", (req, res) => {
-    let venStr = req.body.selectedVenuesList;
-    venStr = venStr.slice(0, -2);
-    let ven = venStr.split(', ');
-    let newContest = new Contest(req.body.competitionName, req.body.InscStartDate, req.body.InscStartTime, req.body.InscEndDate, req.body.InscEndTime, req.body.ContStartDate, req.body.ContStartTime, req.body.ContEndDate, req.body.ContEndTime, ven)
-    let exists = false;
-    contests.forEach(contest => {
-        if (contest.name == newContest.name &&
-            contest.InscStartDate == newContest.InscStartDate &&
-            contest.InscStartTime == newContest.InscStartTime &&
-            contest.InscEndDate == newContest.InscEndDate &&
-            contest.InscEndTime == newContest.InscEndTime &&
-            contest.ContStartDate == newContest.ContStartDate &&
-            contest.ContStartTime == newContest.ContStartTime &&
-            contest.ContEndDate == newContest.ContEndDate &&
-            contest.ContEndTime == newContest.ContEndTime &&
-            contest.venues == newContest.venues && !exists
-        ) {
-            exists = true;
-            res.redirect('http://localhost:3000/createContest/msg1')
-        }
-    });
-    if (!exists) {
-        contests.push(newContest);
-        res.redirect('http://localhost:3000/createContest/msg2')
-    }
 
+// Contest:
+// codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_incio_ins, nombre, cantidadmaxporequipo, cantidadminporequipo
+// Venue:
+// codigo_institucion, codigo_competencia
+app.post("/createContest", async (req, res) => {
+    console.log(req.body)
+    let venuesStr = req.body.selectedVenuesList;
+    let venues = venuesStr.split(',');
+    let response1 = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1 AND fecha_finalizacion = $2 AND fecha_inicio = $3, AND fecha_fin_ins = $4 AND fecha_incio_ins = $5 AND nombre = $6 AND cantidadmaxporequipo = $7 AND cantidadminporequipo = $8', ['COMP11', req.body.ContEndDate + ' ' + req.body.ContEndTime, req.body.ContStartDate + ' ' + req.body.ContStartTime, req.body.InscEndDate + ' ' + req.body.InscEndTime, req.body.InscStartDate + ' ' + req.body.InscStartTime, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
+    if (response1.rows.length > 0) {
+        let response2 = await pool.query("SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = '" + response1.rows.codigo_competencia + "'")
+        if (response2.rows.length > 0) {
+            res.redirect('http://localhost:3000/createContest/msg1')
+            return
+        }
+    }
+    await pool.query("INSERT INTO competencia VALUES ($1, TO_DATE($2, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($3, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($4, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($5, 'dd/mm/yyyy hh24:mi:ss'), $6, $7, $8)", ['COMP11', req.body.ContEndDate + ' ' + req.body.ContEndTime, req.body.ContStartDate + ' ' + req.body.ContStartTime, req.body.InscEndDate + ' ' + req.body.InscEndTime, req.body.InscStartDate + ' ' + req.body.InscStartTime, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
+    for (let i = 0; i < venues.length; i++) {
+        let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
+        await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, 'COMP11'])
+    }
+    res.redirect('http://localhost:3000/createContest/msg2')
 })
 
 app.listen(localHostPort);

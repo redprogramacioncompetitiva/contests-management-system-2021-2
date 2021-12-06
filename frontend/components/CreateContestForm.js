@@ -1,10 +1,17 @@
 import React from 'react';
 import { Button, Row, Col, Form, Table } from "react-bootstrap"
 
-
 class CreateContestForm extends React.Component {
 
-    handleChange = event => {
+    constructor(props) {
+        super(props)
+        this.state = {
+            rows: []
+        }
+    }
+
+    handleChange = () => {
+        let contestName = document.getElementById('contestName');
         let InscStartDate = document.getElementById('InscStartDate');
         let InscStartTime = document.getElementById('InscStartTime');
         let InscEndDate = document.getElementById('InscEndDate');
@@ -13,74 +20,130 @@ class CreateContestForm extends React.Component {
         let ContStartTime = document.getElementById('ContStartTime');
         let ContEndDate = document.getElementById('ContEndDate');
         let ContEndTime = document.getElementById('ContEndTime');
+        let button = document.getElementById('create-contest-btn');
         InscEndDate.setAttribute('min', InscStartDate.value);
         InscEndTime.setAttribute('min', InscStartTime.value);
-        if (InscStartDate.value > InscEndDate.value){
-            InscEndDate.value= null;
-        }
+        if (InscStartDate.value > InscEndDate.value)
+            InscEndDate.value = null;
         if (InscStartTime.value >= InscEndTime.value && InscEndDate.value == InscStartDate.value) {
             InscEndTime.value = null;
         }
         ContStartDate.setAttribute('min', InscEndDate.value);
-        if (ContStartDate.value < InscEndDate.value){
-            ContStartDate.value= null;
-        }
+        if (ContStartDate.value < InscEndDate.value)
+            ContStartDate.value = null;
         if (ContStartTime.value < InscEndTime.value && InscEndDate.value == ContStartDate.value) {
             ContStartTime.value = null;
         }
         ContEndDate.setAttribute('min', ContStartDate.value);
-        if (ContStartDate.value > ContEndDate.value){
-            ContEndDate.value= null;
-        }
+        if (ContStartDate.value > ContEndDate.value)
+            ContEndDate.value = null;
         if (ContStartTime.value >= ContEndTime.value && ContEndDate.value == ContStartDate.value)
             ContEndTime.value = null;
+        if (this.state.rows.length > 0 && contestName.value != "" && InscStartDate.value != "" && InscStartTime.value != "" && InscEndDate.value != "" && InscEndTime.value != "" && ContStartDate.value != "" && ContStartTime.value != "" && ContEndDate.value != "" && ContEndTime.value != "")
+            button.disabled = false
     }
 
-
     addVenue = () => {
-        let selectedVenues = document.getElementById('selectedVenues');
+        let contestName = document.getElementById('contestName');
+        let InscStartDate = document.getElementById('InscStartDate');
+        let InscStartTime = document.getElementById('InscStartTime');
+        let InscEndDate = document.getElementById('InscEndDate');
+        let InscEndTime = document.getElementById('InscEndTime');
+        let ContStartDate = document.getElementById('ContStartDate');
+        let ContStartTime = document.getElementById('ContStartTime');
+        let ContEndDate = document.getElementById('ContEndDate');
+        let ContEndTime = document.getElementById('ContEndTime');
+        let button = document.getElementById('create-contest-btn');
         let venuesTF = document.getElementById('venuesTF');
         let venuesList = document.getElementById('venuesList');
         let selectedVenuesList = document.getElementById('selectedVenuesList');
         if (venuesList.options.namedItem(venuesTF.value)) {
-            selectedVenuesList.value += venuesTF.value + ', ';
-            selectedVenues.innerHTML += `<tr><td name="${venuesTF.value}" id="${venuesTF.value}">${venuesTF.value}</td></tr>`;
             venuesList.options.namedItem(venuesTF.value).remove();
+            let tempRow = this.state.rows
+            tempRow.push(venuesTF.value)
+            this.setState({ rows: tempRow });
+            selectedVenuesList.value = this.state.rows
         }
         venuesTF.value = null;
+        if (this.state.rows.length > 0 && contestName.value != "" && InscStartDate.value != "" && InscStartTime.value != "" && InscEndDate.value != "" && InscEndTime.value != "" && ContStartDate.value != "" && ContStartTime.value != "" && ContEndDate.value != "" && ContEndTime.value != "")
+            button.disabled = false
     }
 
-
     cancel = () => {
-        let isExecuted = confirm('Seguro? xd')
+        let isExecuted = confirm("Are you sure? You'll lose the entered data.")
         if (isExecuted) {
             //cancel
         }
-
     }
+
+    deleteRow(index) {
+        let venuesList = document.getElementById('venuesList');
+        let button = document.getElementById('create-contest-btn');
+        let selectedVenuesList = document.getElementById('selectedVenuesList');
+        let option = document.createElement('option');
+        let tempRow = this.state.rows
+        let tempValue = tempRow[index];
+
+        //Delete row from table
+        tempRow.splice(index, 1)
+        this.setState({ rows: tempRow });
+        if (this.state.rows.length == 0) {
+            button.disabled = true
+        }
+        selectedVenuesList.value = this.state.rows
+
+        //Re-add venue to datalist
+        option.value = tempValue;
+        option.id = tempValue;
+        option.name = tempValue;
+        venuesList.appendChild(option);
+    }
+
     render() {
         return (
-
             <main>
+                <h1 className="display-2" style={{ fontWeight: "bold", textAlign: "center" }}>Contest creation</h1>
                 <span id="message" className={this.props.className}>{this.props.message}</span>
-                <Form method="POST" action="http://localhost:8080/createContest" >
-
+                <Form method="POST" action="http://localhost:8080/createContest">
                     <Form.Group className="form-group">
-                        <Form.Label className="form-title" htmlFor="competitionName">Name</Form.Label>
-                        <Form.Control type="text" className="form-control" id="competitionName" name="competitionName" placeholder="Name" />
+                        <Form.Label className="form-title" htmlFor="contestName">Contest name</Form.Label>
+                        <Form.Control type="text" className="form-control" id="contestName" name="contestName" placeholder="Name" onChange={this.handleChange} required />
                     </Form.Group>
+                    <br />
+                    <Row>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label style={{ fontWeight: "bold" }} htmlFor="exampleFormControlSelect1">Minimum number of members per team</Form.Label>
+                                <Form.Control as="select" onChange={this.handleChange} className="form-control" id="minCompetitors" name="minCompetitor">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label style={{ fontWeight: "bold" }} htmlFor="maxCompetitors">Maximum number of members per team</Form.Label>
+                                <Form.Control as="select" onChange={this.handleChange} className="form-control" id="maxCompetitors" name="maxCompetitor">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Row>
                     <Form.Label className="form-title" >Inscriptions start:</Form.Label>
                     <Row>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="InscStartDate">Date</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="InscStartDate" name="InscStartDate" />
+                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="InscStartDate" name="InscStartDate" required />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="InscStartTime">Time</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="InscStartTime" name="InscStartTime" />
+                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="InscStartTime" name="InscStartTime" required />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -89,51 +152,51 @@ class CreateContestForm extends React.Component {
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="InscEndDate">Date</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="InscEndDate" name="InscEndDate" />
+                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="InscEndDate" name="InscEndDate" required />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="InscEndTime">Time</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="InscEndTime" name="InscEndTime" />
+                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="InscEndTime" name="InscEndTime" required />
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Form.Label className="form-title" >Contest starts:</Form.Label>
+                    <Form.Label className="form-title" >Contest start:</Form.Label>
                     <Row>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="ContStartDate">Date</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="ContStartDate" name="ContStartDate" />
+                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="ContStartDate" name="ContStartDate" required />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="ContStartTime">Time</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="ContStartTime" name="ContStartTime" />
+                                <Form.Control onChange={this.handleChange} type="time" className="form-control" id="ContStartTime" name="ContStartTime" required />
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Form.Label className="form-title" >Contest ends:</Form.Label>
+                    <Form.Label className="form-title" >Contest end:</Form.Label>
                     <Row>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="ContEndDate">Date</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="date" className="form-control" name="ContEndDate" id="ContEndDate" />
+                                <Form.Control onChange={this.handleChange} type="date" className="form-control" name="ContEndDate" id="ContEndDate" required />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="ContEndTime">Time</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="time" className="form-control" name="ContEndTime" id="ContEndTime" />
+                                <Form.Control onChange={this.handleChange} type="time" className="form-control" name="ContEndTime" id="ContEndTime" required />
                             </Form.Group>
                         </Col>
                     </Row>
                     <br />
                     <Row>
-                        <Form.Label htmlFor="venues" className="form-title">Venues</Form.Label>
+                        <Form.Label htmlFor="venues" className="form-title">Venues selection</Form.Label>
                         <Col>
-                            <Form.Label >Type venue name to add to list</Form.Label>
+                            <Form.Label >Type a venue name to add it to the list</Form.Label>
                             <Form.Control list="venuesList" id="venuesTF" />
                             <datalist id="venuesList">
                                 {this.props.venues.map(e => (
@@ -143,7 +206,7 @@ class CreateContestForm extends React.Component {
                             <Button className="btn-style2" id="add-venue-btn" onClick={this.addVenue}>Add to List</Button>
                         </Col>
                         <Col>
-                            <Table className="table table-hover table-striped text-center" id="venuesTable" name="venuesTable">
+                            <Table className="table table-hover table-striped text-center" id="venuesTable" name="venuesTable" responsive>
                                 <thead>
                                     <tr>
                                         <th>
@@ -151,16 +214,23 @@ class CreateContestForm extends React.Component {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody id="selectedVenues" name="selectedVenues"></tbody>
+                                <tbody id="selectedVenues" name="selectedVenues">
+                                    {this.state.rows.map((venue, index) => (
+                                        <tr style={{ cursor: "pointer" }}>
+                                            <td onClick={() => this.deleteRow(index)}>
+                                                {venue}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                             </Table>
                             <Form.Control type="hidden" name="selectedVenuesList" id="selectedVenuesList" />
                         </Col>
                     </Row>
-                    <Button className="btn-style2" type="submit" id="create-contest-btn">Create contest</Button>
+                    <Button className="btn-style2" type="submit" id="create-contest-btn" disabled={true}>Create contest</Button>
                     <Button className="btn-style3" id="cancel-btn" onClick={this.cancel}>Cancel</Button>
                 </Form>
-
-            </main >
+            </main>
         )
     }
 }

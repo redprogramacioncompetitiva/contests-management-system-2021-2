@@ -38,7 +38,10 @@ export default function createContest({ venues }) {
         .btn{
             margin-top: 30px;
         }
-        
+        .btn-style2:disabled {
+            cursor: not-allowed;
+            pointer-events: all !important;
+        }
       `}</style>
         </div>
     )
