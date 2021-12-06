@@ -26,18 +26,16 @@ class ContestsForm extends React.Component {
                 
                 <div className="py-1 text-center">
 
-                     <Link href="../../">
+                <center><a href="https://redprogramacioncompetitiva.com/"><img src="https://pbs.twimg.com/profile_images/493847405670850561/qslkfHlq_400x400.jpeg" alt="RPC_Logo" width="100" height="100" /></a></center>
 
-                       <a className="btn btn-primary" role="button">Logout</a>
-
-                     </Link>
+<center><h1 className="display-2">RPC :: Red de Programación Competitiva</h1></center>
                 </div>
 
                 <br />
 
                 
 
-                <form className="w-50 mx-auto p-2" method="POST" action = "http://localhost:8080/contests">
+                <form className="w-50 mx-auto p-2" method="GET" action = "http://localhost:8080/contests">
                 
                 </form>
                 

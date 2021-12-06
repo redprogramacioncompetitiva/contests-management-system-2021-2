@@ -13,11 +13,11 @@ const express = require('express');
 const {Pool} = require('pg');
 
 const pool = new Pool({
-	host: "localhost",
-	user: "postgres",
-	password: "password",
-	database: "temporal",
-	port: "5432"
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "rpcdb",
+    port: "5432"
 });
 
 
@@ -108,39 +108,40 @@ app.post("/authenticate", async (req, res) => {
  *
  */
 app.post("/register", async (req, res) => {
-	console.log(req.body);
-	if (req.body.password != req.body.confirmpassword) {
-		res.json({
-			flag: false,
-			msg: 3
-		})
-	} else {
-		try {
-			let response = await pool.query('SELECT * FROM usuario WHERE email = $1', [req.body.email])
-			if ((await response).rows.length > 0) {
-				res.json({
-					flag: false,
-					msg: 1
-				})
-			} else {
-				let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1', [req.body.nickname])
-				if ((await r).rows.length > 0) {
-					res.json({
-						flag: false,
-						msg: 2
-					})
-				} else {
-					let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
 
-					res.json({
-						flag: true
-					})
-				}
-			}
-		} catch (error) {
-
-		}
-	}
+    console.log(req.body);
+    if (req.body.password != req.body.confirmpassword){
+        res.json({
+            flag: false,
+            msg: 3
+        })
+    }else{
+        try {
+            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
+            if ((await response).rows.length > 0){
+                res.json({
+                    flag: false,
+                    msg: 1
+                })
+            }else{
+                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
+                if ((await r).rows.length > 0){
+                    res.json({
+                        flag: false,
+                        msg: 2
+                    })
+                }else{
+                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                    res.json({
+                        flag: true
+                    })
+                }
+            }
+        } catch (error) {
+            
+        }
+    }
 })
 
 /*function hash(text) {
@@ -185,12 +186,13 @@ let codeGenerator = (n) => {
 }
 
 
-app.post("/recuperation/password/email", (req, res) => {
-	//enviar correo electrónico
-	res.json({
-		msg: req.body.email,
-		code: codeGenerator(6)
-	})
+
+app.post("/recuperation/password/email", (req,res)=>{
+    //enviar correo electrónico
+    res.json({
+        msg: req.body.email,
+        code: codeGenerator(6)
+    })
 })
 
 app.post("/recuperation/password/code", (req, res) => {
@@ -204,6 +206,7 @@ app.get("/list", (req, res) => {
 
 //teams of contest -> endpoint
 app.get("/contest/:id", async (req, res) => {
+
 	const contestID = req.params.id
 
 	const query = "SELECT t.codigo_equipo AS id_team,\n" +
@@ -232,6 +235,12 @@ app.get("/contest/:id", async (req, res) => {
 	const data = await response.rows;
 
 	res.json(data);
+})
+
+app.get("/contests", async (req,res)=>{
+    let response = await pool.query('SELECT * FROM competencia');
+    console.log(response.rows);
+    res.json(response.rows);
 })
 
 //members of a team -> endpoint
