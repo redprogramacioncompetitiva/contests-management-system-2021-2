@@ -17,7 +17,7 @@ const pool = new Pool({
     host: "localhost",
     user: "postgres",
     password: "password",
-    database: "Temporal",
+    database: "rpcdb",
     port: "5432"
 });
 
@@ -121,6 +121,7 @@ app.post("/authenticate", async(req, res) => {
  * 
  */
 app.post("/register", async (req, res) => {
+
     console.log(req.body);
     if (req.body.password != req.body.confirmpassword){
         res.json({
@@ -198,6 +199,7 @@ let codeGenerator = (n)=>{
 }
 
 
+
 app.post("/recuperation/password/email", (req,res)=>{
     //enviar correo electrónico
     res.json({
@@ -214,7 +216,11 @@ app.get("/list", (req, res) => {
     res.send(usersObjects);
 })
 
-
+app.get("/contests", async (req,res)=>{
+    let response = await pool.query('SELECT * FROM competencia');
+    console.log(response.rows);
+    res.json(response.rows);
+})
 
 
 
