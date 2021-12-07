@@ -23,6 +23,17 @@ export default function lastsUsersRecords() {
         * {
           box-sizing: border-box;
         }
+
+        .searchBar{
+            height: 38.00011444091797px;
+            width: 200px;
+            left: 168.000244140625px;
+            top: 1923px;
+            border-radius: 10px;
+            
+           
+
+        }
       `}</style>
             <div>
             <table className="table table-hover table-striped text-center">
@@ -36,7 +47,8 @@ export default function lastsUsersRecords() {
                 </Link>
         </th>
         <th>
-        <input type="search" placeholder="Buscar">
+        <input className="searchBar" type="search" placeholder="Buscar">
+            
         </input>
         </th>
         
