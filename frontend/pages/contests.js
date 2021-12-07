@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import {useRouter} from 'next/router'
 import { useState,forwardRef,useEffect  } from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon'
 import ContestsForm from '../components/ContestsForm'
@@ -22,6 +23,8 @@ import axios from 'axios';
 
 
 export default function Contests() {
+  const router = useRouter()
+
   const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -117,9 +120,10 @@ export default function Contests() {
                     resolve();
                   })
                 }}
+				onRowClick={(e, rowData) => {
+					router.push("/contest/" + rowData.codigo_competencia)
+				}}
                 />
             
           </div>
-
-    )
-}
+)}
