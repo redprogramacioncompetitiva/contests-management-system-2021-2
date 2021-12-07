@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import CreateContestForm from '../components/CreateContestForm'
 
-export default function createContest({ venues }) {
+export default function createContest({ venues, today }) {
 
     return (
 
@@ -25,7 +25,7 @@ export default function createContest({ venues }) {
 
             </Head>
 
-            <CreateContestForm venues={venues} />
+            <CreateContestForm venues={venues} rangeCompetitors={[1, 2, 3]} today={today} />
 
             <style>{`
         .form-title{
@@ -57,5 +57,6 @@ export default function createContest({ venues }) {
 createContest.getInitialProps = async () => {
     const response = await fetch('http://localhost:8080/venues')
     const venues = await response.json()
-    return { venues: venues }
+    const today =  new Date().toJSON().slice(0, 10)
+    return { venues: venues, today: today }
 }

@@ -7,14 +7,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //express imports
 const express = require('express');
 
-/* const cors = require('cors')
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(cors({
-    origin:'http://localhost:3000'
-}))
- */
-
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -146,6 +138,11 @@ const app = express();
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
+const cors = require('cors')
+app.use(cors({
+    origin: 'http://localhost:3000'
+}))
+
 app.post("/authenticate", (req, res) => {
     if (authenticate(req.body.email, hash(req.body.password)))
         res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
@@ -211,8 +208,13 @@ app.get("/users", (req, res) => {
     res.send(usersObjects)
 })
 
-app.get("/venues", (req, res) => {
-    res.send(venues)
+app.get("/venues", async (req, res) => {
+    let response = await pool.query("SELECT * FROM institucion")
+    try {
+        res.send(response.rows)
+    } catch (error) {
+        res.send(error)
+    }
 })
 
 app.get("/list", (req, res) => {
@@ -224,36 +226,95 @@ app.get("/list", (req, res) => {
 // Venue:
 // codigo_institucion, codigo_competencia
 app.post("/createContest", async (req, res) => {
-    console.log(req.body)
-    let venuesStr = req.body.selectedVenuesList;
-    let venues = venuesStr.split(',');
-    let fecha_finalizacion = req.body.ContEndDate + " " + req.body.ContEndTime
-    let fecha_inicio = req.body.ContStartDate + " " + req.body.ContStartTime
-    let fecha_fin_ins = req.body.InscEndDate + " " + req.body.InscEndTime
-    let fecha_incio_ins = req.body.InscStartDate + " " + req.body.InscStartTime
-    let response1 = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1 AND fecha_finalizacion = $2 AND fecha_inicio = $3, AND fecha_fin_ins = $4 AND fecha_incio_ins = $5 AND nombre = $6 AND cantidadmaxporequipo = $7 AND cantidadminporequipo = $8', ['COMP11', fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_incio_ins, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
-    console.log(response1)
-    if (response1.rows.length > 0) {
-        let response2 = await pool.query("SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = '" + response1.rows.codigo_competencia + "'")
-        if (response2.rows.length > 0) {
-            res.redirect('http://localhost:3000/createContest/msg1')
-            /* res.json({
-                msg: 'contest already created!',
-                class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
-            }); */
-            return
+    let contestKey = await getContestId()
+    if (contestKey == -1) {
+        res.json({
+            msg: 'omething went wrong, please try again',
+            class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
+        });
+        return
+    } else {
+        let venues = req.body.venues
+        let venuesKeys = []
+        for (let i = 0; i < venues.length; i++) {
+            let venueKey = await pool.query('SELECT codigo_institucion FROM institucion WHERE nombre_institucion = $1', [venues[i]])
+            venuesKeys.push(venueKey.rows[0].codigo_institucion)
         }
+        let fecha_finalizacion = req.body.ContEndDate + ' ' + req.body.ContEndTime
+        let fecha_inicio = req.body.ContStartDate + ' ' + req.body.ContStartTime
+        let fecha_fin_ins = req.body.InscEndDate + ' ' + req.body.InscEndTime
+        let fecha_inicio_ins = req.body.InscStartDate + ' ' + req.body.InscStartTime
+        let maxCompetitors = parseInt(req.body.maxCompetitor, 10)
+        let minCompetitors = parseInt(req.body.minCompetitor, 10)
+        let response1 = await pool.query("SELECT * FROM competencia WHERE fecha_finalizacion = TO_TIMESTAMP($1, 'yyyy-mm-dd HH24:MI') AND fecha_inicio = TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI') AND fecha_fin_ins = TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI') AND fecha_inicio_ins = TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI') AND nombre = $5 AND cantidadmaxporequipo = $6 AND cantidadminporequipo = $7", [fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
+        if (response1.rows.length > 0) {
+            console.log("entre")
+            console.log(response1.rows)
+
+            //Si hay mas de una competencia en donde coincidan todos los datos, entonces se procede a comprobar por competencia que
+            //ninguna tenga las mismas sedes que la competencia que se esta intentando agregar
+            let atLeastOneIsEqual = false;
+            for (let j = 0; j < response1.rows.length && !atLeastOneIsEqual; j++) {
+                let response2 = await pool.query('SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = $1', [response1.rows[j].codigo_competencia])
+                let venuesInDB1 = response2.rows
+                let venuesInDB = []
+                for (let i = 0; i < venuesInDB1.length; i++) {
+                    venuesInDB.push(venuesInDB1[i].codigo_institucion)
+                }
+                console.log(venuesInDB)
+                console.log(venuesKeys)
+                if (venuesInDB.length > 0) {
+                    console.log("entre 2")
+                    let equal = false
+                    for (let i = 0; i < venuesKeys.length && !equal; i++) {
+                        let temp = venuesKeys[i]
+                        console.log(temp)
+                        if (venuesInDB.includes(temp))
+                            equal = true
+                    }
+                    if (equal) {
+                        console.log("entre 3")
+                        atLeastOneIsEqual = true
+                    }
+                }
+            }
+            if (atLeastOneIsEqual) {
+                console.log("entre 4")
+                res.json({
+                    msg: 'There is already a contest in that date range with that name in at least one of the selected venues!',
+                    class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
+                });
+                return
+            }
+        }
+        await pool.query("INSERT INTO competencia (codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, nombre, CantidadMaxPorEquipo, CantidadMinPorEquipo) VALUES ($1, TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($5, 'yyyy-mm-dd HH24:MI'), $6, $7, $8)", [contestKey, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
+        for (let i = 0; i < venues.length; i++) {
+            let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
+            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, contestKey])
+        }
+        res.json({
+            msg: 'Contest successfully created!',
+            class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 success'
+        });
     }
-    await pool.query("INSERT INTO competencia VALUES ($1, TO_DATE($2, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($3, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($4, 'dd/mm/yyyy hh24:mi:ss'), TO_DATE($5, 'dd/mm/yyyy hh24:mi:ss'), $6, $7, $8)", ['COMP11', req.body.ContEndDate + ' ' + req.body.ContEndTime, req.body.ContStartDate + ' ' + req.body.ContStartTime, req.body.InscEndDate + ' ' + req.body.InscEndTime, req.body.InscStartDate + ' ' + req.body.InscStartTime, req.body.contestName, req.body.maxCompetitor, req.body.minCompetitor])
-    for (let i = 0; i < venues.length; i++) {
-        let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
-        await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, 'COMP11'])
-    }
-    res.redirect('http://localhost:3000/createContest/msg2')
-    /* res.json({
-        msg: 'contest created successfully!',
-        class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 success'
-    }); */
 })
+
+async function getContestId() {
+    let response = await pool.query("SELECT * FROM competencia");
+    try {
+        let numComps = response.rows.length
+        let newKey
+        if (numComps > 0) {
+            let lastKey = response.rows[numComps - 1].codigo_competencia
+            let idNum = parseInt(lastKey.slice(4), 10)
+            let newId = idNum + 1
+            newKey = 'COMP' + newId
+        } else
+            newKey = 'COMP1'
+        return newKey
+    } catch (error) {
+        return -1
+    }
+}
 
 app.listen(localHostPort);

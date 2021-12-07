@@ -6,16 +6,16 @@ class CreateContestForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            rows: []
+            rows: [],
+            minMembers: 1
         }
     }
 
-    /* handleSubmit = async e => {
-        console.log("hola :)")
+    handleSubmit = async e => {
         e.preventDefault();
         let contestName1 = document.getElementById('contestName');
         let minMembers1 = document.getElementById('minCompetitors');
-        let maxMembers1 = document.getElementById('maxCompetitors')
+        let maxMembers1 = document.getElementById('maxCompetitors');
         let InscStartDate1 = document.getElementById('InscStartDate');
         let InscStartTime1 = document.getElementById('InscStartTime');
         let InscEndDate1 = document.getElementById('InscEndDate');
@@ -24,11 +24,10 @@ class CreateContestForm extends React.Component {
         let ContStartTime1 = document.getElementById('ContStartTime');
         let ContEndDate1 = document.getElementById('ContEndDate');
         let ContEndTime1 = document.getElementById('ContEndTime');
-
         let tempData = {
             contestName: contestName1.value,
-            minMembers: minMembers1.value,
-            maxMembers: maxMembers1.value,
+            minCompetitor: minMembers1.value,
+            maxCompetitor: maxMembers1.value,
             InscStartDate: InscStartDate1.value,
             InscStartTime: InscStartTime1.value,
             InscEndDate: InscEndDate1.value,
@@ -39,9 +38,6 @@ class CreateContestForm extends React.Component {
             ContEndTime: ContEndTime1.value,
             venues: this.state.rows
         }
-
-        console.log(tempData)
-
         try {
             let config = {
                 method: 'POST',
@@ -56,11 +52,10 @@ class CreateContestForm extends React.Component {
             let msg = document.getElementById("message")
             msg.innerHTML = json.msg;
             msg.className = json.class;
-            console.log(json);
         } catch (error) {
             console.log(error)
         }
-    } */
+    }
 
     handleChange = () => {
         let contestName = document.getElementById('contestName');
@@ -73,6 +68,8 @@ class CreateContestForm extends React.Component {
         let ContEndDate = document.getElementById('ContEndDate');
         let ContEndTime = document.getElementById('ContEndTime');
         let button = document.getElementById('create-contest-btn');
+        let minCompetitors = document.getElementById('minCompetitors');
+        InscStartDate.setAttribute('min', this.props.currentDate);
         InscEndDate.setAttribute('min', InscStartDate.value);
         if (InscEndDate.value == InscStartDate.value)
             InscEndTime.setAttribute('min', InscStartTime.value);
@@ -94,8 +91,10 @@ class CreateContestForm extends React.Component {
             ContEndDate.value = null;
         if (ContStartTime.value >= ContEndTime.value && ContEndDate.value == ContStartDate.value)
             ContEndTime.value = null;
-        if (this.state.rows.length > 0 && contestName.value !== "" && InscStartDate.value !== "" && InscStartTime.value !== "" && InscEndDate.value !== "" && InscEndTime.value !== "" && ContStartDate.value !== "" && ContStartTime.value !== "" && ContEndDate.value !== "" && ContEndTime.value !== "")
+        if (this.state.rows.length > 0 && contestName.value !== "" && InscStartDate.value !== "" && InscStartTime.value !== "" && InscEndDate.value !== "" && InscEndTime.value !== "" && ContStartDate.value !== "" && ContStartTime.value !== "" && ContEndDate.value !== "" && ContEndTime.value !== "") {
             button.disabled = false
+        }
+        this.setState({ rows: this.state.rows,  minMembers: parseInt(minCompetitors.value, 10)});
     }
 
     addVenue = () => {
@@ -116,7 +115,7 @@ class CreateContestForm extends React.Component {
             venuesList.options.namedItem(venuesTF.value).remove();
             let tempRow = this.state.rows
             tempRow.push(venuesTF.value)
-            this.setState({ rows: tempRow });
+            this.setState({ rows: tempRow,  minMembers: this.state.mimMembers});
             selectedVenuesList.value = this.state.rows
         }
         venuesTF.value = null;
@@ -141,7 +140,7 @@ class CreateContestForm extends React.Component {
 
         //Delete row from table
         tempRow.splice(index, 1)
-        this.setState({ rows: tempRow });
+        this.setState({ rows: tempRow, minMembers: this.state.mimMembers});
         if (this.state.rows.length == 0) {
             button.disabled = true
         }
@@ -160,7 +159,7 @@ class CreateContestForm extends React.Component {
             <main>
                 <h1 className="display-2" style={{ fontWeight: "bold", textAlign: "center" }}>Contest creation</h1>
                 <span id="message"></span>
-                <Form method="POST" action="http://localhost:8080/createContest">
+                <Form onSubmit={this.handleSubmit}>
                     <Form.Group className="form-group">
                         <Form.Label className="form-title" htmlFor="contestName">Contest name</Form.Label>
                         <Form.Control type="text" className="form-control" id="contestName" name="contestName" placeholder="Name" onChange={this.handleChange} required />
@@ -171,9 +170,9 @@ class CreateContestForm extends React.Component {
                             <Form.Group>
                                 <Form.Label style={{ fontWeight: "bold" }} htmlFor="exampleFormControlSelect1">Minimum number of members per team</Form.Label>
                                 <Form.Control as="select" onChange={this.handleChange} className="form-control" id="minCompetitors" name="minCompetitor">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
+                                    {this.props.rangeCompetitors.map(e => (
+                                        <option value={e}>{e}</option>
+                                    ))}
                                 </Form.Control>
                             </Form.Group>
                         </Col>
@@ -181,9 +180,9 @@ class CreateContestForm extends React.Component {
                             <Form.Group>
                                 <Form.Label style={{ fontWeight: "bold" }} htmlFor="maxCompetitors">Maximum number of members per team</Form.Label>
                                 <Form.Control as="select" onChange={this.handleChange} className="form-control" id="maxCompetitors" name="maxCompetitor">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
+                                    {this.props.rangeCompetitors.map(e => (
+                                        (this.state.minMembers <= e) && (<option value={e}>{e}</option>)
+                                    ))}
                                 </Form.Control>
                             </Form.Group>
                         </Col>
@@ -193,7 +192,7 @@ class CreateContestForm extends React.Component {
                         <Col>
                             <Form.Group>
                                 <Form.Label htmlFor="InscStartDate">Date</Form.Label>
-                                <Form.Control onChange={this.handleChange} type="date" className="form-control" id="InscStartDate" name="InscStartDate" required />
+                                <Form.Control onChange={this.handleChange} type="date" min={this.props.today} className="form-control" id="InscStartDate" name="InscStartDate" required />
                             </Form.Group>
                         </Col>
                         <Col>
@@ -256,7 +255,7 @@ class CreateContestForm extends React.Component {
                             <Form.Control list="venuesList" id="venuesTF" />
                             <datalist id="venuesList">
                                 {this.props.venues.map(e => (
-                                    <option key={e.name} value={e.name} id={e.name}>{e.name}</option>
+                                    <option key={e.nombre_institucion} value={e.nombre_institucion} id={e.nombre_institucion}>{e.nombre_institucion}</option>
                                 ))}
                             </datalist>
                             <Button className="btn-style2" id="add-venue-btn" onClick={this.addVenue}>Add to List</Button>
