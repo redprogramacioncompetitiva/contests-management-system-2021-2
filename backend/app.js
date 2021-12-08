@@ -5,7 +5,6 @@ const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
-
 //express imports
 
 const express = require('express');
@@ -19,51 +18,50 @@ const {Pool} = require('pg');
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "root",
-    database: "Temporal",
+    password: "password",
+    database: "rpcdb",
     port: "5432"
 });
 
 
-
-
 class User {
-    constructor(email, password, nickname, firstName, lastName, country, verified) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.country = country;
-        this.verified = verified;
-    }
+	constructor(email, password, nickname, firstName, lastName, country, verified) {
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.country = country;
+		this.verified = verified;
+	}
 }
 
 class Email {
-    constructor(email, url, nickname) {
-        this.email = email;
-        this.url = url;
-        this.nickname = nickname
-        this.fromEmail = 'peppapignea@gmail.com';
-        this.fromName = 'Peppa Pig';
-    }
+	constructor(email, url, nickname) {
+		this.email = email;
+		this.url = url;
+		this.nickname = nickname
+		this.fromEmail = 'peppapignea@gmail.com';
+		this.fromName = 'Peppa Pig';
+	}
 
-    async sendEmail() {
-        const mailOptions = {
-            to: this.email,
-            from: {
-                email: this.fromEmail,
-                name: this.fromName,
-            },
-            templateId: 'd-38484195aa134e15ad3d22d2311acc30',
-            dynamic_template_data: {
-                url_act: this.url,
-                name: this.nickname,
-                subject: 'Activa tu cuenta',
-            },
-        };
-        await sgMail.send(mailOptions).then(() => { }, console.error);
-    }
+	async sendEmail() {
+		const mailOptions = {
+			to: this.email,
+			from: {
+				email: this.fromEmail,
+				name: this.fromName,
+			},
+			templateId: 'd-38484195aa134e15ad3d22d2311acc30',
+			dynamic_template_data: {
+				url_act: this.url,
+				name: this.nickname,
+				subject: 'Activa tu cuenta',
+			},
+		};
+		await sgMail.send(mailOptions).then(() => {
+		}, console.error);
+	}
 };
 
 class Team {
@@ -89,24 +87,16 @@ let teamObjects = [
 ]
 
 let usersObjects = [
-    a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
+	a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
 ]
 
 let searchUser = (emailHashed) => {
-    for (let i = 0; i < usersObjects.length; i++) {
-        if (emailHashed === hash(usersObjects[i].email))
-            return i;
-    }
-    return -1;
+	for (let i = 0; i < usersObjects.length; i++) {
+		if (emailHashed === hash(usersObjects[i].email))
+			return i;
+	}
+	return -1;
 }
-
-
-
-
-
-
-
-
 
 let getTeamByName = (name) => {
     for (let i = 0; i < teamObjects.length; i++) {
@@ -142,9 +132,9 @@ const app = express();
 
 const cors = require('cors')
 app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 app.use(cors({
-    origin:'http://localhost:3000'
+	origin: 'http://localhost:3000'
 }))
 app.use(session({
     secret:'123456',
@@ -189,7 +179,6 @@ app.post("/addIntegrant", async (req, res) => {
     let r = await pool.query('SELECT * FROM usuario_equipo WHERE codigo_equipo = $1 AND correouser = $2', [idTeam, email]);
     if((await r).rows.length < 1) {
         let r = await pool.query('INSERT INTO usuario_equipo VALUES($1,$2)', [idTeam, email]);
-
     } else {
         // Ya existe y no puede ser añadido de nuevo
     }
@@ -211,7 +200,19 @@ app.post("/deleteIntegrant", (req, res) => {
     res.redirect(path);
 })
 
+app.post("/authenticate", async (req, res) => {
 
+	let response = await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email, req.body.password])
+	try {
+		console.log(response.rows[0].nickname);
+		res.json({
+			flag: true,
+			nickname: response.rows[0].nickname
+
+		});
+	} catch (error) {
+		res.json({
+			flag: false
 
 app.post("/authenticate", async(req, res) => {
     
@@ -235,9 +236,10 @@ app.post("/authenticate", async(req, res) => {
 
 
 /**
- * 
+ *
  */
 app.post("/register", async (req, res) => {
+
     console.log(req.body);
     if (req.body.password != req.body.confirmpassword){
         res.json({
@@ -279,22 +281,22 @@ app.post("/register", async (req, res) => {
 }*/
 
 function hash(text) {
-    var result = "";
-    for (var i = text.length - 1; i >= 0; i--)
-        result += text.charCodeAt(i).toString(16);
-    return result;
+	var result = "";
+	for (var i = text.length - 1; i >= 0; i--)
+		result += text.charCodeAt(i).toString(16);
+	return result;
 }
 
 app.get("/activate/:id", (req, res) => {
-    const emailId = req.params.id
-    let index = searchUser(emailId)
-    if (index !== -1) {
-        usersObjects[index].verified = true
-        //Te autenticaste correctamente. Bienvenid@ a la RPC!
-        res.redirect('http://localhost:3000/activate/msg1')
-    } else
-        //URL de autenticación inválida.
-        res.redirect('http://localhost:3000/activate/msg2')
+	const emailId = req.params.id
+	let index = searchUser(emailId)
+	if (index !== -1) {
+		usersObjects[index].verified = true
+		//Te autenticaste correctamente. Bienvenid@ a la RPC!
+		res.redirect('http://localhost:3000/activate/msg1')
+	} else
+		//URL de autenticación inválida.
+		res.redirect('http://localhost:3000/activate/msg2')
 })
 
 
@@ -311,21 +313,22 @@ app.get("/teams", async (req, res) => {
 })
 
 app.get("/users", async (req, res) => {
-    let users = await pool.query('SELECT * usuarios');
-    res.json(users.rows)
+	let users = await pool.query('SELECT * usuarios');
+	res.json(users.rows)
 })
 
 
-let codeGenerator = (n)=>{
-    let code = ""
-    for (let i = 0; i < n; i++) {
-        let num = parseInt(Math.random()*(10-0)+0);
-        code += num.toString()
-    }
+let codeGenerator = (n) => {
+	let code = ""
+	for (let i = 0; i < n; i++) {
+		let num = parseInt(Math.random() * (10 - 0) + 0);
+		code += num.toString()
+	}
 
-    return code;
-    
+	return code;
+
 }
+
 
 
 app.post("/recuperation/password/email", (req,res)=>{
@@ -336,28 +339,79 @@ app.post("/recuperation/password/email", (req,res)=>{
     })
 })
 
-app.post("/recuperation/password/code", (req,res)=> {
-    
+app.post("/recuperation/password/code", (req, res) => {
+
 
 })
 
 app.get("/list", (req, res) => {
-    res.send(usersObjects);
+	res.send(usersObjects);
 })
 
 
+//teams of contest -> endpoint
+app.get("/contest/:id", async (req, res) => {
 
+	const contestID = req.params.id
 
+	const query = "SELECT t.codigo_equipo AS id_team,\n" +
+		"t.nombre AS name,\n" +
+		"(SELECT string_agg(u.username,', ')\n" +
+		"FROM usuario u,\n" +
+		"usuario_equipo ut\n" +
+		"WHERE (\n" +
+		"ut.codigo_equipo = t.codigo_equipo\n" +
+		"AND ut.correouser = u.correouser\n" +
+		")\n" +
+		") AS members,\n" +
+		"(SELECT SUM(tc.puntaje)\n" +
+		"FROM equipo_competencia tc\n" +
+		"WHERE t.codigo_equipo = tc.codigo_equipo\n" +
+		")\n" +
+		"AS score\n" +
+		"FROM equipo t,\n" +
+		"equipo_competencia tc\n" +
+		"WHERE (\n" +
+		"tc.codigo_competencia = '" + contestID + "'\n" +
+		"AND t.codigo_equipo = tc.codigo_equipo\n" +
+		")\n"
+	let response = await pool.query(query)
 
+	const data = await response.rows;
 
-    
+	res.json(data);
+})
 
-
-app.get("/ejemplo", async (req,res)=>{
-    let response = await pool.query('SELECT * FROM usuario');
+app.get("/contests", async (req,res)=>{
+    let response = await pool.query('SELECT * FROM competencia');
     console.log(response.rows);
     res.json(response.rows);
-} )
+})
+
+//members of a team -> endpoint
+app.get("/team/:id", async (req, res) => {
+	const teamID = req.params.id
+
+	const query = "SELECT u.username AS nickname, u.nombre AS firstname, u.apellido AS lastname, u.correouser AS email, p.nombre_pais AS country\n" +
+		"FROM usuario u, pais p, usuario_equipo ut\n" +
+		"WHERE (\n" +
+		"ut.codigo_equipo = '" + teamID + "'\n"+
+		"AND ut.correouser = u.correouser\n" +
+		"AND u.codigo_pais = p.codigo_pais\n"+
+		")\n"
+
+	let response = await pool.query(query)
+
+	const data = await response.rows;
+
+	res.json(data);
+})
+
+app.get("/ejemplo", async (req, res) => {
+	let response = await pool.query('SELECT * FROM usuario');
+	console.log(response.rows);
+	res.json(response.rows);
+})
 
 
 app.listen(localHostPort);
