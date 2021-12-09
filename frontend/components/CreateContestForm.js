@@ -6,8 +6,7 @@ class CreateContestForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            rows: [],
-            minMembers: 1
+            rows: []
         }
     }
 
@@ -74,7 +73,13 @@ class CreateContestForm extends React.Component {
         let ContEndTime = document.getElementById('ContEndTime');
         let button = document.getElementById('create-contest-btn');
         let minCompetitors = document.getElementById('minCompetitors');
+        let maxCompetitors = document.getElementById('maxCompetitors');
         InscEndDate.setAttribute('min', InscStartDate.value);
+        maxCompetitors.setAttribute('min', minCompetitors.value);
+        if (maxCompetitors.value < minCompetitors.value)
+            maxCompetitors.value = null;
+        if (minCompetitors.value < 1)
+            minCompetitors.value = null;
         if (InscEndDate.value == InscStartDate.value)
             InscEndTime.setAttribute('min', InscStartTime.value);
         if (InscStartDate.value > InscEndDate.value)
@@ -98,7 +103,7 @@ class CreateContestForm extends React.Component {
         if (this.state.rows.length > 0 && contestName.value !== "" && InscStartDate.value !== "" && InscStartTime.value !== "" && InscEndDate.value !== "" && InscEndTime.value !== "" && ContStartDate.value !== "" && ContStartTime.value !== "" && ContEndDate.value !== "" && ContEndTime.value !== "") {
             button.disabled = false
         }
-        this.setState({ rows: this.state.rows, minMembers: parseInt(minCompetitors.value, 10) });
+        this.setState({ rows: this.state.rows });
     }
 
     addVenue = () => {
@@ -119,7 +124,7 @@ class CreateContestForm extends React.Component {
             venuesList.options.namedItem(venuesTF.value).remove();
             let tempRow = this.state.rows
             tempRow.push(venuesTF.value)
-            this.setState({ rows: tempRow, minMembers: this.state.minMembers });
+            this.setState({ rows: tempRow });
             selectedVenuesList.value = this.state.rows
         }
         venuesTF.value = null;
@@ -144,7 +149,7 @@ class CreateContestForm extends React.Component {
 
         //Delete row from table
         tempRow.splice(index, 1)
-        this.setState({ rows: tempRow, minMembers: this.state.minMembers });
+        this.setState({ rows: tempRow });
         if (this.state.rows.length == 0) {
             button.disabled = true
         }
@@ -172,22 +177,14 @@ class CreateContestForm extends React.Component {
                     <Row>
                         <Col>
                             <Form.Group>
-                                <Form.Label style={{ fontWeight: "bold" }} htmlFor="exampleFormControlSelect1">Minimum number of members per team</Form.Label>
-                                <Form.Control as="select" onChange={this.handleChange} className="form-control" id="minCompetitors" name="minCompetitor">
-                                    {this.props.rangeCompetitors.map(e => (
-                                        <option key={e} value={e}>{e}</option>
-                                    ))}
-                                </Form.Control>
+                                <Form.Label style={{ fontWeight: "bold" }} htmlFor="minCompetitors">Minimum number of members per team</Form.Label>
+                                <Form.Control type="number" onChange={this.handleChange} className="form-control" id="minCompetitors" name="minCompetitor" min="1"/>
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label style={{ fontWeight: "bold" }} htmlFor="maxCompetitors">Maximum number of members per team</Form.Label>
-                                <Form.Control as="select" onChange={this.handleChange} className="form-control" id="maxCompetitors" name="maxCompetitor">
-                                    {this.props.rangeCompetitors.map(e => (
-                                        (this.state.minMembers <= e) && (<option key={e} value={e}>{e}</option>)
-                                    ))}
-                                </Form.Control>
+                                <Form.Control type="number" onChange={this.handleChange} className="form-control" id="maxCompetitors" name="maxCompetitor"/>
                             </Form.Group>
                         </Col>
                     </Row>
