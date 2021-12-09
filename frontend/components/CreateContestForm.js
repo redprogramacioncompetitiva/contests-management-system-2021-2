@@ -49,9 +49,14 @@ class CreateContestForm extends React.Component {
             }
             let response = await fetch('http://localhost:8080/createContest', config)
             let json = await response.json();
-            let msg = document.getElementById("message")
-            msg.innerHTML = json.msg;
-            msg.className = json.class;
+            if (json.flag) {
+                alert('Contest successfully created!')
+                window.location.href = "http://localhost:3000/contests";
+            } else {
+                let msg = document.getElementById("message")
+                msg.innerHTML = json.msg;
+                msg.className = json.class;
+            }
         } catch (error) {
             console.log(error)
         }
@@ -69,7 +74,6 @@ class CreateContestForm extends React.Component {
         let ContEndTime = document.getElementById('ContEndTime');
         let button = document.getElementById('create-contest-btn');
         let minCompetitors = document.getElementById('minCompetitors');
-        InscStartDate.setAttribute('min', this.props.currentDate);
         InscEndDate.setAttribute('min', InscStartDate.value);
         if (InscEndDate.value == InscStartDate.value)
             InscEndTime.setAttribute('min', InscStartTime.value);
@@ -94,7 +98,7 @@ class CreateContestForm extends React.Component {
         if (this.state.rows.length > 0 && contestName.value !== "" && InscStartDate.value !== "" && InscStartTime.value !== "" && InscEndDate.value !== "" && InscEndTime.value !== "" && ContStartDate.value !== "" && ContStartTime.value !== "" && ContEndDate.value !== "" && ContEndTime.value !== "") {
             button.disabled = false
         }
-        this.setState({ rows: this.state.rows,  minMembers: parseInt(minCompetitors.value, 10)});
+        this.setState({ rows: this.state.rows, minMembers: parseInt(minCompetitors.value, 10) });
     }
 
     addVenue = () => {
@@ -115,7 +119,7 @@ class CreateContestForm extends React.Component {
             venuesList.options.namedItem(venuesTF.value).remove();
             let tempRow = this.state.rows
             tempRow.push(venuesTF.value)
-            this.setState({ rows: tempRow,  minMembers: this.state.mimMembers});
+            this.setState({ rows: tempRow, minMembers: this.state.minMembers });
             selectedVenuesList.value = this.state.rows
         }
         venuesTF.value = null;
@@ -126,7 +130,7 @@ class CreateContestForm extends React.Component {
     cancel = () => {
         let isExecuted = confirm("Are you sure? You'll lose the entered data.")
         if (isExecuted) {
-            //cancel
+            window.location.href = "http://localhost:3000/contests";
         }
     }
 
@@ -140,7 +144,7 @@ class CreateContestForm extends React.Component {
 
         //Delete row from table
         tempRow.splice(index, 1)
-        this.setState({ rows: tempRow, minMembers: this.state.mimMembers});
+        this.setState({ rows: tempRow, minMembers: this.state.minMembers });
         if (this.state.rows.length == 0) {
             button.disabled = true
         }
@@ -171,7 +175,7 @@ class CreateContestForm extends React.Component {
                                 <Form.Label style={{ fontWeight: "bold" }} htmlFor="exampleFormControlSelect1">Minimum number of members per team</Form.Label>
                                 <Form.Control as="select" onChange={this.handleChange} className="form-control" id="minCompetitors" name="minCompetitor">
                                     {this.props.rangeCompetitors.map(e => (
-                                        <option value={e}>{e}</option>
+                                        <option key={e} value={e}>{e}</option>
                                     ))}
                                 </Form.Control>
                             </Form.Group>
@@ -181,7 +185,7 @@ class CreateContestForm extends React.Component {
                                 <Form.Label style={{ fontWeight: "bold" }} htmlFor="maxCompetitors">Maximum number of members per team</Form.Label>
                                 <Form.Control as="select" onChange={this.handleChange} className="form-control" id="maxCompetitors" name="maxCompetitor">
                                     {this.props.rangeCompetitors.map(e => (
-                                        (this.state.minMembers <= e) && (<option value={e}>{e}</option>)
+                                        (this.state.minMembers <= e) && (<option key={e} value={e}>{e}</option>)
                                     ))}
                                 </Form.Control>
                             </Form.Group>

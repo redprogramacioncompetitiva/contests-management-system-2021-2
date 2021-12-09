@@ -229,7 +229,8 @@ app.post("/createContest", async (req, res) => {
     let contestKey = await getContestId()
     if (contestKey == -1) {
         res.json({
-            msg: 'omething went wrong, please try again',
+            flag: false,
+            msg: 'Something went wrong, please try again',
             class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
         });
         return
@@ -248,9 +249,6 @@ app.post("/createContest", async (req, res) => {
         let minCompetitors = parseInt(req.body.minCompetitor, 10)
         let response1 = await pool.query("SELECT * FROM competencia WHERE fecha_finalizacion = TO_TIMESTAMP($1, 'yyyy-mm-dd HH24:MI') AND fecha_inicio = TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI') AND fecha_fin_ins = TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI') AND fecha_inicio_ins = TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI') AND nombre = $5 AND cantidadmaxporequipo = $6 AND cantidadminporequipo = $7", [fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
         if (response1.rows.length > 0) {
-            console.log("entre")
-            console.log(response1.rows)
-
             //Si hay mas de una competencia en donde coincidan todos los datos, entonces se procede a comprobar por competencia que
             //ninguna tenga las mismas sedes que la competencia que se esta intentando agregar
             let atLeastOneIsEqual = false;
@@ -258,29 +256,22 @@ app.post("/createContest", async (req, res) => {
                 let response2 = await pool.query('SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = $1', [response1.rows[j].codigo_competencia])
                 let venuesInDB1 = response2.rows
                 let venuesInDB = []
-                for (let i = 0; i < venuesInDB1.length; i++) {
+                for (let i = 0; i < venuesInDB1.length; i++)
                     venuesInDB.push(venuesInDB1[i].codigo_institucion)
-                }
-                console.log(venuesInDB)
-                console.log(venuesKeys)
                 if (venuesInDB.length > 0) {
-                    console.log("entre 2")
                     let equal = false
                     for (let i = 0; i < venuesKeys.length && !equal; i++) {
                         let temp = venuesKeys[i]
-                        console.log(temp)
                         if (venuesInDB.includes(temp))
                             equal = true
                     }
-                    if (equal) {
-                        console.log("entre 3")
+                    if (equal)
                         atLeastOneIsEqual = true
-                    }
                 }
             }
             if (atLeastOneIsEqual) {
-                console.log("entre 4")
                 res.json({
+                    flag: false,
                     msg: 'There is already a contest in that date range with that name in at least one of the selected venues!',
                     class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
                 });
@@ -293,8 +284,7 @@ app.post("/createContest", async (req, res) => {
             await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, contestKey])
         }
         res.json({
-            msg: 'Contest successfully created!',
-            class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 success'
+            flag: true
         });
     }
 })
