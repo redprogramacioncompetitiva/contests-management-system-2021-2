@@ -6,7 +6,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
 //express imports
-
 const express = require('express');
 const session = require('express-session');
 
@@ -24,6 +23,16 @@ const pool = new Pool({
 });
 
 
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    host: "localhost",
+    user: "postgres",
+    password: "password",
+    database: "Temporal",
+    port: "5432"
+});
+
 class User {
 	constructor(email, password, nickname, firstName, lastName, country, verified) {
 		this.email = email;
@@ -34,6 +43,28 @@ class User {
 		this.country = country;
 		this.verified = verified;
 	}
+}
+
+class Venue {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+class Contest {
+    constructor(name, InscStartDate, InscStartTime, InscEndDate, InscEndTime, ContStartDate, ContStartTime, ContEndDate, ContEndTime, venues) {
+        this.name = name;
+        this.InscStartDate = InscStartDate;
+        this.InscStartTime = InscStartTime;
+        this.InscEndDate = InscEndDate;
+        this.InscEndTime = InscEndTime;
+        this.ContStartDate = ContStartDate;
+        this.ContStartTime = ContStartTime;
+        this.ContEndDate = ContEndDate;
+        this.ContEndTime = ContEndTime;
+        this.venues = venues;
+    }
 }
 
 class Email {
@@ -88,6 +119,14 @@ let teamObjects = [
 
 let usersObjects = [
 	a = new User("seyerman@gmail.com", hash("contrasenia"), "seyerman", "Juan Manuel", "Reyes Garcia", "Colombia", true)
+]
+
+let contests = []
+
+let venues = [
+    new Venue(1, "Icesi"),
+    new Venue(2, "Sanbue"),
+    new Venue(3, "Jave")
 ]
 
 let searchUser = (emailHashed) => {
@@ -159,6 +198,13 @@ app.post("/createTeam", async (req, res) => {
     }
 })
 
+app.post("/authenticate", (req, res) => {
+    if (authenticate(req.body.email, hash(req.body.password)))
+        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
+    else
+        res.redirect("http://localhost:3000/loginError");
+})
+
 app.post("/deleteTeam", (req, res) => {
     let teamObjectsTemp = []
     for (let i = 0; i < teamObjects.length; i++) {
@@ -200,19 +246,7 @@ app.post("/deleteIntegrant", (req, res) => {
     res.redirect(path);
 })
 
-app.post("/authenticate", async (req, res) => {
 
-	let response = await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email, req.body.password])
-	try {
-		console.log(response.rows[0].nickname);
-		res.json({
-			flag: true,
-			nickname: response.rows[0].nickname
-
-		});
-	} catch (error) {
-		res.json({
-			flag: false
 
 app.post("/authenticate", async(req, res) => {
     
@@ -344,6 +378,15 @@ app.post("/recuperation/password/code", (req, res) => {
 
 })
 
+app.get("/venues", async (req, res) => {
+    let response = await pool.query("SELECT * FROM institucion")
+    try {
+        res.send(response.rows)
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 app.get("/list", (req, res) => {
 	res.send(usersObjects);
 })
@@ -413,5 +456,90 @@ app.get("/ejemplo", async (req, res) => {
 	res.json(response.rows);
 })
 
+// Contest:
+// codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_incio_ins, nombre, cantidadmaxporequipo, cantidadminporequipo
+// Venue:
+// codigo_institucion, codigo_competencia
+app.post("/createContest", async (req, res) => {
+    let contestKey = await getContestId()
+    if (contestKey == -1) {
+        res.json({
+            flag: false,
+            msg: 'Something went wrong, please try again',
+            class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
+        });
+        return
+    } else {
+        let venues = req.body.venues
+        let venuesKeys = []
+        for (let i = 0; i < venues.length; i++) {
+            let venueKey = await pool.query('SELECT codigo_institucion FROM institucion WHERE nombre_institucion = $1', [venues[i]])
+            venuesKeys.push(venueKey.rows[0].codigo_institucion)
+        }
+        let fecha_finalizacion = req.body.ContEndDate + ' ' + req.body.ContEndTime
+        let fecha_inicio = req.body.ContStartDate + ' ' + req.body.ContStartTime
+        let fecha_fin_ins = req.body.InscEndDate + ' ' + req.body.InscEndTime
+        let fecha_inicio_ins = req.body.InscStartDate + ' ' + req.body.InscStartTime
+        let maxCompetitors = parseInt(req.body.maxCompetitor, 10)
+        let minCompetitors = parseInt(req.body.minCompetitor, 10)
+        let response1 = await pool.query("SELECT * FROM competencia WHERE fecha_finalizacion = TO_TIMESTAMP($1, 'yyyy-mm-dd HH24:MI') AND fecha_inicio = TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI') AND fecha_fin_ins = TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI') AND fecha_inicio_ins = TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI') AND nombre = $5 AND cantidadmaxporequipo = $6 AND cantidadminporequipo = $7", [fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
+        if (response1.rows.length > 0) {
+            //Si hay mas de una competencia en donde coincidan todos los datos, entonces se procede a comprobar por competencia que
+            //ninguna tenga las mismas sedes que la competencia que se esta intentando agregar
+            let atLeastOneIsEqual = false;
+            for (let j = 0; j < response1.rows.length && !atLeastOneIsEqual; j++) {
+                let response2 = await pool.query('SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = $1', [response1.rows[j].codigo_competencia])
+                let venuesInDB1 = response2.rows
+                let venuesInDB = []
+                for (let i = 0; i < venuesInDB1.length; i++)
+                    venuesInDB.push(venuesInDB1[i].codigo_institucion)
+                if (venuesInDB.length > 0) {
+                    let equal = false
+                    for (let i = 0; i < venuesKeys.length && !equal; i++) {
+                        let temp = venuesKeys[i]
+                        if (venuesInDB.includes(temp))
+                            equal = true
+                    }
+                    if (equal)
+                        atLeastOneIsEqual = true
+                }
+            }
+            if (atLeastOneIsEqual) {
+                res.json({
+                    flag: false,
+                    msg: 'There is already a contest in that date range with that name in at least one of the selected venues!',
+                    class: 'card p-3 w-50 shadow text-white w-auto text-center mt-3 error'
+                });
+                return
+            }
+        }
+        await pool.query("INSERT INTO competencia (codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, nombre, CantidadMaxPorEquipo, CantidadMinPorEquipo) VALUES ($1, TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($5, 'yyyy-mm-dd HH24:MI'), $6, $7, $8)", [contestKey, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
+        for (let i = 0; i < venues.length; i++) {
+            let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
+            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, contestKey])
+        }
+        res.json({
+            flag: true
+        });
+    }
+})
+
+async function getContestId() {
+    let response = await pool.query("SELECT * FROM competencia");
+    try {
+        let numComps = response.rows.length
+        let newKey
+        if (numComps > 0) {
+            let lastKey = response.rows[numComps - 1].codigo_competencia
+            let idNum = parseInt(lastKey.slice(4), 10)
+            let newId = idNum + 1
+            newKey = 'COMP' + newId
+        } else
+            newKey = 'COMP1'
+        return newKey
+    } catch (error) {
+        return -1
+    }
+}
 
 app.listen(localHostPort);

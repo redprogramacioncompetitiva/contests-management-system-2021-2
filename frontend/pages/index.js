@@ -11,6 +11,7 @@ export default function Home() {
 
   return (
 
+<<<<<<< HEAD
   
       <div className="  m-auto ">
 
@@ -27,5 +28,29 @@ export default function Home() {
     
 </div>
    
+=======
+    <div className="container">
+
+      <HeadRPC />
+
+      <LoginForm />
+
+      <style jsx global>{`
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+          font-family: Roboto,
+            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
+
+    </div>
+>>>>>>> create-contest
   )
 }
