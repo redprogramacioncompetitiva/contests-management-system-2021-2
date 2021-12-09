@@ -68,6 +68,5 @@ createContest.getInitialProps = async () => {
         day = '0' + day
     }
     let today = year + "-" + month + "-" + day
-    console.log(today)
     return { venues: venues, today: today }
 }
