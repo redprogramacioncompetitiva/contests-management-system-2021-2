@@ -1,5 +1,6 @@
 import HeadRPC from '../../components/HeadRPC'
 import Link from 'next/Link'
+import Head from 'next/head'
 
 
 
@@ -8,7 +9,15 @@ export default function lastsUsersRecords() {
     return (
 
         <div className="container">
-            <HeadRPC />
+            <div>
+                <Head>
+                    <title>Lista accesos cuentas registradas</title>
+
+                </Head>
+            </div>
+            <div>
+                <HeadRPC />
+            </div>
 
             <style jsx global>{`
         html,
@@ -36,28 +45,28 @@ export default function lastsUsersRecords() {
         }
       `}</style>
             <div>
-            <table className="table table-hover table-striped text-center">
+                <table className="table table-hover table-striped text-center">
 
-<thead>
+                    <thead>
 
-    <tr>
-        <th>
-        <Link href="../../">
-                    <a className="btn btn-primary" role="button">Reportes Generales</a>
-                </Link>
-        </th>
-        <th>
-        <input className="searchBar" type="search" placeholder="Buscar">
-            
-        </input>
-        </th>
-        
-    </tr>
+                        <tr>
+                            <th>
+                                <Link href="/records/generalReports">
+                                    <a className="btn btn-primary" role="button">Reportes Generales</a>
+                                </Link>
+                            </th>
+                            <th>
+                                <input className="searchBar" type="search" placeholder="Buscar">
 
-</thead>
+                                </input>
+                            </th>
 
-</table>
-    
+                        </tr>
+
+                    </thead>
+
+                </table>
+
 
 
             </div>
