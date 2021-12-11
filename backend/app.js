@@ -23,15 +23,6 @@ const pool = new Pool({
 });
 
 
-const { Pool } = require('pg');
-
-const pool = new Pool({
-    host: "localhost",
-    user: "postgres",
-    password: "password",
-    database: "Temporal",
-    port: "5432"
-});
 
 class User {
 	constructor(email, password, nickname, firstName, lastName, country, verified) {
