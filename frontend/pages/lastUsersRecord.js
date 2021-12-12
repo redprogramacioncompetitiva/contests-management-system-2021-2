@@ -1,6 +1,6 @@
-import HeadRPC from '../../components/HeadRPC'
-import Link from 'next/Link'
-import Head from 'next/head'
+import HeadRPC from '../components/HeadRPC';
+import Link from 'next/Link';
+import Head from 'next/head';
 
 
 
@@ -9,14 +9,9 @@ export default function lastsUsersRecords() {
     return (
 
         <div className="container">
+            
             <div>
-                <Head>
-                    <title>Lista accesos cuentas registradas</title>
-
-                </Head>
-            </div>
-            <div>
-                <HeadRPC />
+                <HeadRPC title = "Lista accesos cuentas registradas" />
             </div>
 
             <style jsx global>{`
