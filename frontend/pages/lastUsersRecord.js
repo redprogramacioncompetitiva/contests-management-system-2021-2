@@ -46,7 +46,7 @@ export default function lastsUsersRecords() {
 
                         <tr>
                             <th>
-                                <Link href="/records/generalReports">
+                                <Link href="/generalReports">
                                     <a className="btn btn-primary" role="button">Reportes Generales</a>
                                 </Link>
                             </th>
