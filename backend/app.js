@@ -18,17 +18,6 @@ const pool = new Pool({
     host: "localhost",
     user: "postgres",
     password: "password",
-    database: "rpcdb",
-    port: "5432"
-});
-
-
-const { Pool } = require('pg');
-
-const pool = new Pool({
-    host: "localhost",
-    user: "postgres",
-    password: "password",
     database: "Temporal",
     port: "5432"
 });
