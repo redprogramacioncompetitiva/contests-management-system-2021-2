@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import RegisterInCompetition from '../components/RegisterInCompetition'
 
-export default function RegisterC() {
+export default function Register() {
 
     return (
-        <div className="container">
+        <div>
 
             <Head>
 
@@ -18,7 +18,7 @@ export default function RegisterC() {
 
             </Head>
 
-            <RegisterInCompetition />
+            <RegisterInCompetition/>
 
         </div>
 

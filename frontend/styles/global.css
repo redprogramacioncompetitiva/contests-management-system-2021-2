@@ -60,7 +60,7 @@
     border-color: #FFA901;
 }
 
-.body-register{
+.register-body{
     background-image: url("../public/img/imgRegisterC.png");
     background-repeat: no-repeat;
     background-size: cover;
@@ -74,7 +74,6 @@
     border-radius: 40px;
     padding: 50px;
     background-color: rgba(242,242,242,.8);
-    position: center;
 }
 img {
     max-width: 100%;
@@ -95,7 +94,10 @@ img {
 }
 
 .text-input{
-    font-size: .9rem;
+    padding: 5px;
+    font-size: .8rem;
+    border: none;
+    border-radius: 7px;
 }
 
 .a-text-register{
