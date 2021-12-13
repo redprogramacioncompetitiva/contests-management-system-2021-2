@@ -19,7 +19,8 @@
     "express-session": "^1.17.2",
     "jspdf": "^2.4.0",
     "pg": "^8.7.1",
-    "react-bootstrap-validation": "^0.1.11"
+    "react-bootstrap-validation": "^0.1.11",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
