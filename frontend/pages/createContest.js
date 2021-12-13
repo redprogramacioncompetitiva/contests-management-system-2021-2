@@ -25,7 +25,7 @@ export default function createContest({ venues, today }) {
 
             </Head>
 
-            <CreateContestForm venues={venues} rangeCompetitors={[1, 2, 3]} today={today} />
+            <CreateContestForm venues={venues} today={today} />
 
             <style>{`
         .form-title{
