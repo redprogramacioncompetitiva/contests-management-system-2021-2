@@ -6,6 +6,7 @@ export default function home({ users }) {
 
     const router = useRouter()
     let nickname = router.query.user
+    
     console.log(users)
 
     return (
@@ -22,7 +23,7 @@ export default function home({ users }) {
 
                 </Link>
 
-                <p className="p-2">{nickname}</p>
+                <p className="p-2">{router.query.user}</p>
 
             </div>
 
@@ -32,20 +33,30 @@ export default function home({ users }) {
 
                     <tr>
                         <th>
-                            Email
+                            Username
                         </th>
                         <th>
-                            Nickname
+                            Nombre
                         </th>
                         <th>
-                            First name
+                            Apellido
                         </th>
                         <th>
-                            Last Name
+                            Descripción
                         </th>
                         <th>
-                            Country
+                            Codigo Institución
                         </th>
+                        <th>
+                            Codigo Rol
+                        </th>
+                        <th>
+                            Codigo Pais
+                        </th>
+                        <th>
+                            Correo Electronico
+                        </th>
+
                     </tr>
 
                 </thead>
@@ -55,19 +66,28 @@ export default function home({ users }) {
                     {users.map(e => (
                         <tr>
                             <td>
-                                {e.email}
+                                {e.username}
                             </td>
                             <td>
-                                {e.nickname}
+                                {e.nombre}
                             </td>
                             <td>
-                                {e.firstname}
+                                {e.apellido}
                             </td>
                             <td>
-                                {e.lastname}
+                                {e.descripcion}
                             </td>
                             <td>
-                                {e.country}
+                                {e.codigo_institucion}
+                            </td>
+                            <td>
+                                {e.codigo_rol}
+                            </td>
+                            <td>
+                                {e.codigo_pais}
+                            </td>
+                            <td>
+                                {e.correouser}
                             </td>
                         </tr>
                     ))}

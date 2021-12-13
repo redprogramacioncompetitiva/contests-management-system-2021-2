@@ -84,7 +84,7 @@ codigo_equipo SERIAL,
 nombre VARCHAR(50) NOT NULL,
 ownerEmail VARCHAR(100),
 PRIMARY KEY(codigo_equipo),
-FOREIGN KEY (correoUser) REFERENCES usuario(correoUser)
+FOREIGN KEY (ownerEmail) REFERENCES usuario(correoUser)
 );
 
 Create table credencial
@@ -111,7 +111,7 @@ Create table permiso
 
 Create table usuario_equipo
 (
-    codigo_equipo VARCHAR(20),
+    codigo_equipo SERIAL,
     correoUser    VARCHAR(100),
     PRIMARY KEY (codigo_equipo, correoUser),
     FOREIGN KEY (correoUser) REFERENCES usuario (correoUser),
@@ -120,7 +120,7 @@ Create table usuario_equipo
 
 Create table equipo_competencia
 (
-    codigo_equipo      VARCHAR(20),
+    codigo_equipo  SERIAL,
     codigo_competencia VARCHAR(20),
     puntaje            INTEGER DEFAULT 0,
     PRIMARY KEY (codigo_equipo, codigo_competencia),

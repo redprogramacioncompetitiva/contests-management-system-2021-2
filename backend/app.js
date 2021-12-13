@@ -189,12 +189,7 @@ app.post("/createTeam", async (req, res) => {
     }
 })
 
-app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    else
-        res.redirect("http://localhost:3000/loginError");
-})
+
 
 app.post("/deleteTeam", (req, res) => {
     let teamObjectsTemp = []
@@ -241,14 +236,15 @@ app.post("/deleteIntegrant", (req, res) => {
 
 app.post("/authenticate", async(req, res) => {
     
-  let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
-  emailLogged = response.rows[0].email;
-  console.log(emailLogged)
+  let response =  await pool.query("SELECT * FROM usuario WHERE correoUser = $1 AND contraseña = $2", [req.body.email,req.body.password])
+  
   try {
-    console.log(response.rows[0].nickname);
+    let emailLogged = response.rows[0].correouser;
+    console.log(emailLogged)
+    console.log(response.rows[0].username);
     res.json({
         flag : true,
-        nickname: response.rows[0].nickname
+        nickname: response.rows[0].username
         
     });
   } catch (error) {
@@ -264,7 +260,8 @@ app.post("/authenticate", async(req, res) => {
  *
  */
 app.post("/register", async (req, res) => {
-
+    let country = "";
+    let school = "";
     console.log(req.body);
     if (req.body.password != req.body.confirmpassword){
         res.json({
@@ -273,21 +270,47 @@ app.post("/register", async (req, res) => {
         })
     }else{
         try {
-            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
-            if ((await response).rows.length > 0){
+            let response = await pool.query('SELECT * FROM usuario WHERE correouser = $1',[req.body.email])
+            if (( response).rows.length > 0){
                 res.json({
                     flag: false,
                     msg: 1
                 })
             }else{
-                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
-                if ((await r).rows.length > 0){
+                let r = await pool.query('SELECT * FROM usuario WHERE username = $1',[req.body.nickname])
+                if (( r).rows.length > 0){
                     res.json({
                         flag: false,
                         msg: 2
                     })
                 }else{
-                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                        let response1 = await pool.query("SELECT * FROM pais WHERE nombre_pais = $1 ",[req.body.country])
+                        if (response1.rows.length > 0){
+                            country = response1.rows[0].codigo_pais
+                            console.log(country)
+                            
+                        }else{
+                            res.json({
+                                flag: false,
+                                msg: 5 
+                            })
+                        }
+                    
+
+                    
+                        let response2 = await pool.query("SELECT * FROM institucion WHERE nombre_institucion = $1 ",[req.body.institution])
+                        if (response2.rows.length>0){
+                            school = response2.rows[0].codigo_institucion
+                            console.log(school)
+                        }else{
+                            res.json({
+                                flag: false,
+                                msg: 4 
+                            })
+                        }
+                    
+                    let re = await pool.query("INSERT INTO usuario (username, nombre, apellido, descripcion, codigo_institucion, codigo_rol, contraseña,codigo_pais, correoUser) VALUES ($1, $2, $3, $4,$5,$6,$7,$8,$9)", [req.body.nickname, req.body.firstname, req.body.lastname, req.body.description, school, 'R01', req.body.password,country,req.body.email])
                     
                     res.json({
                         flag: true
@@ -513,6 +536,12 @@ app.post("/createContest", async (req, res) => {
             flag: true
         });
     }
+})
+
+app.get("/institutions", async (req,res)=>{
+    let response = await pool.query("SELECT nombre_institucion FROM institucion");
+
+    res.send(response.rows);
 })
 
 async function getContestId() {
