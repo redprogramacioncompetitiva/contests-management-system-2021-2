@@ -14,6 +14,7 @@ class HeadRPC extends React.Component {
             <div>
               
                 <Head>
+                    <title>{this.props.title}</title>
                 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"/>
 
@@ -38,4 +39,4 @@ class HeadRPC extends React.Component {
     }
 }
 
-export default HeadRPC
+export default HeadRPC;
