@@ -16,7 +16,7 @@ const {Pool} = require('pg');
 const pool = new Pool({
     host: "localhost",
     user: "postgres",
-    password: "password",
+    password: "juanpa1615",
     database: "Temporal",
     port: "5432"
 });
@@ -98,7 +98,7 @@ app.use(cors({
 
 
 
-app.post("/authenticate", async(req, res) => {
+/*app.post("/authenticate", async(req, res) => {
     
   let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
   try {
@@ -114,7 +114,7 @@ app.post("/authenticate", async(req, res) => {
           
       });
   }
-})
+})*/
 
 
 /**
@@ -216,7 +216,73 @@ app.get("/list", (req, res) => {
 
 
 
+//micodigp
 
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const PassportLocal = require('passport-local').Strategy;
+
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser('mysecretsession'));
+app.use(session({
+    secret:'mi ultra super secreto',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new PassportLocal(async function(username,password, done){
+    
+    let response =await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [username,password]);
+
+    if(response.rows.length == 1){
+       
+        var id = response.rows[0].email;
+        var nickname = response.rows[0].nickname;
+        return done(null, {id: id  , name: nickname});
+    }
+    done(null, false);
+}));
+
+//1 => Serializacion
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+});
+
+//Deseralizacion
+passport.deserializeUser(function(id, done){
+    done(null, {id: 1, name: "cody"});
+});
+
+app.get("/login", (req, res) =>{
+    //mostrar el login
+    res.send(' \
+    <form action="/login" method="post"> \
+        <input type="text" name="username"> \
+        <input type="password" name="password"> \
+        <input type="submit" value="enviar"> \
+    </form>'
+    );
+});
+
+app.post("/authenticate", passport.authenticate('local'),function(req, res) {
+        res.json({
+            flag : true,
+            nickname: req.user.name
+        });  
+  } );
+
+app.get("/home",(req, res, next) =>{
+    if(req.isAuthenticated()) return next(); 
+    res.redirect("/login");
+},(req,res) =>{
+    res.send("SI estas registtrado");
+});
+
+
+
+//fin de mi codigo
 
 
     

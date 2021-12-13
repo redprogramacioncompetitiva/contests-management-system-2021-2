@@ -48,6 +48,7 @@ class LoginForm extends React.Component {
       
 
       let response = await fetch('http://localhost:8080/authenticate', config)
+      console.log(response);
       let json = await response.json();
       if (json.flag == true){
         this.message = "";
@@ -55,16 +56,12 @@ class LoginForm extends React.Component {
         a.innerHTML = this.message;
         
         location.href = "/home/"+ json.nickname;
-      }else{
-        this.message = "Please verify your credentials";
-        
-        let a = document.getElementById("errorMessage")
-        a.innerHTML = this.message;
       }
-      console.log(json);
-      console.log(this.message);
     } catch (error) {
-      
+      this.message = "Please verify your credentials";
+        
+      let a = document.getElementById("errorMessage")
+      a.innerHTML = this.message;
     }
   }
 
@@ -94,7 +91,7 @@ class LoginForm extends React.Component {
             <div className="modal-body">
               <div className="m-3">
                 Email<br />
-              <FormInput type = "text" hint = "E-mail"  name = "email" value = {this.state.email} onChange = {this.handleChange}   />
+              <FormInput type = "text" hint = "E-mail"  name = "username" value = {this.state.email} onChange = {this.handleChange}   />
                
               </div>
               <div className="m-3">
