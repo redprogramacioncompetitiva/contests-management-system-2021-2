@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 
 
-export default function lastsUsersRecords() {
+export default function lastsUsersRecords({users}) {
 
     return (
 
@@ -95,7 +95,29 @@ export default function lastsUsersRecords() {
                     </tr>
 
                 </thead>
+                <tbody>
 
+                    {users.map(e => (
+                        <tr>
+                            <td>
+                                {e.email}
+                            </td>
+                            <td>
+                                {e.nickname}
+                            </td>
+                            <td>
+                                {e.firstname}
+                            </td>
+                            <td>
+                                {e.lastname}
+                            </td>
+                            <td>
+                                {e.country}
+                            </td>
+                        </tr>
+                    ))}
+
+                </tbody>
             </table>
             <div>
                 <Link href="../../">
@@ -112,4 +134,9 @@ export default function lastsUsersRecords() {
     );
 }
 
+lastsUsersRecords.getInitialProps = async () => {
+    const response = await fetch('http://localhost:8080/lastUsersRecord')
+    const users = await response.json()
+    return { users: users }
+}
 

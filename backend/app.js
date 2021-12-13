@@ -3,7 +3,10 @@
 const sgMail = require('@sendgrid/mail');
 const localHostPort = 8080;
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+//logger
+const logger = require("./logger")
+//express imports
+const reporter = require("./report")
 
 //express imports
 const express = require('express');
@@ -240,10 +243,12 @@ app.post("/deleteIntegrant", (req, res) => {
 
 
 app.post("/authenticate", async(req, res) => {
-    
+
   let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
   emailLogged = response.rows[0].email;
   console.log(emailLogged)
+    //generate log when user autenticated.
+    logger.info(`${response.rows[0].codigo_rol} - ${response.rows[0].nickname}`);
   try {
     console.log(response.rows[0].nickname);
     res.json({
@@ -675,6 +680,11 @@ app.post("/registerInCompetition", async (req,res)=>{
     
     
 
+})
+
+app.get("/lastUsersRecord", async (req,res)=>{
+    const r = new reporter();
+    res.send(r.generateLastestAcces());
 })
 
 app.listen(localHostPort);
