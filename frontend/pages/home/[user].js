@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import HeadRPC from '../../components/HeadRPC'
 import { useRouter } from 'next/router'
 import Link from 'next/Link'
@@ -107,4 +105,3 @@ home.getInitialProps = async () => {
     const users = await response.json()
     return { users: users }
 }
->>>>>>> da4ace63cbd03807954a1ee7d9120482d36f26e1

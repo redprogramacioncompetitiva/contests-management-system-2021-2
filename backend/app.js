@@ -408,17 +408,13 @@ app.post("/recuperation/password/email", async (req,res)=>{
 
         let email = req.body.email
 
-        code: codeGenerator(6)
-
-        sendEmailPasswordRecovery(email, codeGenerator)
-
         res.json({
             flag: true,
             
-            
+            code: codeGenerator(6)
         })
 
-        
+        sendEmailPasswordRecovery(email, codeGenerator)
         
     } else {
 
@@ -429,10 +425,6 @@ app.post("/recuperation/password/email", async (req,res)=>{
 })
 
 app.post("/recuperation/password/code", (req, res) => {
-
-    res.json({
-        flag: false,
-    })
 
 
 })
