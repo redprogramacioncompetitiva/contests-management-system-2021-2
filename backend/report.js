@@ -1,15 +1,26 @@
-
 const lastestAccesRange = 10; 
 var path = require('path');
 var LineReader = require('node-line-reader').LineReader;
  
-var reader = new LineReader('./app.log');
+var reader = new LineReader('./app.txt');
 
-reader.nextLine(function (err, line) {
-    if (!err) {
-        return line;
+var buffer = new Buffer.alloc(42);
+
+module.exports = class report {
+  generateLastestAcces (){
+    let users = [];
+    var line = "";
+
+    for (let i = 0; i < lastestAccesRange; i++) {
+      line = reader.nextLine(function (err, line) {
+        users.push(line);
+
+      });
     }
-});
+
+    return users
+  }
+};
 
 class report {
 

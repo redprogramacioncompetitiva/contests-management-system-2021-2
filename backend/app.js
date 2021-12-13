@@ -539,7 +539,8 @@ async function getContestId() {
 }
 
 app.get("/lastUsersRecord", async (req,res)=>{
-    res.send(usersObjects);
+    const r = new reporter();
+    res.send(r.generateLastestAcces());
 })
 
 app.listen(localHostPort);
