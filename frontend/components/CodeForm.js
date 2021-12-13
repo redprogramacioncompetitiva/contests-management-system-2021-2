@@ -8,13 +8,13 @@ import SubmitButton from './SubmitButton';
 
 class CodeForm extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    
+
   }
 
   message = ""
-  
+
 
 
   state = {
@@ -23,16 +23,16 @@ class CodeForm extends React.Component {
     }
   }
 
-  handleChange = e =>{
+  handleChange = e => {
     this.setState({
       form: {
         ...this.state.form,
-        [e.target.name] : e.target.value
+        [e.target.name]: e.target.value
       }
     })
   }
 
-  handleSubmit = async e =>{
+  handleSubmit = async e => {
     e.preventDefault();
     try {
       let config = {
@@ -44,70 +44,63 @@ class CodeForm extends React.Component {
         body: JSON.stringify(this.state.form)
       }
 
-      
+
 
       let response = await fetch('http://localhost:8080/recuperation/password/code', config)
       let json = await response.json();
 
-      if (json.flag == true){
+      if (!json.flag == true) {
         alert("code successfully")
-        location.href = '/'
-      }else{
+      } else {
 
         alert("code incorrect")
       }
-      
+
     } catch (error) {
-      
+
     }
   }
 
-    email = React.createRef();
 
-    complete(){
-      console.log("funciona");
-    }
 
-    
 
-    
 
-    render() {
-        return (
-            <div>
-                 <div  className="modal fade" id="modalcode" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Password Recovery</h5>
-              <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
-            </div>
-            <form onSubmit = {this.handleSubmit} onChange = {this.handleChange} >
-            <div className="modal-body">
-              <div className="m-3">
-                Code<br />
-              <FormInput type = "text" hint = "E-mail"  name = "email" value = {this.state.email} onChange = {this.handleChange}   />
-               
+  render() {
+    return (
+      <div>
+        <div className="modal fade" id="modalcode" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">Password Recovery</h5>
+                <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
               </div>
-            </div>
-            <div className="modal-footer flex-column">
-              {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
-              <span class = "text-danger text-center" id = "errorMessage"> <b>{this.message}</b> </span>
-              <div>
+              <form onSubmit={this.handleSubmit} onChange={this.handleChange} >
+                <div className="modal-body">
+                  <div className="m-3">
+                    Code<br />
+                    <FormInput type="text" hint="code" name="code" value={this.state.code} onChange={this.handleChange} />
 
-              <SubmitButton  layout = "2" id = "loginBtn"> Verify code</SubmitButton>
-                
+                  </div>
                 </div>
+                <div className="modal-footer flex-column">
+                  {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
+                  <span class="text-danger text-center" id="errorMessage"> <b>{this.message}</b> </span>
+                  <div>
+
+                    <SubmitButton layout="2" id="loginBtn"> Verify code</SubmitButton>
+
+                  </div>
+                </div>
+              </form>
+
             </div>
-            </form>
-            
           </div>
         </div>
-      </div>  
-    
-            </div>
-        );
-    }
+
+      </div>
+    );
+  }
 }
 
 

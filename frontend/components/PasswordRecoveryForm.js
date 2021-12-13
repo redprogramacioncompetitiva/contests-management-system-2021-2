@@ -51,7 +51,6 @@ class PasswordRecoveryForm extends React.Component {
 
       if (json.flag == true){
         alert("email send successfully")
-        location.href = '/'
       }else{
 
         alert("email incorrect")
@@ -96,6 +95,7 @@ class PasswordRecoveryForm extends React.Component {
               <div>
 
               <SubmitButton  layout = "2" id = "sendcode" toggle = "modal" target = "#modalcode"> send code</SubmitButton>
+              <NormalButton layout = "3" toggle = "modal" target = "#modalcode" >Verify code</NormalButton>
                 
                 </div>
             </div>
