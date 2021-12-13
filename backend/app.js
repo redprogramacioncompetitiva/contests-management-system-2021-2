@@ -461,11 +461,13 @@ app.post("/createContest", async (req, res) => {
         });
         return
     } else {
-        let venues = req.body.venues
+        let venuesAndKeys = req.body.venues
         let venuesKeys = []
-        for (let i = 0; i < venues.length; i++) {
-            let venueKey = await pool.query('SELECT codigo_institucion FROM institucion WHERE nombre_institucion = $1', [venues[i]])
-            venuesKeys.push(venueKey.rows[0].codigo_institucion)
+        let venues = []
+        for (let i = 0; i < venuesAndKeys.length; i++) {
+            let temp = venuesAndKeys[i].split(" – ")
+            venues.push(temp[0])
+            venuesKeys.push(temp[1])
         }
         let fecha_finalizacion = req.body.ContEndDate + ' ' + req.body.ContEndTime
         let fecha_inicio = req.body.ContStartDate + ' ' + req.body.ContStartTime
@@ -480,20 +482,19 @@ app.post("/createContest", async (req, res) => {
             let atLeastOneIsEqual = false;
             for (let j = 0; j < response1.rows.length && !atLeastOneIsEqual; j++) {
                 let response2 = await pool.query('SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = $1', [response1.rows[j].codigo_competencia])
-                let venuesInDB1 = response2.rows
-                let venuesInDB = []
-                for (let i = 0; i < venuesInDB1.length; i++)
-                    venuesInDB.push(venuesInDB1[i].codigo_institucion)
-                if (venuesInDB.length > 0) {
-                    let equal = false
-                    for (let i = 0; i < venuesKeys.length && !equal; i++) {
-                        let temp = venuesKeys[i]
-                        if (venuesInDB.includes(temp))
-                            equal = true
-                    }
-                    if (equal)
-                        atLeastOneIsEqual = true
+                let contestVenues1 = response2.rows
+                let contestVenues = []
+                for (let i = 0; i < contestVenues1.length; i++) {
+                    contestVenues.push(contestVenues1[i].codigo_institucion)
                 }
+                let equal = false
+                for (let i = 0; i < venuesKeys.length && !equal; i++) {
+                    let temp = venuesKeys[i]
+                    if (contestVenues.includes(temp))
+                        equal = true
+                }
+                if (equal)
+                    atLeastOneIsEqual = true
             }
             if (atLeastOneIsEqual) {
                 res.json({
@@ -506,8 +507,7 @@ app.post("/createContest", async (req, res) => {
         }
         await pool.query("INSERT INTO competencia (codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, nombre, CantidadMaxPorEquipo, CantidadMinPorEquipo) VALUES ($1, TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($5, 'yyyy-mm-dd HH24:MI'), $6, $7, $8)", [contestKey, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
         for (let i = 0; i < venues.length; i++) {
-            let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
-            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, contestKey])
+            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [venuesKeys[i], contestKey])
         }
         res.json({
             flag: true

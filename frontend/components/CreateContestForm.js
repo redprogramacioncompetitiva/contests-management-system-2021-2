@@ -256,7 +256,7 @@ class CreateContestForm extends React.Component {
                             <Form.Control list="venuesList" id="venuesTF" />
                             <datalist id="venuesList">
                                 {this.props.venues.map(e => (
-                                    <option key={e.nombre_institucion} value={e.nombre_institucion} id={e.nombre_institucion}>{e.nombre_institucion}</option>
+                                    <option key={e.nombre_institucion + " – " + e.codigo_institucion} value={e.nombre_institucion + " – " + e.codigo_institucion} id={e.nombre_institucion + " – " + e.codigo_institucion}>{e.nombre_institucion + " – " + e.codigo_institucion}</option>
                                 ))}
                             </datalist>
                             <Button className="btn-style2" id="add-venue-btn" onClick={this.addVenue}>Add to List</Button>
