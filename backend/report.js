@@ -1,7 +1,15 @@
 
 const lastestAccesRange = 10; 
-const lineReader = require('line-reader');
-let lines = lineReader.eachLine('./app.log');
+var path = require('path');
+var LineReader = require('node-line-reader').LineReader;
+ 
+var reader = new LineReader('./app.log');
+
+reader.nextLine(function (err, line) {
+    if (!err) {
+        return line;
+    }
+});
 
 class report {
 
@@ -9,7 +17,8 @@ class report {
     let users = [lastestAccesRange];
     let i = 0;
     users.forEach(element => {
-      element = lines[i];
+      element = reader.nextLine();
+      console.log(element)
       i += 1;
       
     });
