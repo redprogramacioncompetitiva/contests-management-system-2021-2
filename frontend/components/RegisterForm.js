@@ -62,7 +62,7 @@ class RegisterForm extends React.Component {
             console.log('funciona')
             break;
             case 3: 
-            alert("passwords doesn't match")
+            alert("passwords doesn't match")   
             break;
           }
         }

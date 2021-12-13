@@ -1,8 +1,8 @@
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
-const sgMail = require('@sendgrid/mail');
+const sgMail = require('@sendgrid/mail')
 const localHostPort = 8080;
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 
 //express imports
@@ -83,6 +83,29 @@ class Email {
 		}, console.error);
 	}
 };
+
+async function sendEmailPasswordRecovery(email, subject){
+
+        this.email = email;
+		this.fromName = 'rpc';
+        this.subject = subject
+
+        const mailOptions = {
+			to: this.email,
+			from: {
+				email: "programacioncompetitiva@hotmail.com",
+				name: "rpc",
+			},
+			templateId: 'd-38484195aa134e15ad3d22d2311acc30',
+			dynamic_template_data: {
+				url_act: this.url,
+				name: "ander",
+				subject: 'Activa tu cuenta',
+			},
+		};
+		await sgMail.send(mailOptions).then(() => {
+		}, console.error);
+}
 
 class Team {
     constructor(id, name, integrants, userEmail) {
@@ -354,12 +377,28 @@ let codeGenerator = (n) => {
 
 
 
-app.post("/recuperation/password/email", (req,res)=>{
+app.post("/recuperation/password/email", async (req,res)=>{
     //enviar correo electrónico
-    res.json({
-        msg: req.body.email,
-        code: codeGenerator(6)
-    })
+
+    let response =  await pool.query("SELECT * FROM usuario WHERE email = $1", [req.body.email])
+    if ((await response).rows.length > 0){
+
+        let email = req.body.email
+
+        res.json({
+            flag: true,
+            
+            code: codeGenerator(6)
+        })
+
+        sendEmailPasswordRecovery(email, codeGenerator)
+        
+    } else {
+
+        res.json({
+            flag: false,
+        })
+    }
 })
 
 app.post("/recuperation/password/code", (req, res) => {

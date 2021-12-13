@@ -120,9 +120,9 @@ export default function Contests() {
                     resolve();
                   })
                 }}
-				onRowClick={(e, rowData) => {
+			/*	onRowClick={(e, rowData) => {
 					router.push("/contest/" + rowData.codigo_competencia)
-				}}
+				}}*/
                 />
             
           </div>
