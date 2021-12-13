@@ -190,9 +190,8 @@ app.post("/createTeam", async (req, res) => {
 })
 
 app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password))){
+    if (authenticate(req.body.email, hash(req.body.password)))
         res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    }
     else
         res.redirect("http://localhost:3000/loginError");
 })
@@ -241,7 +240,6 @@ app.post("/deleteIntegrant", (req, res) => {
 
 
 app.post("/authenticate", async(req, res) => {
-
   let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
   emailLogged = response.rows[0].email;
   console.log(emailLogged)
