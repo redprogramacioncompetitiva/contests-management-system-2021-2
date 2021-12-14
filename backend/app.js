@@ -269,9 +269,11 @@ app.post("/deleteIntegrant", (req, res) => {
 
 app.post("/authenticate", async(req, res) => {
 
+
     
   let response =  await pool.query("SELECT * FROM usuario WHERE correoUser = $1 AND contraseña = $2", [req.body.email,req.body.password])
   
+
 
   try {
     let emailLogged = response.rows[0].correouser;

@@ -1,9 +1,12 @@
-import HeadRPC from '../components/HeadRPC'
+import HeadRPC from '../../components/HeadRPC'
+import { useRouter } from 'next/router'
 import Link from 'next/Link'
 
 
 
 export default function generalReports() {
+    const router = useRouter()
+    let nickname = router.query.user
 
     return (
 
@@ -31,7 +34,7 @@ export default function generalReports() {
 
                         <tr>
                             <th id="statisticsPanel">
-                                <h2 >Reportes - Usuario</h2>
+                                <h2 >Reportes - {nickname}</h2>
                                 
                             </th>
                             <th id="filterOptionsAnd2Grafics">
