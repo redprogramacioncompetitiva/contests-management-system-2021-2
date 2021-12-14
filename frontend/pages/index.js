@@ -9,6 +9,7 @@ import PasswordRecoveryForm from '../components/PasswordRecoveryForm'
 import CodeForm from '../components/CodeForm'
 
 
+
 export default function Home() {
 
   return (
@@ -33,3 +34,4 @@ export default function Home() {
    
   )
 }
+
