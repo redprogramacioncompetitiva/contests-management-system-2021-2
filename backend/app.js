@@ -4,9 +4,6 @@ const sgMail = require('@sendgrid/mail')
 const localHostPort = 8080;
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //logger
 const logger = require("./logger")
 //express imports
@@ -461,6 +458,32 @@ app.post("/recuperation/password/code", (req, res) => {
 
 
 })
+
+app.post("/recuperation/password/change", async (req,res)=>{
+    let response =  await pool.query("SELECT * FROM usuario WHERE correouser = $1", [req.body.email])
+    let response =  await pool.query("UPDATE usuario SET contraseña = $1 WHERE correouser = $2", [req.body.password, req.body.email])
+    let password = req.body.password
+    if ((await response).rows.length > 0){
+
+        
+
+
+        res.json({
+            flag: true,
+            
+            code: codeGenerator(6)
+        })
+        
+    } else {
+
+        res.json({
+            flag: false,
+        })
+    }
+    
+})
+
+
 
 app.get("/venues", async (req, res) => {
     let response = await pool.query("SELECT * FROM institucion")
