@@ -32,7 +32,7 @@ export default function home({data, teamName, contestName}) {
 				<tbody>
 				<tr>
 					{data.map(t => (
-						<td style={{textAlign:"-moz-center"}}>
+						<td style={{textAlign:"-webkit-center"}}>
 							<div className="card" style={{width: "18rem", borderRadius: "10px"}}>
 								<div className="card-body">
 									<p className="card-text"><b>Username:</b> {t.nickname}</p>
