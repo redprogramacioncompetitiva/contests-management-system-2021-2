@@ -95,7 +95,7 @@ class PasswordRecoveryForm extends React.Component {
               <span class = "text-danger text-center" id = "errorMessage"> <b>{this.message}</b> </span>
               <div>
 
-              <SubmitButton  layout = "1" id = "sendcode" toggle = "modal" target = "#modalcode"> send code</SubmitButton>
+              <SubmitButton  layout = "2" id = "sendcode" toggle = "modal" target = "#modalcode"> send code</SubmitButton>
                 
                 </div>
             </div>

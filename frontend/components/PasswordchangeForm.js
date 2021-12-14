@@ -2,7 +2,6 @@ import React from 'react'
 import CodeForm from './codeForm';
 
 import FormInput from './FormInput'
-import NormalButton from './NormalButton';
 import SubmitButton from './SubmitButton';
 
 
@@ -21,6 +20,8 @@ class PasswordchangeForm extends React.Component {
   state = {
     form: {
       email: '',
+      password: '',
+      confirmPassword: ''
     }
   }
 
@@ -51,7 +52,8 @@ class PasswordchangeForm extends React.Component {
       let json = await response.json();
 
       if (json.flag == true){
-        alert("email send successfully")
+        alert("Password recovered successfully")
+        location.href = "/";
       }else{
 
         alert("email incorrect")
@@ -75,7 +77,7 @@ class PasswordchangeForm extends React.Component {
     render() {
         return (
             <div>
-                 <div  className="modal fade" id="modalPasswordRecovery" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div  className="modal fade" id="modalPasswordchange" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -84,9 +86,19 @@ class PasswordchangeForm extends React.Component {
             </div>
             <form onSubmit = {this.handleSubmit} onChange = {this.handleChange} >
             <div className="modal-body">
-              <div className="m-3">
+            <div className="m-3">
                 Email<br />
               <FormInput type = "text" hint = "E-mail"  name = "email" value = {this.state.email} onChange = {this.handleChange}   />
+               
+              </div>
+              <div className="m-3">
+                Email<br />
+              <FormInput type = "password" hint = "Password"  name = "password" value = {this.state.password} onChange = {this.handleChange}   />
+               
+              </div>
+              <div className="m-3">
+                Email<br />
+              <FormInput type = "password" hint = "confirmPassword"  name = "confirmpassword" value = {this.state.confirmpassword} onChange = {this.handleChange}   />
                
               </div>
             </div>
@@ -95,7 +107,7 @@ class PasswordchangeForm extends React.Component {
               <span class = "text-danger text-center" id = "errorMessage"> <b>{this.message}</b> </span>
               <div>
 
-              <SubmitButton  layout = "1" id = "sendcode" toggle = "modal" target = "#modalcode"> send code</SubmitButton>
+              <SubmitButton  layout = "2" id = "sendcode" > Change Password</SubmitButton>
                 
                 </div>
             </div>
