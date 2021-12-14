@@ -102,6 +102,9 @@ export default function Contests() {
                   filtering: true,
                   exportButton: true,
                 }}
+		onRowClick={(e, rowData) => {
+		  router.push("/contest/" + rowData.codigo_competencia)
+		}}
                 localization={{
                   toolbar: {
                     exportCSVName: "Export as CSV",

@@ -91,6 +91,12 @@ export default function Contests({tableData, contestName, contestId}) {
 						   onRowClick = {(e,rowData)=>{
 							   router.push("/contest/"+contestId+"/team/"+rowData.id_team)
 						   }}
+						   localization={{
+                 				       toolbar: {
+                    				     	   exportCSVName: "Export as CSV",
+                    					   exportPDFName: "Export as PDF"
+                   				       }
+                				   }}
 						   // actions={[
 							//    {
 							// 	   icon: tableIcons.Export,
