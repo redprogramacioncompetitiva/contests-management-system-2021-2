@@ -101,28 +101,13 @@ export default function Contests() {
                   grouping: true,
                   filtering: true,
                   exportButton: true,
-                }}/*
-                editable={{
-                  onRowAdd:(newRow)=> new Promise ((resolve,reject)=>{
-                    setTableData([...tableData,newRow])
-                    resolve();
-                  }),
-                  onRowUpdate:(newRow,oldRow)=> new Promise ((resolve,reject)=>{
-                    const updateData=[...tableData]
-                    updateData[oldRow.tableData.id]=newRow
-                    setTableData(updateData)
-                    resolve();
-                  }),
-                  onRowDelete:(selectedRow)=> new Promise ((resolve,reject)=>{
-                    const updateData=[...tableData]
-                    updateData.splice(selectedRow.tableData.id,1)
-                    setTableData(updateData)
-                    resolve();
-                  })
-                }}*/
-			/*	onRowClick={(e, rowData) => {
-					router.push("/contest/" + rowData.codigo_competencia)
-				}}*/
+                }}
+                localization={{
+                  toolbar: {
+                    exportCSVName: "Export as CSV",
+                    exportPDFName: "Export as PDF"
+                  }
+                }}
                 />
             
           </div>
