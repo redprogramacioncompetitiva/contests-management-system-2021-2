@@ -49,7 +49,7 @@ class RegisterInCompetition extends React.Component {
     render() {
         return(
 
-            <body className="register-body2">
+            <body className="register-body">
             <nav className="nav bg-navbar btn-style:hover">
             <a href="/" className="nav-link a-text-register" role="button">Home</a>
             <a href="/contests" className="nav-link a-text-register" role="button">Competition</a>
