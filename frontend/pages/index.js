@@ -5,6 +5,8 @@ import I from '../components/Imports'
 import RegisterForm from '../components/RegisterForm'
 import Carousel from '../components/Carousel'
 import Navbar from '../components/Navbar'
+import PasswordRecoveryForm from '../components/PasswordRecoveryForm'
+import CodeForm from '../components/CodeForm'
 
 
 
@@ -24,6 +26,8 @@ export default function Home() {
     <LoginForm/>
     <RegisterForm/>
     <StyleRPC/>
+    <PasswordRecoveryForm/>
+    <CodeForm/>
     <I/>
     
 </div>
