@@ -248,7 +248,7 @@ app.post("/authenticate", async(req, res) => {
   emailLogged = response.rows[0].email;
   console.log(emailLogged)
     //generate log when user autenticated.
-    logger.info(`${response.rows[0].codigo_rol} - ${response.rows[0].nickname}`);
+    logger.info(`${response.rows[0].email} - ${response.rows[0].codigo_rol} - ${response.rows[0].nickname}`);
   try {
     console.log(response.rows[0].nickname);
     res.json({
