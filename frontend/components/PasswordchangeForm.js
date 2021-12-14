@@ -7,7 +7,7 @@ import SubmitButton from './SubmitButton';
 
 
 
-class PasswordRecoveryForm extends React.Component {
+class PasswordchangeForm extends React.Component {
 
   constructor(props){
     super(props);
@@ -47,7 +47,7 @@ class PasswordRecoveryForm extends React.Component {
 
       
 
-      let response = await fetch('http://localhost:8080/recuperation/password/email', config)
+      let response = await fetch('http://localhost:8080/recuperation/password/change', config)
       let json = await response.json();
 
       if (json.flag == true){
@@ -112,4 +112,4 @@ class PasswordRecoveryForm extends React.Component {
 
 
 
-export default PasswordRecoveryForm;
+export default PasswordchangeForm;

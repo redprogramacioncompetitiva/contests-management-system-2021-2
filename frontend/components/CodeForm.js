@@ -32,6 +32,10 @@ class CodeForm extends React.Component {
     })
   }
 
+  modal(){
+    $('#modalcode').modal().hide();
+  }
+
   handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -89,6 +93,7 @@ class CodeForm extends React.Component {
                   <div>
 
                     <SubmitButton layout="2" id="loginBtn"> Verify code</SubmitButton>
+                    
 
                   </div>
                 </div>
