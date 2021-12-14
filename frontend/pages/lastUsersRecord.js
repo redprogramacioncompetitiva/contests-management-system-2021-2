@@ -84,9 +84,6 @@ export default function lastsUsersRecords({users}) {
                             Corrreo
                         </th>
                         <th>
-                            Info
-                        </th>
-                        <th>
                             Reportes
                         </th>
                         <th>
@@ -100,19 +97,22 @@ export default function lastsUsersRecords({users}) {
                     {users.map(e => (
                         <tr>
                             <td>
-                                {e.email}
+                                {e.id}
                             </td>
                             <td>
                                 {e.nickname}
                             </td>
                             <td>
-                                {e.firstname}
+                                {e.type}
                             </td>
                             <td>
-                                {e.lastname}
+                                {e.email}
                             </td>
                             <td>
-                                {e.country}
+                                {e.rep}
+                            </td>
+                            <td>
+                                {e.date}
                             </td>
                         </tr>
                     ))}

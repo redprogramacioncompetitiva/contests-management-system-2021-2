@@ -4,9 +4,6 @@ const sgMail = require('@sendgrid/mail')
 const localHostPort = 8080;
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //logger
 const logger = require("./logger")
 //express imports
@@ -90,20 +87,25 @@ class Email {
 		await sgMail.send(mailOptions).then(() => {
 		}, console.error);
 	}
+};
 
-    async sendEmailPasswordRecovery(email, subject){
+class Email3 {
+	constructor(email, code, nickname) {
+		this.email = email;
+		this.code = code;
+		this.nickname = nickname
+		this.fromEmail = 'peppapignea@gmail.com';
+		this.fromName = 'Peppa Pig';
+	}
 
-        this.email = email;
-		this.fromName = 'rpc';
-        this.subject = subject
-
-        const mailOptions = {
+	async sendCodeEmail() {
+		const mailOptions = {
 			to: this.email,
 			from: {
-				email: "programacioncompetitiva@hotmail.com",
-				name: "rpc",
+				email: this.fromEmail,
+				name: this.fromName,
 			},
-			templateId: 'd-38484195aa134e15ad3d22d2311acc30',
+			templateId: 'd-8305600dff364783802a7c1fcba1dd4e',
 			dynamic_template_data: {
 				url_act: this.url,
 				name: "ander",
@@ -146,13 +148,16 @@ class Email2 {
                 end_date: this.end_date,
                 end_hour: this.end_hour,
 				subject: 'Información de competencia',
+				name: this.nickname,
+                code: this.code,
+				subject: 'Recupera tu contraseña',
 			},
 		};
 		await sgMail.send(mailOptions).then(() => {
 		}, console.error);
-
-    }
+	}
 };
+
 
 
 class Team {
@@ -305,9 +310,11 @@ app.post("/deleteIntegrant", (req, res) => {
 
 app.post("/authenticate", async(req, res) => {
 
+
     
   let response =  await pool.query("SELECT * FROM usuario WHERE correoUser = $1 AND contraseña = $2", [req.body.email,req.body.password])
   
+
 
   try {
     let emailLogged = response.rows[0].correouser;
@@ -453,10 +460,17 @@ let codeGenerator = (n) => {
 app.post("/recuperation/password/email", async (req,res)=>{
     //enviar correo electrónico
 
-    let response =  await pool.query("SELECT * FROM usuario WHERE email = $1", [req.body.email])
+    let code = codeGenerator(10)
+
+    let response =  await pool.query("SELECT * FROM usuario WHERE correouser = $1", [req.body.email])
     if ((await response).rows.length > 0){
 
         let email = req.body.email
+        console.log(code)
+
+        aux = new Email3(email, code,response.rows[0].username );
+        await aux.sendCodeEmail();
+
 
         res.json({
             flag: true,
@@ -477,7 +491,52 @@ app.post("/recuperation/password/email", async (req,res)=>{
 app.post("/recuperation/password/code", (req, res) => {
 
 
+    let codetemp = req.body.code
+
+    console.log(codetemp)
+
+    if(codetemp==code){
+
+        res.json({flag: false,
+        })
+
+    }else{
+
+        res.json({
+            flag: true,
+        })
+
+    }
+
+
+
 })
+
+app.post("/recuperation/password/change", async (req,res)=>{
+    let response =  await pool.query("SELECT * FROM usuario WHERE correouser = $1", [req.body.email])
+    let response2 =  await pool.query("UPDATE usuario SET contraseña = $1 WHERE correouser = $2", [req.body.password, req.body.email])
+    let password = req.body.password
+    if ((await response).rows.length > 0){
+
+        
+
+
+        res.json({
+            flag: true,
+            
+            code: codeGenerator(6)
+        })
+        
+    } else {
+
+        res.json({
+            flag: false,
+        })
+    }
+    
+})
+
+
 
 app.get("/venues", async (req, res) => {
     let response = await pool.query("SELECT * FROM institucion")
