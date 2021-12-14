@@ -6,7 +6,7 @@ import SubmitButton from './SubmitButton';
 
 
 
-class LoginForm extends React.Component {
+class PasswordRecoveryForm extends React.Component {
 
   constructor(props){
     super(props);
@@ -20,7 +20,6 @@ class LoginForm extends React.Component {
   state = {
     form: {
       email: '',
-      password: '',
     }
   }
 
@@ -47,29 +46,22 @@ class LoginForm extends React.Component {
 
       
 
-      let response = await fetch('http://localhost:8080/authenticate', config)
+      let response = await fetch('http://localhost:8080/recuperation/password/email', config)
       let json = await response.json();
+
       if (json.flag == true){
-        this.message = "";
-        let a = document.getElementById("errorMessage")
-        a.innerHTML = this.message;
-        
-        location.href = "/home/"+ json.nickname;
+        alert("email send successfully")
       }else{
-        this.message = "Please verify your credentials";
-        
-        let a = document.getElementById("errorMessage")
-        a.innerHTML = this.message;
+
+        alert("email incorrect")
       }
-      console.log(json);
-      console.log(this.message);
+      
     } catch (error) {
       
     }
   }
 
     email = React.createRef();
-    password = React.createRef();
 
     complete(){
       console.log("funciona");
@@ -82,12 +74,11 @@ class LoginForm extends React.Component {
     render() {
         return (
             <div>
-                 <div  className="modal fade" id="modalLogin" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                 <div  className="modal fade" id="modalPasswordRecovery" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
-          <div className="modal-content modalStyle">
+          <div className="modal-content">
             <div className="modal-header">
-              <img src="img/logo.png" width={50} height={50} />
-              <h5 className="modal-title" id="exampleModalLabel">Login</h5>
+              <h5 className="modal-title" id="exampleModalLabel">Password Recovery</h5>
               <button type="button" className="btn-close btn-close-white" data-dismiss="modal" aria-label="Close" />
             </div>
             <form onSubmit = {this.handleSubmit} onChange = {this.handleChange} >
@@ -97,23 +88,16 @@ class LoginForm extends React.Component {
               <FormInput type = "text" hint = "E-mail"  name = "email" value = {this.state.email} onChange = {this.handleChange}   />
                
               </div>
-              <div className="m-3">
-                Password<br />
-                <FormInput type = "password" hint = "Password"  name = "password" value = {this.state.password} onChange = {this.handleChange} /> 
-               
-              </div>
             </div>
             <div className="modal-footer flex-column">
               {/*<button type="button" class="btn btn-secondary btn-greyNormalState" data-dismiss="modal">Close</button>*/}
               <span class = "text-danger text-center" id = "errorMessage"> <b>{this.message}</b> </span>
               <div>
-              
-                <SubmitButton  layout = "2" id = "loginBtn"> Login</SubmitButton>
+
+              <SubmitButton  layout = "2" id = "sendcode" toggle = "modal" target = "#modalcode"> send code</SubmitButton>
+              <NormalButton layout = "3" toggle = "modal" target = "#modalcode" >Verify code</NormalButton>
                 
                 </div>
-              <div>Dont have an account? <a href="#" data-toggle="modal" data-target="#modalSingUp" id="singUpLink"  data-dismiss = "modal"><u>Sign
-                    up</u></a></div>
-              <div>Forgot password? <a href="#" data-toggle="modal" data-target="#modalPasswordRecovery" id="forgotPasswordLink"  data-dismiss = "modal"><u>Password recovery</u></a></div>
             </div>
             </form>
             
@@ -128,4 +112,4 @@ class LoginForm extends React.Component {
 
 
 
-export default LoginForm;
+export default PasswordRecoveryForm;

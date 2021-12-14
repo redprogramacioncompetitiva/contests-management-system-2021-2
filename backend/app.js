@@ -1,12 +1,17 @@
 //const bcrypt = require('bcrypt');
 //const saltRounds = 10;
-const sgMail = require('@sendgrid/mail');
+const sgMail = require('@sendgrid/mail')
 const localHostPort = 8080;
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //logger
 const logger = require("./logger")
 //express imports
 const reporter = require("./report")
+
 
 //express imports
 const express = require('express');
@@ -24,8 +29,6 @@ const pool = new Pool({
     database: "rpcdb",
     port: "5432"
 });
-
-
 
 class User {
 	constructor(email, password, nickname, firstName, lastName, country, verified) {
@@ -88,6 +91,29 @@ class Email {
 		}, console.error);
 	}
 };
+
+async function sendEmailPasswordRecovery(email, subject){
+
+        this.email = email;
+		this.fromName = 'rpc';
+        this.subject = subject
+
+        const mailOptions = {
+			to: this.email,
+			from: {
+				email: "programacioncompetitiva@hotmail.com",
+				name: "rpc",
+			},
+			templateId: 'd-38484195aa134e15ad3d22d2311acc30',
+			dynamic_template_data: {
+				url_act: this.url,
+				name: "ander",
+				subject: 'Activa tu cuenta',
+			},
+		};
+		await sgMail.send(mailOptions).then(() => {
+		}, console.error);
+}
 
 class Team {
     constructor(id, name, integrants, userEmail) {
@@ -192,12 +218,7 @@ app.post("/createTeam", async (req, res) => {
     }
 })
 
-app.post("/authenticate", (req, res) => {
-    if (authenticate(req.body.email, hash(req.body.password)))
-        res.redirect("http://localhost:3000/home/" + getUserByEmail(req.body.email).nickname);
-    else
-        res.redirect("http://localhost:3000/loginError");
-})
+
 
 app.post("/deleteTeam", (req, res) => {
     let teamObjectsTemp = []
@@ -244,16 +265,19 @@ app.post("/deleteIntegrant", (req, res) => {
 
 app.post("/authenticate", async(req, res) => {
 
-  let response =  await pool.query("SELECT * FROM usuario WHERE email = $1 AND password = $2", [req.body.email,req.body.password])
-  emailLogged = response.rows[0].email;
-  console.log(emailLogged)
-    //generate log when user autenticated.
-    logger.info(`${response.rows[0].email} - ${response.rows[0].codigo_rol} - ${response.rows[0].nickname}`);
+
+    
+  let response =  await pool.query("SELECT * FROM usuario WHERE correoUser = $1 AND contraseña = $2", [req.body.email,req.body.password])
+  
+
+
   try {
-    console.log(response.rows[0].nickname);
+    let emailLogged = response.rows[0].correouser;
+    console.log(emailLogged)
+    console.log(response.rows[0].username);
     res.json({
         flag : true,
-        nickname: response.rows[0].nickname
+        nickname: response.rows[0].username
         
     });
   } catch (error) {
@@ -269,7 +293,8 @@ app.post("/authenticate", async(req, res) => {
  *
  */
 app.post("/register", async (req, res) => {
-
+    let country = "";
+    let school = "";
     console.log(req.body);
     if (req.body.password != req.body.confirmpassword){
         res.json({
@@ -278,21 +303,47 @@ app.post("/register", async (req, res) => {
         })
     }else{
         try {
-            let response = await pool.query('SELECT * FROM usuario WHERE email = $1',[req.body.email])
-            if ((await response).rows.length > 0){
+            let response = await pool.query('SELECT * FROM usuario WHERE correouser = $1',[req.body.email])
+            if (( response).rows.length > 0){
                 res.json({
                     flag: false,
                     msg: 1
                 })
             }else{
-                let r = await pool.query('SELECT * FROM usuario WHERE nickname = $1',[req.body.nickname])
-                if ((await r).rows.length > 0){
+                let r = await pool.query('SELECT * FROM usuario WHERE username = $1',[req.body.nickname])
+                if (( r).rows.length > 0){
                     res.json({
                         flag: false,
                         msg: 2
                     })
                 }else{
-                    let re = await pool.query('INSERT INTO usuario (firstname, lastname, email, password, country, nickname, verified) VALUES ($1, $2, $3, $4,$5,$6,$7)', [req.body.firstname, req.body.lastname, req.body.email, req.body.password, req.body.country, req.body.nickname, 0])
+                    
+                        let response1 = await pool.query("SELECT * FROM pais WHERE nombre_pais = $1 ",[req.body.country])
+                        if (response1.rows.length > 0){
+                            country = response1.rows[0].codigo_pais
+                            console.log(country)
+                            
+                        }else{
+                            res.json({
+                                flag: false,
+                                msg: 5 
+                            })
+                        }
+                    
+
+                    
+                        let response2 = await pool.query("SELECT * FROM institucion WHERE nombre_institucion = $1 ",[req.body.institution])
+                        if (response2.rows.length>0){
+                            school = response2.rows[0].codigo_institucion
+                            console.log(school)
+                        }else{
+                            res.json({
+                                flag: false,
+                                msg: 4 
+                            })
+                        }
+                    
+                    let re = await pool.query("INSERT INTO usuario (username, nombre, apellido, descripcion, codigo_institucion, codigo_rol, contraseña,codigo_pais, correoUser) VALUES ($1, $2, $3, $4,$5,$6,$7,$8,$9)", [req.body.nickname, req.body.firstname, req.body.lastname, req.body.description, school, 'R01', req.body.password,country,req.body.email])
                     
                     res.json({
                         flag: true
@@ -361,12 +412,28 @@ let codeGenerator = (n) => {
 
 
 
-app.post("/recuperation/password/email", (req,res)=>{
+app.post("/recuperation/password/email", async (req,res)=>{
     //enviar correo electrónico
-    res.json({
-        msg: req.body.email,
-        code: codeGenerator(6)
-    })
+
+    let response =  await pool.query("SELECT * FROM usuario WHERE email = $1", [req.body.email])
+    if ((await response).rows.length > 0){
+
+        let email = req.body.email
+
+        res.json({
+            flag: true,
+            
+            code: codeGenerator(6)
+        })
+
+        sendEmailPasswordRecovery(email, codeGenerator)
+        
+    } else {
+
+        res.json({
+            flag: false,
+        })
+    }
 })
 
 app.post("/recuperation/password/code", (req, res) => {
@@ -466,11 +533,13 @@ app.post("/createContest", async (req, res) => {
         });
         return
     } else {
-        let venues = req.body.venues
+        let venuesAndKeys = req.body.venues
         let venuesKeys = []
-        for (let i = 0; i < venues.length; i++) {
-            let venueKey = await pool.query('SELECT codigo_institucion FROM institucion WHERE nombre_institucion = $1', [venues[i]])
-            venuesKeys.push(venueKey.rows[0].codigo_institucion)
+        let venues = []
+        for (let i = 0; i < venuesAndKeys.length; i++) {
+            let temp = venuesAndKeys[i].split(" – ")
+            venues.push(temp[0])
+            venuesKeys.push(temp[1])
         }
         let fecha_finalizacion = req.body.ContEndDate + ' ' + req.body.ContEndTime
         let fecha_inicio = req.body.ContStartDate + ' ' + req.body.ContStartTime
@@ -485,20 +554,19 @@ app.post("/createContest", async (req, res) => {
             let atLeastOneIsEqual = false;
             for (let j = 0; j < response1.rows.length && !atLeastOneIsEqual; j++) {
                 let response2 = await pool.query('SELECT codigo_institucion FROM es_sede WHERE codigo_competencia = $1', [response1.rows[j].codigo_competencia])
-                let venuesInDB1 = response2.rows
-                let venuesInDB = []
-                for (let i = 0; i < venuesInDB1.length; i++)
-                    venuesInDB.push(venuesInDB1[i].codigo_institucion)
-                if (venuesInDB.length > 0) {
-                    let equal = false
-                    for (let i = 0; i < venuesKeys.length && !equal; i++) {
-                        let temp = venuesKeys[i]
-                        if (venuesInDB.includes(temp))
-                            equal = true
-                    }
-                    if (equal)
-                        atLeastOneIsEqual = true
+                let contestVenues1 = response2.rows
+                let contestVenues = []
+                for (let i = 0; i < contestVenues1.length; i++) {
+                    contestVenues.push(contestVenues1[i].codigo_institucion)
                 }
+                let equal = false
+                for (let i = 0; i < venuesKeys.length && !equal; i++) {
+                    let temp = venuesKeys[i]
+                    if (contestVenues.includes(temp))
+                        equal = true
+                }
+                if (equal)
+                    atLeastOneIsEqual = true
             }
             if (atLeastOneIsEqual) {
                 res.json({
@@ -511,13 +579,18 @@ app.post("/createContest", async (req, res) => {
         }
         await pool.query("INSERT INTO competencia (codigo_competencia, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, nombre, CantidadMaxPorEquipo, CantidadMinPorEquipo) VALUES ($1, TO_TIMESTAMP($2, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($3, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($4, 'yyyy-mm-dd HH24:MI'), TO_TIMESTAMP($5, 'yyyy-mm-dd HH24:MI'), $6, $7, $8)", [contestKey, fecha_finalizacion, fecha_inicio, fecha_fin_ins, fecha_inicio_ins, req.body.contestName, maxCompetitors, minCompetitors])
         for (let i = 0; i < venues.length; i++) {
-            let response = await pool.query("SELECT codigo_institucion FROM institucion WHERE nombre_institucion = '" + venues[i] + "'");
-            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [response.rows[0].codigo_institucion, contestKey])
+            await pool.query("INSERT INTO es_sede VALUES ($1, $2)", [venuesKeys[i], contestKey])
         }
         res.json({
             flag: true
         });
     }
+})
+
+app.get("/institutions", async (req,res)=>{
+    let response = await pool.query("SELECT nombre_institucion FROM institucion");
+
+    res.send(response.rows);
 })
 
 async function getContestId() {
@@ -537,6 +610,150 @@ async function getContestId() {
         return -1
     }
 }
+/*Registrarse en una competencia*/
+
+// Metodo de validacion de equipo existente.
+app.post("/registerInCompetition", async (req,res)=>{
+    //Validar que el equipo existe en la base de datos
+    let teamName = req.body.teamName
+    let teamNameBD = await pool.query('SELECT * FROM equipo WHERE nombre = $1', [teamName])
+    if(teamNameBD.rows.length > 0){
+        //Validar que el equipo no este registrado en la misma competencia
+        let codeTeam = teamNameBD.rows[0].codigo_equipo
+        let response = await pool.query('SELECT codigo_competencia FROM equipo_competencia WHERE codigo_equipo = $1', [codeTeam])
+        let oneCompetitionEqual = false
+        let keyComp = req.body.keyComp.toUpperCase()
+        if(response.rows.length > 0){
+            for(let i = 0; i < response.rows.length && !oneCompetitionEqual; i++){
+                if(response.rows[i].codigo_competencia === keyComp){
+                    oneCompetitionEqual = true
+                }
+            }
+            if(oneCompetitionEqual){
+                res.json({
+                    flag: false,
+                    message:"El equipo ya esta registrado en esa competencia"
+                })
+                return 
+            }
+        }
+
+        //Validar que la competencia exista
+        let comp = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1', [keyComp]) 
+        if(comp.rows.length === 0){
+            res.json({
+                flag: false,
+                message:"No existe una competencia con ese código"
+            })
+            return 
+        }
+
+        //Validar que la cantidad de integrantes que esten en el equipo cumplan con las restricciones de la competencia
+        let teamMembers = await pool.query('SELECT * FROM usuario_equipo WHERE codigo_equipo = $1', [codeTeam])
+        if(teamMembers.rows.length >= comp.rows[0].cantidadminporequipo && teamMembers.rows.length <= comp.rows[0].cantidadmaxporequipo){
+            //Validar que ningun integrante se haya inscrito a la misma competencia con otro equipo
+            let isRegistered = false
+            let userRegistered
+            let teamsInComp = await pool.query('SELECT * FROM equipo_competencia WHERE codigo_competencia = $1', [keyComp])
+            for(let i=0; i < teamMembers.rows.length && !isRegistered; i++) {
+                let tempEmail = teamMembers.rows[i].correouser
+                let codeAllTeams = await pool.query('SELECT * FROM usuario_equipo WHERE correouser = $1', [tempEmail])
+                for(let j=0; j < teamsInComp.rows.length && !isRegistered; j++){
+                    let tempComp = teamsInComp.rows[j].codigo_equipo
+                    for(let k=0; k < codeAllTeams.rows.length && !isRegistered; k++){
+                        if(codeAllTeams.rows[k].codigo_equipo === tempComp){
+                            isRegistered = true
+                            userRegistered = tempEmail
+                        }
+                    }
+                }
+            }
+            if(isRegistered){
+                res.json({
+                    flag: false,
+                    message:"El usuario con correo: " + userRegistered +" ya se encuentra registrado en esta competencia"
+                })
+                return 
+            }
+
+            //Validar que la fecha de inicio de la competencia no se cruce con otra competencia que la persona este inscrita
+            let userCrossed
+            let compCrossed
+            let isCrossed = false
+            for(let i=0; i < teamMembers.rows.length && !isCrossed; i++) {
+                let tempEmail = teamMembers.rows[i].correouser
+                let codeAllTeams = await pool.query('SELECT * FROM usuario_equipo WHERE correouser = $1', [tempEmail])
+                let compsOfMember = []
+                for(let j=0; j < codeAllTeams.rows.length; j++){
+                    compOfTeam = await pool.query('SELECT codigo_competencia FROM equipo_competencia WHERE codigo_equipo = $1', [codeAllTeams.rows[j].codigo_equipo])
+                    for(let k=0; k < compOfTeam.rows.length; k++){
+                        compsOfMember.push(compOfTeam.rows[k].codigo_competencia)
+                    }
+                    
+                }
+                let date = new Date(comp.rows[0].fecha_inicio)
+                let dateEnd = new Date(comp.rows[0].fecha_finalizacion)
+/*                 console.log(date.getHours())
+                console.log(date.getMinutes())
+                console.log(date.getSeconds())
+                console.log(date.getDate())
+                console.log(date.getMonth()+1)
+                console.log(date.getFullYear())  */
+                for(let j=0; j<compsOfMember.length && !isCrossed; j++){
+                    let tempComp = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1', [compsOfMember[j]]) 
+                    let tempDateStart = new Date(tempComp.rows[0].fecha_inicio)
+/*                     console.log(tempDateStart.getHours())
+                    console.log(tempDateStart.getMinutes())
+                    console.log(tempDateStart.getSeconds())
+                    console.log(tempDateStart.getDate())
+                    console.log(tempDateStart.getMonth()+1)
+                    console.log(tempDateStart.getFullYear())  */
+                    //Si las fechas son las mismas
+                    if(tempDateStart.getFullYear()===date.getFullYear() && tempDateStart.getMonth()===date.getMonth() && tempDateStart.getDate()===date.getDate()){
+                        if(tempDateStart.getHours() >= dateEnd.getHours() && tempDateStart.getHours() <= date.getHours()){
+                            isCrossed = true
+                            userCrossed = tempEmail
+                            compCrossed = compsOfMember[j]
+                        }
+                    }
+                }
+            }
+            if(isCrossed){
+                res.json({
+                    flag: false,
+                    message:"No es posible registrarse porque la fecha de la competencia " + compCrossed + " con el participante " + userCrossed + "se cruza con esta competencia"
+                })
+                return 
+            }else{
+                //Se registra el equipo en la competencia
+                await pool.query("INSERT INTO equipo_competencia VALUES ($1, $2)", [codeTeam, keyComp])
+                res.json({
+                    flag: true,
+                    message:"El equipo ha sido registrado exitosamente"
+                })
+                return 
+
+            }
+            
+        }else{
+            res.json({
+                flag: false,
+                message:"El equipo no cumple con la cantidad de integrantes requerida para la competencia"
+            })
+            return 
+        }
+        
+       
+    }else{
+        res.json({
+            flag: false,
+            message:"El nombre del equipo no se encuentra registrado en la base de datos"
+        })
+    }
+    
+    
+
+})
 
 app.get("/lastUsersRecord", async (req,res)=>{
     const r = new reporter();
