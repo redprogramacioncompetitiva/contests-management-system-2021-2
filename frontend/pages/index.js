@@ -7,6 +7,7 @@ import Carousel from '../components/Carousel'
 import Navbar from '../components/Navbar'
 import PasswordRecoveryForm from '../components/PasswordRecoveryForm'
 import CodeForm from '../components/CodeForm'
+import PasswordChange from '../components/PasswordchangeForm'
 
 
 
@@ -28,6 +29,7 @@ export default function Home() {
     <StyleRPC/>
     <PasswordRecoveryForm/>
     <CodeForm/>
+    <PasswordChange/>
     <I/>
     
 </div>

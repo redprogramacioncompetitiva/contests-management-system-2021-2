@@ -13,7 +13,7 @@ class SubmitButton extends Component {
     
     render(){
         return(
-            <button className={this.chioce(this.props.layout)} type="submit" id = {this.props.id} >{this.props.children}</button>
+            <button className={this.chioce(this.props.layout)} type="submit" data-toggle={this.props.toggle} data-target={this.props.target} id = {this.props.id} >{this.props.children}</button>
         );
     }
 }

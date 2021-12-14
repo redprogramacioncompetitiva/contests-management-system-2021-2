@@ -32,6 +32,10 @@ class CodeForm extends React.Component {
     })
   }
 
+  modal(){
+    $('#modalcode').modal().hide();
+  }
+
   handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -88,7 +92,8 @@ class CodeForm extends React.Component {
                   <span class="text-danger text-center" id="errorMessage"> <b>{this.message}</b> </span>
                   <div>
 
-                    <SubmitButton layout="2" id="loginBtn"> Verify code</SubmitButton>
+                    <SubmitButton layout="2" id="loginBtn" toggle = "modal" target = "#modalPasswordchange"> Verify code</SubmitButton>
+                    
 
                   </div>
                 </div>
