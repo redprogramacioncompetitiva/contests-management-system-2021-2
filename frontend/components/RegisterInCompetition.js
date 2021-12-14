@@ -51,8 +51,8 @@ class RegisterInCompetition extends React.Component {
 
             <body className="register-body">
             <nav className="nav bg-navbar btn-style:hover">
-                <a className="nav-link a-text-register" href="#">Home</a>
-                <a className="nav-link a-text-register" href="#">Competition</a>
+            <a href="/" className="nav-link a-text-register" role="button">Home</a>
+            <a href="/contests" className="nav-link a-text-register" role="button">Competition</a>
             </nav>
 
             <div className="col-8 position-absolute top-50 start-50 translate-middle ">

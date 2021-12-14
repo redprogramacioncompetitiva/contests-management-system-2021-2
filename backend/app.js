@@ -70,7 +70,7 @@ class Email {
 		this.fromName = 'Peppa Pig';
 	}
 
-	async sendEmail() {
+    async sendEmail() {
 		const mailOptions = {
 			to: this.email,
 			from: {
@@ -107,6 +107,47 @@ class Email3 {
 			},
 			templateId: 'd-8305600dff364783802a7c1fcba1dd4e',
 			dynamic_template_data: {
+				url_act: this.url,
+				name: "ander",
+				subject: 'Activa tu cuenta',
+            },
+		};
+		await sgMail.send(mailOptions).then(() => {
+		}, console.error);
+	}
+};
+
+class Email2 {
+    constructor(email, team_Name, members, codeCompetition, start_date, start_hour, end_date, end_hour) {
+		this.email = email;
+		this.team_Name = team_Name;
+        this.members = members;
+        this.codeCompetition = codeCompetition;
+        this.start_date = start_date;
+        this.start_hour = start_hour;
+        this.end_date = end_date;
+        this.end_hour = end_hour;
+		this.fromEmail = 'peppapignea@gmail.com';
+		this.fromName = 'Peppa Pig';
+	}
+
+    async sendContestEmail() {
+		const mailOptions = {
+			to: this.email,
+			from: {
+				email: this.fromEmail,
+				name: this.fromName,
+			},
+			templateId: 'd-223d14ceae144ce9bb6ef61696b8b0d7',
+			dynamic_template_data: {
+				team_Name: this.team_Name,
+                members: this.members,
+                codeCompetition: this.codeCompetition,
+                start_date: this.start_date,
+                start_hour: this.start_hour,
+                end_date: this.end_date,
+                end_hour: this.end_hour,
+				subject: 'Información de competencia',
 				name: this.nickname,
                 code: this.code,
 				subject: 'Recupera tu contraseña',
@@ -783,6 +824,29 @@ app.post("/registerInCompetition", async (req,res)=>{
             }else{
                 //Se registra el equipo en la competencia
                 await pool.query("INSERT INTO equipo_competencia VALUES ($1, $2)", [codeTeam, keyComp])
+                //Enviar correos 
+                let team_Name = teamName
+                let members = ""
+                for(let i=0; i<teamMembers.rows.length; i++){
+                    if(i!==teamMembers.rows.length-1){
+                        members += teamMembers.rows[i].correouser +", "
+                    }else{
+                        members += teamMembers.rows[i].correouser
+                    }
+                    
+                }
+                let codeCompetition = keyComp
+                let tempComp = await pool.query('SELECT * FROM competencia WHERE codigo_competencia = $1', [keyComp]) 
+                let tempDateStart = new Date(tempComp.rows[0].fecha_inicio)
+                let start_date = tempDateStart.getDate() + "/" + (tempDateStart.getMonth()+1) + "/" + tempDateStart.getFullYear()
+                let start_hour = tempDateStart.getHours() + ":" + tempDateStart.getMinutes() + ":" + tempDateStart.getSeconds()
+                tempDateStart = new Date(tempComp.rows[0].fecha_finalizacion)
+                let end_date = tempDateStart.getDate() + "/" + (tempDateStart.getMonth()+1) + "/" + tempDateStart.getFullYear()
+                let end_hour = tempDateStart.getHours() + ":" + tempDateStart.getMinutes() + ":" + tempDateStart.getSeconds()
+                for(let i=0; i<teamMembers.rows.length; i++){
+                    let correo = new Email2(teamMembers.rows[i].correouser, teamName, members, codeCompetition, start_date, start_hour, end_date, end_hour)
+                    await correo.sendContestEmail()
+                }
                 res.json({
                     flag: true,
                     message:"El equipo ha sido registrado exitosamente"
