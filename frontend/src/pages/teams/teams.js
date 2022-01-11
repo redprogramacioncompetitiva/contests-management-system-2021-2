@@ -72,7 +72,7 @@ export default function home({ teams }) {
 }
 
 home.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/teams')
+    const response = await fetch('http://localhost:3000/api/teams')
     const teams = await response.json()
     return { teams: teams }
 }

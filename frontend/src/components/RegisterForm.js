@@ -46,7 +46,7 @@ class RegisterForm extends React.Component {
           body: JSON.stringify(this.state.form)
         }
 
-        let response = await fetch('http://localhost:8080/register', config)
+        let response = await fetch('http://localhost:3000/api/register', config)
         let json = await response.json();
 
         if (json.flag == true){

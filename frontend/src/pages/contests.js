@@ -45,7 +45,7 @@ export default function Contests() {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
 
-  const baseUrl="http://localhost:8080/contests"
+  const baseUrl="http://localhost:3000/api/contests"
 
       /*
       console.log("HOLAAAAAAAAAAAA")

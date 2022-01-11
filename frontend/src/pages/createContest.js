@@ -55,7 +55,7 @@ export default function createContest({ venues, today }) {
 }
 
 createContest.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/venues')
+    const response = await fetch('http://localhost:3000/api/venues')
     const venues = await response.json()
     const date = new Date();
     let month = date.getMonth() + 1

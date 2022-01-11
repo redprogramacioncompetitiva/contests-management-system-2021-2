@@ -135,7 +135,7 @@ export default function lastsUsersRecords({users}) {
 }
 
 lastsUsersRecords.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/lastUsersRecord')
+    const response = await fetch('http://localhost:3000/api/lastUsersRecord')
     const users = await response.json()
     return { users: users }
 }
