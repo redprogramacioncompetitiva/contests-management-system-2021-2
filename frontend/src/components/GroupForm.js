@@ -20,7 +20,7 @@ class GroupForm extends React.Component {
 
                 <h2 className="text-center">New Team Registration</h2><br />
 
-                <form className="w-50 mx-auto p-2" method="POST" action = "http://localhost:8080/createTeam">
+                <form className="w-50 mx-auto p-2" method="POST" action = "http://localhost:3000/api/createTeam">
 
                     <br />
 

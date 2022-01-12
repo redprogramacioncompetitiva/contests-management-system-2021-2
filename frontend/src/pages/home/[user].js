@@ -1,6 +1,7 @@
 import HeadRPC from '../../components/HeadRPC'
 import { useRouter } from 'next/router'
 import Link from 'next/Link'
+import  Navbar  from '../../components/Navbar'
 
 export default function home({ users }) {
 
@@ -13,7 +14,8 @@ export default function home({ users }) {
 
         <div className="container">
 
-            <HeadRPC />
+            <HeadRPC title = "Home"/>
+            <Navbar/>
 
             <div className="py-1 text-center">
 
@@ -101,7 +103,7 @@ export default function home({ users }) {
 }
 
 home.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/ejemplo')
+    const response = await fetch('http://localhost:3000/api/ejemplo')
     const users = await response.json()
     return { users: users }
 }

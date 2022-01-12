@@ -92,7 +92,7 @@ export default function home({ integrants }) {
 }
 
 home.getInitialProps = async () => {
-    const response = await fetch('http://localhost:8080/integrants/'+idGeneral)
+    const response = await fetch('http://localhost:3000/api/Integrants/'+idGeneral)
     //console.log(idGeneral)
     const integrants = await response.json()
     return { integrants: integrants }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import StyleRPC from '../components/StyleRPC'
-import Navbar from './Navbar';
+
 
 class HeadRPC extends React.Component {
 
@@ -12,6 +12,7 @@ class HeadRPC extends React.Component {
         return(
 
             <div>
+                  
               
                 <Head>
                     <title>{this.props.title}</title>
@@ -25,6 +26,8 @@ class HeadRPC extends React.Component {
 
 
 <link rel="icon" href="/logo.ico" />
+
+
 
                 </Head>
                 

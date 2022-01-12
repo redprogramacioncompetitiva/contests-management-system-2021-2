@@ -47,7 +47,7 @@ class LoginForm extends React.Component {
 
       
 
-      let response = await fetch('http://localhost:8080/authenticate', config)
+      let response = await fetch('http://localhost:3000/api/authenticate', config)
       let json = await response.json();
       if (json.flag == true){
         this.message = "";
